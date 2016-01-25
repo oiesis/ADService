@@ -13,8 +13,8 @@ namespace adservice{
              * @param  len [string length]
              * @return     [hash value]
              */
-            uint64_t sax_hash(void *key, int len) {
-                uchar_t *p = key;
+            uint64_t sax_hash(const void *key, int len) {
+                const uchar_t *p = (const uchar_t*)key;
                 uint64_t h = 0;
                 int i;
 
@@ -32,9 +32,9 @@ namespace adservice{
              * @param  len [string length]
              * @return     [hash value]
              */
-            uint64_t fnv_hash(void *key, int len) {
-                uchar *p = key;
-                uint64_t h = 14695981039346656037L;
+            uint64_t fnv_hash(const void *key, int len) {
+                const uchar_t *p = (const uchar_t*)key;
+                uint64_t h = 14695981039346656037UL;
                 int i;
 
                 for (i = 0; i < len; i++) {
@@ -50,8 +50,8 @@ namespace adservice{
              * @param  len [string length]
              * @return     [hash value]
              */
-            uint64_t oat_hash(void *key, int len) {
-                uchar_t *p = key;
+            uint64_t oat_hash(const void *key, int len) {
+                const uchar_t *p = (const uchar_t*)key;
                 uint64_t h = 0;
                 int i;
 

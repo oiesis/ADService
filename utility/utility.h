@@ -5,7 +5,7 @@
 #ifndef ADCORE_UTILITY_H
 #define ADCORE_UTILITY_H
 
-#include <stdint.h>
+#include "../common/types.h"
 
 #define IN
 #define OUT
@@ -17,11 +17,11 @@ namespace adservice{
 
            /** hash functions **/
 
-           uint64_t sax_hash(void *key, int32_t len);
+           uint64_t sax_hash(const void *key, int32_t len);
 
-           uint64_t fnv_hash(void *key, int32_t len);
+           uint64_t fnv_hash(const void *key, int32_t len);
 
-           uint64_t oat_hash(void *key, int32_t len);
+           uint64_t oat_hash(const void *key, int32_t len);
        }
 
        namespace cypher{
@@ -35,6 +35,16 @@ namespace adservice{
            void cookiesEncode(const uchar_t * input,const int32_t size,INOUT CypherResult128& result);
 
            void cookiesDecode(const CypherResult128& input,uchar_t* & output,int32_t& size);
+
+       }
+
+       namespace time{
+
+           inline long getMttyTimeBegin();
+
+           long getCurrentTimeStamp();
+
+           long getCurrentTimeSinceMtty();
 
        }
    }
