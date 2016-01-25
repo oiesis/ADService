@@ -1,9 +1,10 @@
-#include "../common/types.h"
+
 #include <stdlib.h>
 #include <random>
 #include <array>
 #include <algorithm>
 #include <iostream>
+#include "../utility/utility.h"
 
 using namespace std;
 
@@ -15,5 +16,8 @@ static const char cypherMap[4][16] = {{'e','S','U','s','K','n','M','O','[','C','
 
 
 int main(int argc,char** argv){
+	using namespace adservice::utility::time;
+	int timeDiff = getCurrentTimeSinceMtty();
+	printf("%d\n",timeDiff);
 	return 0;
 }

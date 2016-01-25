@@ -19,7 +19,7 @@ namespace adservice{
              * 假定麦田服务开始的基准时间
              * 假定为2015-10-01 11:11:11开始
              */
-            inline long mttyTimeBegin(){
+            long mttyTimeBegin(){
                 struct tm beginTime={0};
                 beginTime.tm_year = MTTY_START_YEAR - 1900;
                 beginTime.tm_mon = MTTY_START_MON - 1;
@@ -30,12 +30,22 @@ namespace adservice{
                 return (long)mktime(&beginTime);
             }
 
-            static constexpr long MTTY_SERVICE_TIME_BEGIN = 0L;//mttyTimeBegin();
+            static constexpr long MTTY_SERVICE_TIME_BEGIN = 1443669071L;//mttyTimeBegin();
 
-            inline long getMttyTimeBegin(){
+            long getMttyTimeBegin(){
                 return MTTY_SERVICE_TIME_BEGIN;
             }
 
+	    long getCurrentTimeStamp(){
+		time_t currentTime;
+		::time(&currentTime);
+		return (long)currentTime;
+	    }
+
+            int getCurrentTimeSinceMtty(){
+	    	long currentTime = getCurrentTimeStamp();
+		return (int)(currentTime - MTTY_SERVICE_TIME_BEGIN);
+	    }
 
 
         }

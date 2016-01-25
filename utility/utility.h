@@ -6,6 +6,7 @@
 #define ADCORE_UTILITY_H
 
 #include "../common/types.h"
+#include <ctime>
 
 #define IN
 #define OUT
@@ -40,12 +41,13 @@ namespace adservice{
 
        namespace time{
 
-           inline long getMttyTimeBegin();
+           extern long getMttyTimeBegin();
 
-           long getCurrentTimeStamp();
+           extern long getCurrentTimeStamp();
 
-           long getCurrentTimeSinceMtty();
-
+           extern int getCurrentTimeSinceMtty();
+	   
+	   extern long mttyTimeBegin();
        }
    }
 }
