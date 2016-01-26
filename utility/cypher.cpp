@@ -229,7 +229,7 @@ namespace adservice {
             void cookiesDecode(const CypherResult128 & input,uchar_t* & output,int32_t & size){
                 assert(size >= 8);
                 static uchar_t mask[2] = {0x0F,0xF0};
-                uchar_t* bytes = input.bytes;
+                const uchar_t* bytes = input.bytes;
                 for(int i=0;i<16;i++){
                     int j=i>>1;
                     int idx = bSearch<const char>(cypherSortMap[i&0x03],16,bytes[i]);

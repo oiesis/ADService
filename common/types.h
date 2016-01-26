@@ -5,12 +5,29 @@
 #ifndef ADCORE_LOG_H
 #define ADCORE_LOG_H
 
-#include <cstdlib>
 #include <sys/types.h>
+#include <cstdlib>
 
 #ifndef uchar_t
 typedef u_char uchar_t;
 #endif
+
+#ifndef uint8_t
+typedef u_int8_t uint8_t;
+#endif
+
+#ifndef uint16_t
+typedef u_int16_t uint16_t;
+#endif
+
+#ifndef uint32_t
+typedef u_int32_t uint32_t;
+#endif
+
+#ifndef uint64_t
+typedef u_int64_t uint64_t;
+#endif
+
 
 namespace adservice {
 	namespace types {
