@@ -28,6 +28,9 @@ typedef u_int32_t uint32_t;
 typedef u_int64_t uint64_t;
 #endif
 
+#define IN
+#define OUT
+#define INOUT
 
 namespace adservice {
 	namespace types {

@@ -3,6 +3,7 @@
 //
 
 #include "utility.h"
+#include <random>
 #include <array>
 #include <algorithm>
 #include <cassert>
@@ -50,143 +51,93 @@ namespace adservice {
                 return result;
             }
 
+
+            CypherMapGenerator::CypherMapGenerator(bool isInit){
+                if(!isInit){
+                    return;
+                }
+                array<char,64> randomString = randomCharSequence();
+                for(int i=0;i<4;i++) {
+                    for (int j = 0; j < 16; j++) {
+                        cypherMap[i][j] = randomString[(i << 4) + j];
+                    }
+                }
+                regenerate();
+            }
+
             /**
-             * 密码表生成器
+             * randomCharSequence: 生成固定字符集的随机字符顺序
+             * @return : 结果
              */
-            class CypherMapGenerator{
-            public:
+            array<char,64> CypherMapGenerator::randomCharSequence(){
+                array<char,64> keys= {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
+                                      'A','B','C','D','M','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','X','Y','Z',
+                                      '=','+','-','[',']','#','@','_','[','_','@','|'};
+                std::shuffle(keys.begin(),keys.end(),std::random_device());
+                return keys;
+            }
 
-                typedef const char (*CypherMapArrayPointer)[16];
-                typedef const int (*CypherMapIndexArrayPointer)[16];
-
-                CypherMapGenerator(bool isInit){
-                    if(!isInit){
-                        return;
-                    }
-                    array<char,64> randomString = randomCharSequence();
-                    for(int i=0;i<4;i++) {
-                        for (int j = 0; j < 16; j++) {
-                            cypherMap[i][j] = randomString[(i << 4) + j];
-                        }
-                    }
-                    regenerate();
-                }
-
-                /**
-                 * randomCharSequence: 生成固定字符集的随机字符顺序
-                 * @return : 结果
-                 */
-                array<char,64> randomCharSequence(){
-                    array<char,64> keys= {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
-                                          'A','B','C','D','M','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','X','Y','Z',
-                                          '=','+','-','[',']','#','@','_','[','_','@','|'};
-                    std::shuffle(keys.begin(),keys.end(),std::random_device());
-                    return keys;
-                }
-
-                /**
-                 * 生成密码表索引
-                 */
-                void regenerate(){
-                    for(int i=0;i<4;i++){
-                        for(int j=0;j<16;j++){
-                            indexMap[i][j] = j;
-                        }
-                    }
-                    InnerComparetor comp(this);
-                    for(int i=0;i<4;i++){
-                        current = indexMap[i];
-                        currentCypher = cypherMap[i];
-                        std::sort(current,current+16,comp);
-                    }
-                    for(int i=0;i<4;i++){
-                        currentCypher = cypherMap[i];
-                        current = indexMap[i];
-                        for(int j=0;j<16;j++){
-                            cypherSortMap[i][j]=currentCypher[current[j]];
-                        }
-                    }
-                    for(int i=0;i<4;i++){
-                        currentCypher = cypherMap[i];
-                        current = indexMap[i];
-                        for(int j=0;j<16;j++){
-                            cypherPosMap[i][j] = current[j];
-                        }
+            /**
+             * 生成密码表索引
+             */
+            void CypherMapGenerator::regenerate(){
+                for(int i=0;i<4;i++){
+                    for(int j=0;j<16;j++){
+                        indexMap[i][j] = j;
                     }
                 }
-
-                CypherMapArrayPointer getCypherMap() const{
-                    return cypherMap;
+                InnerComparetor comp(this);
+                for(int i=0;i<4;i++){
+                    current = indexMap[i];
+                    currentCypher = cypherMap[i];
+                    std::sort(current,current+16,comp);
                 }
-
-                CypherMapArrayPointer getCypherSortMap() const{
-                    return cypherSortMap;
-                }
-
-                CypherMapIndexArrayPointer getCypherPosMap() const{
-                    return cypherPosMap;
-                }
-
-                void setCypherMap( CypherMapArrayPointer array){
-                    for(int i=0;i<4;i++){
-                        for(int j=0;j<16;j++){
-                            cypherMap[i][j] = array[i][j];
-                        }
+                for(int i=0;i<4;i++){
+                    currentCypher = cypherMap[i];
+                    current = indexMap[i];
+                    for(int j=0;j<16;j++){
+                        cypherSortMap[i][j]=currentCypher[current[j]];
                     }
                 }
-
-                void print(){
-                    printf("cypherMap:{");
-                    for(int i=0;i<4;i++){
-                        printf("{");
-                        for(int j=0;j<16;j++){
-                            printf(" %c,",cypherMap[i][j]);
-                        }
-                        printf("},\n");
-                    }
-                    printf("}\n");
-                    printf("cypherSortMap={");
-                    for(int i=0;i<4;i++){
-                        printf("{");
-                        for(int j=0;j<16;j++){
-                            printf(" %c,",cypherSortMap[i][j]);
-                        }
-                        printf("},\n");
-                    }
-                    printf("}\n");
-
-                    printf("cypherPosMap:{");
-                    for(int i=0;i<4;i++){
-                        printf("{");
-                        for(int j=0;j<16;j++){
-                            printf(" %d,",cypherPosMap[i][j]);
-                        }
-                        printf("},\n");
+                for(int i=0;i<4;i++){
+                    currentCypher = cypherMap[i];
+                    current = indexMap[i];
+                    for(int j=0;j<16;j++){
+                        cypherPosMap[i][j] = current[j];
                     }
                 }
-            private:
+            }
 
-                CypherMapIndexArrayPointer  getIndexMap() const{
-                    return indexMap;
-                }
-
-                class InnerComparetor{
-                public:
-                    InnerComparetor(CypherMapGenerator * g):generator(g){}
-                    bool operator()(const int& a,const int& b){
-                        return generator->currentCypher[a]<generator->currentCypher[b];
+            void CypherMapGenerator::print(){
+                printf("cypherMap:{");
+                for(int i=0;i<4;i++){
+                    printf("{");
+                    for(int j=0;j<16;j++){
+                        printf(" %c,",cypherMap[i][j]);
                     }
-                private:
-                    CypherMapGenerator* generator;
-                };
-            private:
-                char cypherMap[4][16];
-                char cypherSortMap[4][16];
-                int cypherPosMap[4][16];
-                int indexMap[4][16];
-                char* currentCypher;
-                int* current;
-            };
+                    printf("},\n");
+                }
+                printf("}\n");
+                printf("cypherSortMap={");
+                for(int i=0;i<4;i++){
+                    printf("{");
+                    for(int j=0;j<16;j++){
+                        printf(" %c,",cypherSortMap[i][j]);
+                    }
+                    printf("},\n");
+                }
+                printf("}\n");
+
+                printf("cypherPosMap:{");
+                for(int i=0;i<4;i++){
+                    printf("{");
+                    for(int j=0;j<16;j++){
+                        printf(" %d,",cypherPosMap[i][j]);
+                    }
+                    printf("},\n");
+                }
+            }
+
 
 
             static const char cypherMap[4][16] = {{'e','S','U','s','K','n','M','O','[','C','l','-','Q','c','E','b'},

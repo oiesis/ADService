@@ -6,11 +6,9 @@
 #define ADCORE_UTILITY_H
 
 #include "../common/types.h"
+#include <array>
 #include <ctime>
 
-#define IN
-#define OUT
-#define INOUT
 
 namespace adservice{
    namespace utility{
@@ -26,6 +24,60 @@ namespace adservice{
        }
 
        namespace cypher{
+
+           /**
+             * 密码表生成器
+             */
+           class CypherMapGenerator{
+           public:
+               typedef const char (*CypherMapArrayPointer)[16];
+               typedef const int (*CypherMapIndexArrayPointer)[16];
+
+               CypherMapGenerator(bool isInit);
+
+               std::array<char,64> randomCharSequence();
+
+               void regenerate();
+
+               void print();
+
+               inline void setCypherMap( CypherMapArrayPointer array){
+                   for(int i=0;i<4;i++){
+                       for(int j=0;j<16;j++){
+                           cypherMap[i][j] = array[i][j];
+                       }
+                   }
+               }
+
+               inline CypherMapArrayPointer getCypherMap() const{
+                   return (CypherMapArrayPointer)cypherMap;
+               }
+
+               inline CypherMapArrayPointer getCypherSortMap() const{
+                   return (CypherMapArrayPointer)cypherSortMap;
+               }
+
+               inline CypherMapIndexArrayPointer getCypherPosMap() const{
+                   return (CypherMapIndexArrayPointer)cypherPosMap;
+               }
+
+               class InnerComparetor{
+               public:
+                   InnerComparetor(CypherMapGenerator * g):generator(g){}
+                   bool operator()(const int& a,const int& b){
+                       return generator->currentCypher[a]<generator->currentCypher[b];
+                   }
+               private:
+                   CypherMapGenerator* generator;
+               };
+           private:
+               char cypherMap[4][16];
+               char cypherSortMap[4][16];
+               int cypherPosMap[4][16];
+               int indexMap[4][16];
+               char* currentCypher;
+               int* current;
+           };
 
            typedef union {
                uchar_t bytes[16];

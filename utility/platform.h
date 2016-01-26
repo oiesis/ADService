@@ -5,6 +5,8 @@
 #ifndef ADCORE_PLATFORM_H
 #define ADCORE_PLATFORM_H
 
+#include "../common/types.h"
+
 namespace adservice{
     namespace platform{
 
