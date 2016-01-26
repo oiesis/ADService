@@ -29,25 +29,6 @@ namespace adservice{
                 beginTime.tm_sec = MTTY_START_SEC;
                 return (long)mktime(&beginTime);
             }
-
-            static constexpr long MTTY_SERVICE_TIME_BEGIN = 1443669071L;//mttyTimeBegin();
-
-            long getMttyTimeBegin(){
-                return MTTY_SERVICE_TIME_BEGIN;
-            }
-
-	    long getCurrentTimeStamp(){
-		time_t currentTime;
-		::time(&currentTime);
-		return (long)currentTime;
-	    }
-
-            int getCurrentTimeSinceMtty(){
-	    	long currentTime = getCurrentTimeStamp();
-		return (int)(currentTime - MTTY_SERVICE_TIME_BEGIN);
-	    }
-
-
         }
     }
 }

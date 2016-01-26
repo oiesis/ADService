@@ -8,6 +8,10 @@
 #include <sys/types.h>
 #include <cstdlib>
 
+#ifndef char_t
+typedef char char_t;
+#endif
+
 #ifndef uchar_t
 typedef u_char uchar_t;
 #endif
