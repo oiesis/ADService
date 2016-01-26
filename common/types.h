@@ -8,6 +8,10 @@
 #include <sys/types.h>
 #include <cstdlib>
 
+#ifndef char_t
+typedef char char_t;
+#endif
+
 #ifndef uchar_t
 typedef u_char uchar_t;
 #endif
@@ -28,6 +32,9 @@ typedef u_int32_t uint32_t;
 typedef u_int64_t uint64_t;
 #endif
 
+#define IN
+#define OUT
+#define INOUT
 
 namespace adservice {
 	namespace types {

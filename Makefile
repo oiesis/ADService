@@ -1,6 +1,7 @@
 
-CC=g++
-CCFlags=--std=c++11
+CC=g++-5
+CCFlags=--std=c++11 
+#-DVERBOSE_DEBUG
 SRC_FOLDER=$(shell pwd)
 
 BUILD_PATH = $(SRC_FOLDER)/build
