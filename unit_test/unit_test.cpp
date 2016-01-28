@@ -91,7 +91,31 @@ void cookies_hard_test(){
 	cout<<"test cookies pressure end"<<endl;
 }
 
+void whatever_test(){
+	cout<<"whatever test"<<endl;
+	char_t test[] = "504f5354202f6265"
+			"7362696420485454502f312e310d0a48"
+			"6f73743a206269642d62616964752e6d"
+			"7474792e636f6d0d0a436f6e74656e74"
+			"2d4c656e6774683a2034370d0a557365"
+			"722d4167656e743a20707974686f6e2d"
+			"72657175657374732f322e392e310d0a"
+			"436f6e6e656374696f6e3a206b656570"
+			"2d616c6976650d0a4163636570743a20"
+			"2a2f2a0d0a4163636570742d456e636f"
+			"64696e673a20677a69702c206465666c"
+			"6174650d0a0d0a0a0831383730343930"
+			"37120c3139322e3136382e312e3131a2"
+			"011408fe89ef80f0ffffff7f180020ac"
+			"0228fa013001";
+	int testSize = sizeof(test)-1;
+	HexResolver resolver(testSize);
+	resolver.resolve(test,testSize);
+	resolver.show();
+	cout<<"whatever test end"<<endl;
+}
+
 int main(int argc,char** argv){
-	cookies_hard_test();
+	whatever_test();
 	return 0;
 }

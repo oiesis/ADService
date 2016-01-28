@@ -47,6 +47,42 @@ namespace adservice{
 
            uchar_t* fromHex(const char_t* hexInput,int32_t size,INOUT uchar_t* result);
 
+           uchar_t * fromLittleEndiumHex(const char* hexInput,int32_t size,INOUT uchar_t* result,INOUT int32_t & outSize,bool capital=true);
+
+           /**
+            * 用于调试输入输出,解析十六进制字符流
+            */
+           class HexResolver final{
+           public:
+               explicit HexResolver(int stringSize){
+                   resultSize = (stringSize>>1)+2;
+                   result = new uchar_t[resultSize];
+               }
+               void resolve(const char_t* input,int size){
+                   fromLittleEndiumHex(input,size,result,resultSize);
+               }
+               typedef void (*SHOWHANDLER)(uchar_t*,int32_t);
+
+               void show(SHOWHANDLER handler = nullptr){
+                   if(handler!= nullptr)
+                       handler(result,resultSize);
+                   else
+                       printResult();
+               }
+               ~ HexResolver(){
+                   if(result!= nullptr)
+                       delete[] result;
+               }
+           private:
+               void printResult(){
+                   result[resultSize]='\0';
+                   printf("%s",result);
+               }
+
+               uchar_t* result;
+               int resultSize;
+           };
+
            /**
              * 密码表生成器,用于离线计算密码表
              */

@@ -15,11 +15,13 @@ namespace adservice {
 
             using namespace std;
 
+            //以下方法均基于小端
+
             /**
              * toHex 将二进制串转换成十六进制字符串
              * input : 输入串
              * size  : 串大小
-             * hexResult : 输入的用于存放结果的十六进制字符串
+             * hexResult : 输入的用于存放结果的十六进制字符串,输出的结果为低地址低字节,输入串字节的低4位的编码结果前于高4位的编码结果
              * @return : 返回结果的首地址
              */
             char_t* toHex(const uchar_t* input,int32_t size,INOUT char* hexResult){
@@ -90,6 +92,34 @@ namespace adservice {
                         result[j]|=((hexInput[i]-'0')<<((i&0x01)?4:0))&mask[i&0x01];
                     }else{
                         result[j]|=((hexInput[i]-'A'+10)<<((i&0x01)?4:0))&mask[i&0x01];
+                    }
+                }
+                return result;
+            }
+
+            /**
+             * 从符合小端格式的十六进制字符串中得到其机器表示
+             * hexInput : 十六进制字符串,符合小端格式,比如使用tcpdump -x得到的十六进制串
+             * size : 串大小
+             * result : 输入的用于存放结果的二进制串
+             * outSize: 表明输出串的大小,以字节为单位
+             * capital: 输入结果是否大写
+             * @return : 返回结果的首地址
+             */
+            uchar_t * fromLittleEndiumHex(const char* hexInput,int32_t size,INOUT uchar_t* result,INOUT int32_t & outSize,bool capital){
+                int needSize = (size&0x01)?(size >> 1)+1:(size>>1);
+                assert(outSize>=needSize);
+                outSize=needSize;
+                char base = capital?'A':'a';
+                static uchar_t mask[2] = {0xF0,0x0F};
+                for(int i=0;i<size;i++){
+                    int j = i >> 1;
+                    if(!(i&0x01))
+                        result[j]=0;
+                    if(hexInput[i]<base){
+                        result[j]|=((hexInput[i]-'0')<<((i&0x01)?0:4))&mask[i&0x01];
+                    }else{
+                        result[j]|=((hexInput[i]-base+10)<<((i&0x01)?0:4))&mask[i&0x01];
                     }
                 }
                 return result;
