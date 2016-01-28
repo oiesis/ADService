@@ -73,7 +73,14 @@ namespace adservice {
 			/** 性别 true:男 false:女 */
 			bool sex;
 			/** 兴趣编码 */
-			uint8_t interest;
+			uint64_t interest;
+		} UserInfo;
+
+		typedef struct GeoInfo {
+			/** 经度 */
+			char *latitude;
+			/** 纬度 */
+			char *longtitude;
 			/** 国家编码 */
 			uint8_t country;
 			/** 省份编码 */
@@ -84,11 +91,6 @@ namespace adservice {
 			uint8_t district;
 			/** 街道编码 */
 			uint8_t street;
-		} UserInfo;
-
-		typedef struct GeoInfo {
-			char *latitude;
-			char *longtitude;
 		} GeoInfo;
 
 

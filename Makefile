@@ -1,12 +1,14 @@
 
 CC=g++-5
-CCFlags=--std=c++11 
+INCLUDE_PATH:=-I./3rdparty/include/
+LIB_PATH:=-Wl,-rpath,./3rdparty/lib/
+CCFlags:=--std=c++11 $(INCLUDE_PATH) $(LIB_PATH)
 #-DVERBOSE_DEBUG
-SRC_FOLDER=$(shell pwd)
+SRC_FOLDER:=$(shell pwd)
 
-BUILD_PATH = $(SRC_FOLDER)/build
+BUILD_PATH:= $(SRC_FOLDER)/build
 
-ALL_OBJS = unit_test.o \
+ALL_OBJS:= unit_test.o \
 	cypher.o \
 	hash.o  \
 	time.o \
@@ -19,15 +21,15 @@ all:init unit_test.o
 
 UNIT_TEST_FOLDER = $(SRC_FOLDER)/unit_test/
 
-UNIT_TEST_SRC = unit_test.cpp
+UNIT_TEST_SRC:= unit_test.cpp
 
 unit_test.o:utility.o
 	cd $(UNIT_TEST_FOLDER) && \
 	$(CC) -c $(CCFlags) $(UNIT_TEST_SRC) -o $(BUILD_PATH)/unit_test.o
 
-UTILITY_FOLDER=$(SRC_FOLDER)/utility/
+UTILITY_FOLDER:=$(SRC_FOLDER)/utility/
 
-UTILITY_BUILD_SOURCE = cypher.cpp \
+UTILITY_BUILD_SOURCE:= cypher.cpp \
 			hash.cpp \
 			time.cpp
 utility.o:
