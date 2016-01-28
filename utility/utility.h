@@ -39,11 +39,11 @@ namespace adservice{
 
        namespace cypher{
 
-           char* toHex(const uchar_t* input,int32_t size,INOUT char_t* hexResult);
+           char_t* toHex(const uchar_t* input,int32_t size,INOUT char_t* hexResult);
 
-           char* toHexReadable(const uchar_t* input ,int32_t size,INOUT char_t* hexResult);
+           char_t* toHexReadable(const uchar_t* input ,int32_t size,INOUT char_t* hexResult);
 
-           char* hexToReadable(const char_t* hexString,int32_t size,INOUT char_t* readableResult);
+           char_t* hexToReadable(const char_t* hexString,int32_t size,INOUT char_t* readableResult);
 
            uchar_t* fromHex(const char_t* hexInput,int32_t size,INOUT uchar_t* result);
 

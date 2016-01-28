@@ -52,7 +52,7 @@ namespace adservice {
                 return hexResult;
             }
 
-            /**
+            /**N
              * 将toHex产生的结果转为可读字符串
              */
             char_t* hexToReadable(const char_t* hexString,int32_t size,INOUT char_t* readableResult){
