@@ -24,6 +24,11 @@ namespace adservice{
             obj.SerializeToOstream(&stream);
         }
 
+        /**
+         * 当序列化发生错误时的回调
+         */
+        void handleError();
+
     }
 }
 

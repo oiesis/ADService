@@ -77,9 +77,9 @@ namespace adservice {
 		} UserInfo;
 
 		typedef struct GeoInfo {
-			/** 经度 */
-			char *latitude;
 			/** 纬度 */
+			char *latitude;
+			/** 经度 */
 			char *longtitude;
 			/** 国家编码 */
 			uint8_t country;
