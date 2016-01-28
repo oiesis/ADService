@@ -7,6 +7,7 @@
 
 #include "../common/types.h"
 
+
 namespace adservice{
     namespace platform{
 
