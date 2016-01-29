@@ -38,8 +38,12 @@ void protobuf_AssignDesc_click_2eproto() {
       "click.proto");
   GOOGLE_CHECK(file != NULL);
   ClickRequest_descriptor_ = file->message_type(0);
-  static const int ClickRequest_offsets_[1] = {
+  static const int ClickRequest_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ClickRequest, cookiesid_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ClickRequest, age_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ClickRequest, sex_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ClickRequest, geoinfo_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ClickRequest, adinfo_),
   };
   ClickRequest_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -53,8 +57,12 @@ void protobuf_AssignDesc_click_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(ClickRequest));
   ClickResponse_descriptor_ = file->message_type(1);
-  static const int ClickResponse_offsets_[1] = {
+  static const int ClickResponse_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ClickResponse, cookiesid_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ClickResponse, age_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ClickResponse, sex_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ClickResponse, geoinfo_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ClickResponse, adinfo_),
   };
   ClickResponse_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -100,10 +108,17 @@ void protobuf_AddDesc_click_2eproto() {
   already_here = true;
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
+  ::protocol::share::protobuf_AddDesc_common_2eproto();
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-    "\n\013click.proto\022\016protocol.share\"!\n\014ClickRe"
-    "quest\022\021\n\tcookiesId\030\001 \001(\t\"\"\n\rClickRespons"
-    "e\022\021\n\tcookiesId\030\001 \002(\t", 100);
+    "\n\013click.proto\022\016protocol.share\032\014common.pr"
+    "oto\"\215\001\n\014ClickRequest\022\021\n\tcookiesId\030\001 \001(\t\022"
+    "\013\n\003age\030\002 \001(\005\022\013\n\003sex\030\003 \001(\005\022(\n\007geoInfo\030\004 \001"
+    "(\0132\027.protocol.share.GeoInfo\022&\n\006adInfo\030\005 "
+    "\001(\0132\026.protocol.share.AdInfo\"\216\001\n\rClickRes"
+    "ponse\022\021\n\tcookiesId\030\001 \002(\t\022\013\n\003age\030\002 \001(\005\022\013\n"
+    "\003sex\030\003 \001(\005\022(\n\007geoInfo\030\004 \001(\0132\027.protocol.s"
+    "hare.GeoInfo\022&\n\006adInfo\030\005 \001(\0132\026.protocol."
+    "share.AdInfo", 332);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "click.proto", &protobuf_RegisterTypes);
   ClickRequest::default_instance_ = new ClickRequest();
@@ -124,6 +139,10 @@ struct StaticDescriptorInitializer_click_2eproto {
 
 #ifndef _MSC_VER
 const int ClickRequest::kCookiesIdFieldNumber;
+const int ClickRequest::kAgeFieldNumber;
+const int ClickRequest::kSexFieldNumber;
+const int ClickRequest::kGeoInfoFieldNumber;
+const int ClickRequest::kAdInfoFieldNumber;
 #endif  // !_MSC_VER
 
 ClickRequest::ClickRequest()
@@ -133,6 +152,8 @@ ClickRequest::ClickRequest()
 }
 
 void ClickRequest::InitAsDefaultInstance() {
+  geoinfo_ = const_cast< ::protocol::share::GeoInfo*>(&::protocol::share::GeoInfo::default_instance());
+  adinfo_ = const_cast< ::protocol::share::AdInfo*>(&::protocol::share::AdInfo::default_instance());
 }
 
 ClickRequest::ClickRequest(const ClickRequest& from)
@@ -146,6 +167,10 @@ void ClickRequest::SharedCtor() {
   ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
   cookiesid_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  age_ = 0;
+  sex_ = 0;
+  geoinfo_ = NULL;
+  adinfo_ = NULL;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -159,6 +184,8 @@ void ClickRequest::SharedDtor() {
     delete cookiesid_;
   }
   if (this != default_instance_) {
+    delete geoinfo_;
+    delete adinfo_;
   }
 }
 
@@ -184,11 +211,34 @@ ClickRequest* ClickRequest::New() const {
 }
 
 void ClickRequest::Clear() {
-  if (has_cookiesid()) {
-    if (cookiesid_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
-      cookiesid_->clear();
+#define OFFSET_OF_FIELD_(f) (reinterpret_cast<char*>(      \
+  &reinterpret_cast<ClickRequest*>(16)->f) - \
+   reinterpret_cast<char*>(16))
+
+#define ZR_(first, last) do {                              \
+    size_t f = OFFSET_OF_FIELD_(first);                    \
+    size_t n = OFFSET_OF_FIELD_(last) - f + sizeof(last);  \
+    ::memset(&first, 0, n);                                \
+  } while (0)
+
+  if (_has_bits_[0 / 32] & 31) {
+    ZR_(age_, sex_);
+    if (has_cookiesid()) {
+      if (cookiesid_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+        cookiesid_->clear();
+      }
+    }
+    if (has_geoinfo()) {
+      if (geoinfo_ != NULL) geoinfo_->::protocol::share::GeoInfo::Clear();
+    }
+    if (has_adinfo()) {
+      if (adinfo_ != NULL) adinfo_->::protocol::share::AdInfo::Clear();
     }
   }
+
+#undef OFFSET_OF_FIELD_
+#undef ZR_
+
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
 }
@@ -212,6 +262,62 @@ bool ClickRequest::MergePartialFromCodedStream(
             this->cookiesid().data(), this->cookiesid().length(),
             ::google::protobuf::internal::WireFormat::PARSE,
             "cookiesid");
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(16)) goto parse_age;
+        break;
+      }
+
+      // optional int32 age = 2;
+      case 2: {
+        if (tag == 16) {
+         parse_age:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &age_)));
+          set_has_age();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(24)) goto parse_sex;
+        break;
+      }
+
+      // optional int32 sex = 3;
+      case 3: {
+        if (tag == 24) {
+         parse_sex:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &sex_)));
+          set_has_sex();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(34)) goto parse_geoInfo;
+        break;
+      }
+
+      // optional .protocol.share.GeoInfo geoInfo = 4;
+      case 4: {
+        if (tag == 34) {
+         parse_geoInfo:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_geoinfo()));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(42)) goto parse_adInfo;
+        break;
+      }
+
+      // optional .protocol.share.AdInfo adInfo = 5;
+      case 5: {
+        if (tag == 42) {
+         parse_adInfo:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_adinfo()));
         } else {
           goto handle_unusual;
         }
@@ -254,6 +360,28 @@ void ClickRequest::SerializeWithCachedSizes(
       1, this->cookiesid(), output);
   }
 
+  // optional int32 age = 2;
+  if (has_age()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(2, this->age(), output);
+  }
+
+  // optional int32 sex = 3;
+  if (has_sex()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(3, this->sex(), output);
+  }
+
+  // optional .protocol.share.GeoInfo geoInfo = 4;
+  if (has_geoinfo()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      4, this->geoinfo(), output);
+  }
+
+  // optional .protocol.share.AdInfo adInfo = 5;
+  if (has_adinfo()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      5, this->adinfo(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -275,6 +403,30 @@ void ClickRequest::SerializeWithCachedSizes(
         1, this->cookiesid(), target);
   }
 
+  // optional int32 age = 2;
+  if (has_age()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(2, this->age(), target);
+  }
+
+  // optional int32 sex = 3;
+  if (has_sex()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(3, this->sex(), target);
+  }
+
+  // optional .protocol.share.GeoInfo geoInfo = 4;
+  if (has_geoinfo()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        4, this->geoinfo(), target);
+  }
+
+  // optional .protocol.share.AdInfo adInfo = 5;
+  if (has_adinfo()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        5, this->adinfo(), target);
+  }
+
   if (!unknown_fields().empty()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
@@ -292,6 +444,34 @@ int ClickRequest::ByteSize() const {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::StringSize(
           this->cookiesid());
+    }
+
+    // optional int32 age = 2;
+    if (has_age()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->age());
+    }
+
+    // optional int32 sex = 3;
+    if (has_sex()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->sex());
+    }
+
+    // optional .protocol.share.GeoInfo geoInfo = 4;
+    if (has_geoinfo()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          this->geoinfo());
+    }
+
+    // optional .protocol.share.AdInfo adInfo = 5;
+    if (has_adinfo()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          this->adinfo());
     }
 
   }
@@ -324,6 +504,18 @@ void ClickRequest::MergeFrom(const ClickRequest& from) {
     if (from.has_cookiesid()) {
       set_cookiesid(from.cookiesid());
     }
+    if (from.has_age()) {
+      set_age(from.age());
+    }
+    if (from.has_sex()) {
+      set_sex(from.sex());
+    }
+    if (from.has_geoinfo()) {
+      mutable_geoinfo()->::protocol::share::GeoInfo::MergeFrom(from.geoinfo());
+    }
+    if (from.has_adinfo()) {
+      mutable_adinfo()->::protocol::share::AdInfo::MergeFrom(from.adinfo());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -342,12 +534,19 @@ void ClickRequest::CopyFrom(const ClickRequest& from) {
 
 bool ClickRequest::IsInitialized() const {
 
+  if (has_adinfo()) {
+    if (!this->adinfo().IsInitialized()) return false;
+  }
   return true;
 }
 
 void ClickRequest::Swap(ClickRequest* other) {
   if (other != this) {
     std::swap(cookiesid_, other->cookiesid_);
+    std::swap(age_, other->age_);
+    std::swap(sex_, other->sex_);
+    std::swap(geoinfo_, other->geoinfo_);
+    std::swap(adinfo_, other->adinfo_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
@@ -367,6 +566,10 @@ void ClickRequest::Swap(ClickRequest* other) {
 
 #ifndef _MSC_VER
 const int ClickResponse::kCookiesIdFieldNumber;
+const int ClickResponse::kAgeFieldNumber;
+const int ClickResponse::kSexFieldNumber;
+const int ClickResponse::kGeoInfoFieldNumber;
+const int ClickResponse::kAdInfoFieldNumber;
 #endif  // !_MSC_VER
 
 ClickResponse::ClickResponse()
@@ -376,6 +579,8 @@ ClickResponse::ClickResponse()
 }
 
 void ClickResponse::InitAsDefaultInstance() {
+  geoinfo_ = const_cast< ::protocol::share::GeoInfo*>(&::protocol::share::GeoInfo::default_instance());
+  adinfo_ = const_cast< ::protocol::share::AdInfo*>(&::protocol::share::AdInfo::default_instance());
 }
 
 ClickResponse::ClickResponse(const ClickResponse& from)
@@ -389,6 +594,10 @@ void ClickResponse::SharedCtor() {
   ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
   cookiesid_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  age_ = 0;
+  sex_ = 0;
+  geoinfo_ = NULL;
+  adinfo_ = NULL;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -402,6 +611,8 @@ void ClickResponse::SharedDtor() {
     delete cookiesid_;
   }
   if (this != default_instance_) {
+    delete geoinfo_;
+    delete adinfo_;
   }
 }
 
@@ -427,11 +638,34 @@ ClickResponse* ClickResponse::New() const {
 }
 
 void ClickResponse::Clear() {
-  if (has_cookiesid()) {
-    if (cookiesid_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
-      cookiesid_->clear();
+#define OFFSET_OF_FIELD_(f) (reinterpret_cast<char*>(      \
+  &reinterpret_cast<ClickResponse*>(16)->f) - \
+   reinterpret_cast<char*>(16))
+
+#define ZR_(first, last) do {                              \
+    size_t f = OFFSET_OF_FIELD_(first);                    \
+    size_t n = OFFSET_OF_FIELD_(last) - f + sizeof(last);  \
+    ::memset(&first, 0, n);                                \
+  } while (0)
+
+  if (_has_bits_[0 / 32] & 31) {
+    ZR_(age_, sex_);
+    if (has_cookiesid()) {
+      if (cookiesid_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
+        cookiesid_->clear();
+      }
+    }
+    if (has_geoinfo()) {
+      if (geoinfo_ != NULL) geoinfo_->::protocol::share::GeoInfo::Clear();
+    }
+    if (has_adinfo()) {
+      if (adinfo_ != NULL) adinfo_->::protocol::share::AdInfo::Clear();
     }
   }
+
+#undef OFFSET_OF_FIELD_
+#undef ZR_
+
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
 }
@@ -455,6 +689,62 @@ bool ClickResponse::MergePartialFromCodedStream(
             this->cookiesid().data(), this->cookiesid().length(),
             ::google::protobuf::internal::WireFormat::PARSE,
             "cookiesid");
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(16)) goto parse_age;
+        break;
+      }
+
+      // optional int32 age = 2;
+      case 2: {
+        if (tag == 16) {
+         parse_age:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &age_)));
+          set_has_age();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(24)) goto parse_sex;
+        break;
+      }
+
+      // optional int32 sex = 3;
+      case 3: {
+        if (tag == 24) {
+         parse_sex:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &sex_)));
+          set_has_sex();
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(34)) goto parse_geoInfo;
+        break;
+      }
+
+      // optional .protocol.share.GeoInfo geoInfo = 4;
+      case 4: {
+        if (tag == 34) {
+         parse_geoInfo:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_geoinfo()));
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(42)) goto parse_adInfo;
+        break;
+      }
+
+      // optional .protocol.share.AdInfo adInfo = 5;
+      case 5: {
+        if (tag == 42) {
+         parse_adInfo:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_adinfo()));
         } else {
           goto handle_unusual;
         }
@@ -497,6 +787,28 @@ void ClickResponse::SerializeWithCachedSizes(
       1, this->cookiesid(), output);
   }
 
+  // optional int32 age = 2;
+  if (has_age()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(2, this->age(), output);
+  }
+
+  // optional int32 sex = 3;
+  if (has_sex()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(3, this->sex(), output);
+  }
+
+  // optional .protocol.share.GeoInfo geoInfo = 4;
+  if (has_geoinfo()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      4, this->geoinfo(), output);
+  }
+
+  // optional .protocol.share.AdInfo adInfo = 5;
+  if (has_adinfo()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      5, this->adinfo(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -518,6 +830,30 @@ void ClickResponse::SerializeWithCachedSizes(
         1, this->cookiesid(), target);
   }
 
+  // optional int32 age = 2;
+  if (has_age()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(2, this->age(), target);
+  }
+
+  // optional int32 sex = 3;
+  if (has_sex()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(3, this->sex(), target);
+  }
+
+  // optional .protocol.share.GeoInfo geoInfo = 4;
+  if (has_geoinfo()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        4, this->geoinfo(), target);
+  }
+
+  // optional .protocol.share.AdInfo adInfo = 5;
+  if (has_adinfo()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        5, this->adinfo(), target);
+  }
+
   if (!unknown_fields().empty()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
@@ -535,6 +871,34 @@ int ClickResponse::ByteSize() const {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::StringSize(
           this->cookiesid());
+    }
+
+    // optional int32 age = 2;
+    if (has_age()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->age());
+    }
+
+    // optional int32 sex = 3;
+    if (has_sex()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->sex());
+    }
+
+    // optional .protocol.share.GeoInfo geoInfo = 4;
+    if (has_geoinfo()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          this->geoinfo());
+    }
+
+    // optional .protocol.share.AdInfo adInfo = 5;
+    if (has_adinfo()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          this->adinfo());
     }
 
   }
@@ -567,6 +931,18 @@ void ClickResponse::MergeFrom(const ClickResponse& from) {
     if (from.has_cookiesid()) {
       set_cookiesid(from.cookiesid());
     }
+    if (from.has_age()) {
+      set_age(from.age());
+    }
+    if (from.has_sex()) {
+      set_sex(from.sex());
+    }
+    if (from.has_geoinfo()) {
+      mutable_geoinfo()->::protocol::share::GeoInfo::MergeFrom(from.geoinfo());
+    }
+    if (from.has_adinfo()) {
+      mutable_adinfo()->::protocol::share::AdInfo::MergeFrom(from.adinfo());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -586,12 +962,19 @@ void ClickResponse::CopyFrom(const ClickResponse& from) {
 bool ClickResponse::IsInitialized() const {
   if ((_has_bits_[0] & 0x00000001) != 0x00000001) return false;
 
+  if (has_adinfo()) {
+    if (!this->adinfo().IsInitialized()) return false;
+  }
   return true;
 }
 
 void ClickResponse::Swap(ClickResponse* other) {
   if (other != this) {
     std::swap(cookiesid_, other->cookiesid_);
+    std::swap(age_, other->age_);
+    std::swap(sex_, other->sex_);
+    std::swap(geoinfo_, other->geoinfo_);
+    std::swap(adinfo_, other->adinfo_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
