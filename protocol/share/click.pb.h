@@ -24,6 +24,7 @@
 #include <google/protobuf/repeated_field.h>
 #include <google/protobuf/extension_set.h>
 #include <google/protobuf/unknown_field_set.h>
+#include "common.pb.h"
 // @@protoc_insertion_point(includes)
 
 namespace protocol {
@@ -104,16 +105,60 @@ class ClickRequest : public ::google::protobuf::Message {
   inline ::std::string* release_cookiesid();
   inline void set_allocated_cookiesid(::std::string* cookiesid);
 
+  // optional int32 age = 2;
+  inline bool has_age() const;
+  inline void clear_age();
+  static const int kAgeFieldNumber = 2;
+  inline ::google::protobuf::int32 age() const;
+  inline void set_age(::google::protobuf::int32 value);
+
+  // optional int32 sex = 3;
+  inline bool has_sex() const;
+  inline void clear_sex();
+  static const int kSexFieldNumber = 3;
+  inline ::google::protobuf::int32 sex() const;
+  inline void set_sex(::google::protobuf::int32 value);
+
+  // optional .protocol.share.GeoInfo geoInfo = 4;
+  inline bool has_geoinfo() const;
+  inline void clear_geoinfo();
+  static const int kGeoInfoFieldNumber = 4;
+  inline const ::protocol::share::GeoInfo& geoinfo() const;
+  inline ::protocol::share::GeoInfo* mutable_geoinfo();
+  inline ::protocol::share::GeoInfo* release_geoinfo();
+  inline void set_allocated_geoinfo(::protocol::share::GeoInfo* geoinfo);
+
+  // optional .protocol.share.AdInfo adInfo = 5;
+  inline bool has_adinfo() const;
+  inline void clear_adinfo();
+  static const int kAdInfoFieldNumber = 5;
+  inline const ::protocol::share::AdInfo& adinfo() const;
+  inline ::protocol::share::AdInfo* mutable_adinfo();
+  inline ::protocol::share::AdInfo* release_adinfo();
+  inline void set_allocated_adinfo(::protocol::share::AdInfo* adinfo);
+
   // @@protoc_insertion_point(class_scope:protocol.share.ClickRequest)
  private:
   inline void set_has_cookiesid();
   inline void clear_has_cookiesid();
+  inline void set_has_age();
+  inline void clear_has_age();
+  inline void set_has_sex();
+  inline void clear_has_sex();
+  inline void set_has_geoinfo();
+  inline void clear_has_geoinfo();
+  inline void set_has_adinfo();
+  inline void clear_has_adinfo();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
   ::std::string* cookiesid_;
+  ::google::protobuf::int32 age_;
+  ::google::protobuf::int32 sex_;
+  ::protocol::share::GeoInfo* geoinfo_;
+  ::protocol::share::AdInfo* adinfo_;
   friend void  protobuf_AddDesc_click_2eproto();
   friend void protobuf_AssignDesc_click_2eproto();
   friend void protobuf_ShutdownFile_click_2eproto();
@@ -188,16 +233,60 @@ class ClickResponse : public ::google::protobuf::Message {
   inline ::std::string* release_cookiesid();
   inline void set_allocated_cookiesid(::std::string* cookiesid);
 
+  // optional int32 age = 2;
+  inline bool has_age() const;
+  inline void clear_age();
+  static const int kAgeFieldNumber = 2;
+  inline ::google::protobuf::int32 age() const;
+  inline void set_age(::google::protobuf::int32 value);
+
+  // optional int32 sex = 3;
+  inline bool has_sex() const;
+  inline void clear_sex();
+  static const int kSexFieldNumber = 3;
+  inline ::google::protobuf::int32 sex() const;
+  inline void set_sex(::google::protobuf::int32 value);
+
+  // optional .protocol.share.GeoInfo geoInfo = 4;
+  inline bool has_geoinfo() const;
+  inline void clear_geoinfo();
+  static const int kGeoInfoFieldNumber = 4;
+  inline const ::protocol::share::GeoInfo& geoinfo() const;
+  inline ::protocol::share::GeoInfo* mutable_geoinfo();
+  inline ::protocol::share::GeoInfo* release_geoinfo();
+  inline void set_allocated_geoinfo(::protocol::share::GeoInfo* geoinfo);
+
+  // optional .protocol.share.AdInfo adInfo = 5;
+  inline bool has_adinfo() const;
+  inline void clear_adinfo();
+  static const int kAdInfoFieldNumber = 5;
+  inline const ::protocol::share::AdInfo& adinfo() const;
+  inline ::protocol::share::AdInfo* mutable_adinfo();
+  inline ::protocol::share::AdInfo* release_adinfo();
+  inline void set_allocated_adinfo(::protocol::share::AdInfo* adinfo);
+
   // @@protoc_insertion_point(class_scope:protocol.share.ClickResponse)
  private:
   inline void set_has_cookiesid();
   inline void clear_has_cookiesid();
+  inline void set_has_age();
+  inline void clear_has_age();
+  inline void set_has_sex();
+  inline void clear_has_sex();
+  inline void set_has_geoinfo();
+  inline void clear_has_geoinfo();
+  inline void set_has_adinfo();
+  inline void clear_has_adinfo();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
   ::std::string* cookiesid_;
+  ::google::protobuf::int32 age_;
+  ::google::protobuf::int32 sex_;
+  ::protocol::share::GeoInfo* geoinfo_;
+  ::protocol::share::AdInfo* adinfo_;
   friend void  protobuf_AddDesc_click_2eproto();
   friend void protobuf_AssignDesc_click_2eproto();
   friend void protobuf_ShutdownFile_click_2eproto();
@@ -288,6 +377,136 @@ inline void ClickRequest::set_allocated_cookiesid(::std::string* cookiesid) {
   // @@protoc_insertion_point(field_set_allocated:protocol.share.ClickRequest.cookiesId)
 }
 
+// optional int32 age = 2;
+inline bool ClickRequest::has_age() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void ClickRequest::set_has_age() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void ClickRequest::clear_has_age() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void ClickRequest::clear_age() {
+  age_ = 0;
+  clear_has_age();
+}
+inline ::google::protobuf::int32 ClickRequest::age() const {
+  // @@protoc_insertion_point(field_get:protocol.share.ClickRequest.age)
+  return age_;
+}
+inline void ClickRequest::set_age(::google::protobuf::int32 value) {
+  set_has_age();
+  age_ = value;
+  // @@protoc_insertion_point(field_set:protocol.share.ClickRequest.age)
+}
+
+// optional int32 sex = 3;
+inline bool ClickRequest::has_sex() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void ClickRequest::set_has_sex() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void ClickRequest::clear_has_sex() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void ClickRequest::clear_sex() {
+  sex_ = 0;
+  clear_has_sex();
+}
+inline ::google::protobuf::int32 ClickRequest::sex() const {
+  // @@protoc_insertion_point(field_get:protocol.share.ClickRequest.sex)
+  return sex_;
+}
+inline void ClickRequest::set_sex(::google::protobuf::int32 value) {
+  set_has_sex();
+  sex_ = value;
+  // @@protoc_insertion_point(field_set:protocol.share.ClickRequest.sex)
+}
+
+// optional .protocol.share.GeoInfo geoInfo = 4;
+inline bool ClickRequest::has_geoinfo() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void ClickRequest::set_has_geoinfo() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void ClickRequest::clear_has_geoinfo() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void ClickRequest::clear_geoinfo() {
+  if (geoinfo_ != NULL) geoinfo_->::protocol::share::GeoInfo::Clear();
+  clear_has_geoinfo();
+}
+inline const ::protocol::share::GeoInfo& ClickRequest::geoinfo() const {
+  // @@protoc_insertion_point(field_get:protocol.share.ClickRequest.geoInfo)
+  return geoinfo_ != NULL ? *geoinfo_ : *default_instance_->geoinfo_;
+}
+inline ::protocol::share::GeoInfo* ClickRequest::mutable_geoinfo() {
+  set_has_geoinfo();
+  if (geoinfo_ == NULL) geoinfo_ = new ::protocol::share::GeoInfo;
+  // @@protoc_insertion_point(field_mutable:protocol.share.ClickRequest.geoInfo)
+  return geoinfo_;
+}
+inline ::protocol::share::GeoInfo* ClickRequest::release_geoinfo() {
+  clear_has_geoinfo();
+  ::protocol::share::GeoInfo* temp = geoinfo_;
+  geoinfo_ = NULL;
+  return temp;
+}
+inline void ClickRequest::set_allocated_geoinfo(::protocol::share::GeoInfo* geoinfo) {
+  delete geoinfo_;
+  geoinfo_ = geoinfo;
+  if (geoinfo) {
+    set_has_geoinfo();
+  } else {
+    clear_has_geoinfo();
+  }
+  // @@protoc_insertion_point(field_set_allocated:protocol.share.ClickRequest.geoInfo)
+}
+
+// optional .protocol.share.AdInfo adInfo = 5;
+inline bool ClickRequest::has_adinfo() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void ClickRequest::set_has_adinfo() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void ClickRequest::clear_has_adinfo() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void ClickRequest::clear_adinfo() {
+  if (adinfo_ != NULL) adinfo_->::protocol::share::AdInfo::Clear();
+  clear_has_adinfo();
+}
+inline const ::protocol::share::AdInfo& ClickRequest::adinfo() const {
+  // @@protoc_insertion_point(field_get:protocol.share.ClickRequest.adInfo)
+  return adinfo_ != NULL ? *adinfo_ : *default_instance_->adinfo_;
+}
+inline ::protocol::share::AdInfo* ClickRequest::mutable_adinfo() {
+  set_has_adinfo();
+  if (adinfo_ == NULL) adinfo_ = new ::protocol::share::AdInfo;
+  // @@protoc_insertion_point(field_mutable:protocol.share.ClickRequest.adInfo)
+  return adinfo_;
+}
+inline ::protocol::share::AdInfo* ClickRequest::release_adinfo() {
+  clear_has_adinfo();
+  ::protocol::share::AdInfo* temp = adinfo_;
+  adinfo_ = NULL;
+  return temp;
+}
+inline void ClickRequest::set_allocated_adinfo(::protocol::share::AdInfo* adinfo) {
+  delete adinfo_;
+  adinfo_ = adinfo;
+  if (adinfo) {
+    set_has_adinfo();
+  } else {
+    clear_has_adinfo();
+  }
+  // @@protoc_insertion_point(field_set_allocated:protocol.share.ClickRequest.adInfo)
+}
+
 // -------------------------------------------------------------------
 
 // ClickResponse
@@ -366,6 +585,136 @@ inline void ClickResponse::set_allocated_cookiesid(::std::string* cookiesid) {
     cookiesid_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   }
   // @@protoc_insertion_point(field_set_allocated:protocol.share.ClickResponse.cookiesId)
+}
+
+// optional int32 age = 2;
+inline bool ClickResponse::has_age() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void ClickResponse::set_has_age() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void ClickResponse::clear_has_age() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void ClickResponse::clear_age() {
+  age_ = 0;
+  clear_has_age();
+}
+inline ::google::protobuf::int32 ClickResponse::age() const {
+  // @@protoc_insertion_point(field_get:protocol.share.ClickResponse.age)
+  return age_;
+}
+inline void ClickResponse::set_age(::google::protobuf::int32 value) {
+  set_has_age();
+  age_ = value;
+  // @@protoc_insertion_point(field_set:protocol.share.ClickResponse.age)
+}
+
+// optional int32 sex = 3;
+inline bool ClickResponse::has_sex() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void ClickResponse::set_has_sex() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void ClickResponse::clear_has_sex() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void ClickResponse::clear_sex() {
+  sex_ = 0;
+  clear_has_sex();
+}
+inline ::google::protobuf::int32 ClickResponse::sex() const {
+  // @@protoc_insertion_point(field_get:protocol.share.ClickResponse.sex)
+  return sex_;
+}
+inline void ClickResponse::set_sex(::google::protobuf::int32 value) {
+  set_has_sex();
+  sex_ = value;
+  // @@protoc_insertion_point(field_set:protocol.share.ClickResponse.sex)
+}
+
+// optional .protocol.share.GeoInfo geoInfo = 4;
+inline bool ClickResponse::has_geoinfo() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void ClickResponse::set_has_geoinfo() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void ClickResponse::clear_has_geoinfo() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void ClickResponse::clear_geoinfo() {
+  if (geoinfo_ != NULL) geoinfo_->::protocol::share::GeoInfo::Clear();
+  clear_has_geoinfo();
+}
+inline const ::protocol::share::GeoInfo& ClickResponse::geoinfo() const {
+  // @@protoc_insertion_point(field_get:protocol.share.ClickResponse.geoInfo)
+  return geoinfo_ != NULL ? *geoinfo_ : *default_instance_->geoinfo_;
+}
+inline ::protocol::share::GeoInfo* ClickResponse::mutable_geoinfo() {
+  set_has_geoinfo();
+  if (geoinfo_ == NULL) geoinfo_ = new ::protocol::share::GeoInfo;
+  // @@protoc_insertion_point(field_mutable:protocol.share.ClickResponse.geoInfo)
+  return geoinfo_;
+}
+inline ::protocol::share::GeoInfo* ClickResponse::release_geoinfo() {
+  clear_has_geoinfo();
+  ::protocol::share::GeoInfo* temp = geoinfo_;
+  geoinfo_ = NULL;
+  return temp;
+}
+inline void ClickResponse::set_allocated_geoinfo(::protocol::share::GeoInfo* geoinfo) {
+  delete geoinfo_;
+  geoinfo_ = geoinfo;
+  if (geoinfo) {
+    set_has_geoinfo();
+  } else {
+    clear_has_geoinfo();
+  }
+  // @@protoc_insertion_point(field_set_allocated:protocol.share.ClickResponse.geoInfo)
+}
+
+// optional .protocol.share.AdInfo adInfo = 5;
+inline bool ClickResponse::has_adinfo() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void ClickResponse::set_has_adinfo() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void ClickResponse::clear_has_adinfo() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void ClickResponse::clear_adinfo() {
+  if (adinfo_ != NULL) adinfo_->::protocol::share::AdInfo::Clear();
+  clear_has_adinfo();
+}
+inline const ::protocol::share::AdInfo& ClickResponse::adinfo() const {
+  // @@protoc_insertion_point(field_get:protocol.share.ClickResponse.adInfo)
+  return adinfo_ != NULL ? *adinfo_ : *default_instance_->adinfo_;
+}
+inline ::protocol::share::AdInfo* ClickResponse::mutable_adinfo() {
+  set_has_adinfo();
+  if (adinfo_ == NULL) adinfo_ = new ::protocol::share::AdInfo;
+  // @@protoc_insertion_point(field_mutable:protocol.share.ClickResponse.adInfo)
+  return adinfo_;
+}
+inline ::protocol::share::AdInfo* ClickResponse::release_adinfo() {
+  clear_has_adinfo();
+  ::protocol::share::AdInfo* temp = adinfo_;
+  adinfo_ = NULL;
+  return temp;
+}
+inline void ClickResponse::set_allocated_adinfo(::protocol::share::AdInfo* adinfo) {
+  delete adinfo_;
+  adinfo_ = adinfo;
+  if (adinfo) {
+    set_has_adinfo();
+  } else {
+    clear_has_adinfo();
+  }
+  // @@protoc_insertion_point(field_set_allocated:protocol.share.ClickResponse.adInfo)
 }
 
 
