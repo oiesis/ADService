@@ -9,7 +9,9 @@
 #include "../utility/utility.h"
 
 using namespace std;
+using namespace adservice::utility::time;
 using namespace adservice::utility::cypher;
+using namespace adservice::utility::json;
 
 #define VERBOSE_DEBUG	1
 
@@ -91,6 +93,12 @@ void cookies_hard_test(){
 	cout<<"test cookies pressure end"<<endl;
 }
 
+void time_util_test(){
+	cout<<"time test"<<endl;
+	cout<<getMttyTimeBegin()<<endl;
+	cout<<"time tets end"<<endl;
+}
+
 void whatever_test(){
 	cout<<"whatever test"<<endl;
 	char_t test[] = "504f5354202f6265"
@@ -115,7 +123,25 @@ void whatever_test(){
 	cout<<"whatever test end"<<endl;
 }
 
+void json_test(){
+	cout<<"json test"<<endl;
+	MessageWraper mw;
+	parseJsonFile("../conf/test.conf",mw);
+	cout<<"port:"<<mw.getInt("port",8808)<<endl;
+	cout<<"isDaemon:"<<mw.getBoolean("isDaemon",true)<<endl;
+	cout<<"json test end"<<endl;
+}
+
+#include "../core_src/core.h"
+void server_test(){
+	using namespace adservice::server;
+	ServerConfig  config;
+	loadServerConfig(config);
+	ADService server(config);
+	server.start();
+}
+
 int main(int argc,char** argv){
-	whatever_test();
+	json_test();
 	return 0;
 }

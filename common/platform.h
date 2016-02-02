@@ -11,7 +11,7 @@
 namespace adservice{
     namespace platform{
 
-        static inline bool isLittleEndium(){
+        inline bool isLittleEndium(){
             union _what{
                 uint8_t vs[4];
                 int v;

@@ -5,10 +5,19 @@
 #ifndef ADCORE_UTILITY_H
 #define ADCORE_UTILITY_H
 
-#include "../common/types.h"
+
 #include <array>
 #include <ctime>
 #include <random>
+#include <stddef.h>
+#include <map>
+#include <vector>
+#include <iostream>
+#include <strings.h>
+#include "types.h"
+#include "rapidjson/reader.h"
+#include "rapidjson/document.h"
+#include "rapidjson/error/en.h"
 
 namespace adservice{
    namespace utility{
@@ -183,7 +192,7 @@ namespace adservice{
             * @param input
             * @param output : 输出结果
             */
-           static inline void cookiesDecode(const CypherResult128& input,INOUT DecodeResult64& output){
+           inline void cookiesDecode(const CypherResult128& input,INOUT DecodeResult64& output){
                int size = 8;
                cookiesDecode(input,output.bytes,size);
            }
@@ -205,34 +214,251 @@ namespace adservice{
 
        namespace time{
 
-           static constexpr long MTTY_SERVICE_TIME_BEGIN = 1443669071L;//mttyTimeBegin();
+           //假定服务器在东八区
 
-           static inline long getMttyTimeBegin(){
+           static const int64_t MTTY_SERVICE_TIME_BEGIN = 1443669071L;//mttyTimeBegin();
+           static const int32_t timeZone = 8;
+           static constexpr int32_t UTC_TIME_DIFF_SEC = timeZone * 3600;
+
+           inline int64_t getMttyTimeBegin(){
                return MTTY_SERVICE_TIME_BEGIN;
            }
 
-           static inline long getCurrentTimeStamp(){
+           inline int64_t getCurrentTimeStamp(){
                time_t currentTime;
                ::time(&currentTime);
-               return (long)currentTime;
+               return (int64_t)currentTime;
            }
 
-           static inline int getCurrentTimeSinceMtty(){
+           inline int32_t getCurrentTimeSinceMtty(){
                long currentTime = getCurrentTimeStamp();
-               return (int)(currentTime - MTTY_SERVICE_TIME_BEGIN);
+               return (int32_t)(currentTime - MTTY_SERVICE_TIME_BEGIN);
+           }
+
+           /**
+            * mtty时间到本地Unix时间戳
+            */
+           inline int64_t mttyTimeToUnixTimeStamp(int32_t mttyTime){
+               return mttyTime+MTTY_SERVICE_TIME_BEGIN;
+           }
+
+           /**
+            * 本地时间戳到UTC时间戳
+            */
+           inline int64_t localTimeStamptoUtc(int64_t unixTimeStamp){
+               return unixTimeStamp - UTC_TIME_DIFF_SEC;
            }
 
            /**
             * 用于离线计算mtty基准时间
             */
-           long mttyTimeBegin();
+           int64_t mttyTimeBegin();
 
            /**
             * 获取当前时间偏离当日零点的偏移秒数
             */
-           int getTimeSecondOfToday();
+           int32_t getTimeSecondOfToday();
 
        }
+
+       namespace http{
+
+       }
+
+       namespace memory{
+
+
+#ifndef OPTIMIZED_MALLOC
+
+//不作内存分配优化,使用库函数
+
+           inline void* adservice_malloc(size_t size){
+               return malloc(size);
+           }
+
+           inline void* adservice_calloc(size_t num, size_t size){
+               return calloc(num,size);
+           }
+
+
+           inline void* adservice_realloc(void* ptr, size_t size){
+               return realloc(ptr,size);
+           }
+
+           inline void adservice_free(void* ptr){
+               free(ptr);
+           }
+
+           template<typename T>
+           inline T* adservice_new(size_t num = 0){
+               if(num == 0)
+                   return new T;
+               else
+                   return new T[num];
+           }
+
+//           template<typename T>
+//           inline T* adservice_new(void* placement,size_t num = 0){
+//               if(num == 0){
+//                   return new(placement) T;
+//               }else{
+//                   return new(placement) T[num];
+//               }
+//           }
+
+           template<typename T>
+           inline void adservice_delete(T* ptr,size_t num = 0){
+                if(num>0){
+                   delete[] ptr;
+                }else{
+                    delete ptr;
+                }
+           }
+
+#else
+
+           //作内存分配优化,重新实现内存管理函数
+
+void* adservice_malloc(size_t size);
+void* adservice_calloc(size_t nmemb,size_t size);
+void* adservice_realloc(void *ptr,size_t size);
+void adservice_free(void* ptr);
+
+#endif
+
+           inline char* strdup(const char* str){
+               size_t size = strlen(str);
+               char* ret = (char*)adservice_malloc(size+1);
+               memcpy(ret,str,size+1);
+               return ret;
+           }
+       }
+
+       namespace json{
+
+           class MessageWraper{
+           public:
+               MessageWraper(){
+               }
+               MessageWraper(std::vector<std::string> keys){
+                    for(auto& s : keys){
+                        messages[s] = "";
+                    }
+               }
+               bool isFieldEmpty(const std::string& key){
+                   std::string& values = messages[key];
+                   return values.empty();
+               }
+
+               std::map<std::string,std::string>& getMessages(){
+                   return messages;
+               }
+
+               int32_t getInt(const std::string& key,int32_t defaultValue = 0){
+                   std::string& values = messages[key];
+                   if(values.empty()){
+                       return defaultValue;
+                   }
+                   int32_t ret = std::stoi(values);
+                   return ret;
+               }
+
+               double getDouble(const std::string& key,double defaultValue = 0.0){
+                   std::string& values = messages[key];
+                   if(values.empty()){
+                       return defaultValue;
+                   }
+                   double ret = std::stof(values);
+                   return ret;
+               }
+
+               bool getBoolean(const std::string& key,bool defaultValue = false){
+                   std::string& values = messages[key];
+                   if(values.empty()){
+                       return defaultValue;
+                   }
+                   return strcasecmp("true",values.c_str()) == 0;
+               }
+
+               const char* getRawString(const std::string& key){
+                   std::string& values = messages[key];
+                   return values.c_str();
+               }
+
+               const std::string& getString(const std::string& key,const std::string& defaultValue){
+                   std::string& values = messages[key];
+                   if(values.empty()){
+                       return defaultValue;
+                   }
+                   return values;
+               }
+           private:
+               std::map<std::string,std::string> messages;
+           };
+
+           class JsonParseHandler
+                   : public rapidjson::BaseReaderHandler<rapidjson::UTF8<>, JsonParseHandler> {
+           public:
+               typedef std::map<std::string,std::string> MessageMap;
+
+               JsonParseHandler() : messages_(), state_(kExpectObjectStart), name_() {}
+
+               bool StartObject() {
+                   switch (state_) {
+                       case kExpectObjectStart:
+                           state_ = kExpectNameOrObjectEnd;
+                           return true;
+                       default:
+                           return false;
+                   }
+               }
+
+               bool String(const char* str, rapidjson::SizeType length, bool) {
+                   switch (state_) {
+                       case kExpectNameOrObjectEnd:
+                           name_ = std::string(str, length);
+                           state_ = kExpectValue;
+                           return true;
+                       case kExpectValue:
+                           messages_.insert(MessageMap::value_type(name_, std::string(str, length)));
+                           state_ = kExpectNameOrObjectEnd;
+                           return true;
+                       default:
+                           return false;
+                   }
+               }
+
+               bool EndObject(rapidjson::SizeType) { return state_ == kExpectNameOrObjectEnd; }
+
+               bool Default() { return false; } // All other events are invalid.
+
+               MessageMap& getMessageMap(){
+                   return messages_;
+               }
+           private:
+               MessageMap messages_;
+               enum State {
+                   kExpectObjectStart,
+                   kExpectNameOrObjectEnd,
+                   kExpectValue
+               }state_;
+               std::string name_;
+           };
+
+
+
+           bool parseJson(const char* json,MessageWraper& mw);
+
+           bool parseJson(const char* json,rapidjson::Document& doc);
+
+           bool parseJsonFile(const char* filePath, MessageWraper& mw);
+
+           bool parseJsonFile(const char* filePath, rapidjson::Document & doc);
+
+       }
+
+
+
    }
 }
  
