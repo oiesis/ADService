@@ -1,7 +1,7 @@
 
 CC=g++-5
 ROOT_PATH:=$(shell pwd)
-INCLUDE_PATH:=-I$(ROOT_PATH)/3rdparty/include/ -I$(ROOT_PATH)/common/ -I$(ROOT_PATH)/utility/
+INCLUDE_PATH:=-I$(ROOT_PATH)/3rdparty/include/ -I$(ROOT_PATH)/common/ -I$(ROOT_PATH)/utility/ -I$(ROOT_PATH)/core_src
 LIB_PATH:=-lmuduo_net -lmuduo_base -Wl,-rpath,./3rdparty/lib/
 CCFlags:=--std=c++11 $(INCLUDE_PATH) $(LIB_PATH)
 #-DVERBOSE_DEBUG
@@ -42,10 +42,12 @@ utility.o:
 	mv $(UTILITY_FOLDER)/*.o $(BUILD_PATH)/
 
 CORE_FOLDER:=$(SRC_FOLDER)/core_src
-CORE_BUILD_SOURCE:= $(wildcard $(CORE_FOLDER)/*/*.cpp)
+CORE_BUILD_SOURCE:= $(wildcard $(CORE_FOLDER)/*.cpp)
+CORE_BUILD_SOURCE+= $(wildcard $(CORE_FOLDER)/net/*.cpp)
 core.o:
-    cd $(CORE_FOLDER) && \
-    $(CC) $(CCFlags) -c $(CORE_BUILD_SOURCE) -o $(BUILD_PATH)/core.o
+	cd $(CORE_FOLDER) && \
+	$(CC) -c $(CCFlags) $(CORE_BUILD_SOURCE) && \
+	mv $(CORE_FOLDER)/*.o $(BUILD_PATH)/
 
 clean:
 	rm -rf $(BUILD_PATH)
