@@ -6,16 +6,35 @@
 #define ADCORE_CORE_H
 
 #include <fstream>
+#include <sys/types.h>
 #include "types.h"
+#include "atomic.h"
 #include "utility.h"
+#include "net/click_service.h"
 
 namespace adservice{
 
     namespace server{
 
+        using namespace click;
+
+        const int MAX_MODULE = 10;
+
+        const int MTTY_EXIT_SUCCESS = 2000;
+
+        enum MODULE_TYPE : char{
+            MODULE_NON = -1,
+            MODULE_FIRST = 0,
+            MODULE_CLICK = 0,
+            MODULE_SHOW,
+            MODULE_BIDDING,
+            MODULE_LAST = 9
+        };
+
         typedef struct ServerConfig{
-            int port;
-            int threads;
+            int clickPort;
+            int clickThreads;
+            bool runClick;
             bool isDaemon;
         } *PServerConfig;
 
@@ -26,25 +45,40 @@ namespace adservice{
             using namespace utility::json;
             MessageWraper mw;
             assert(true==parseJsonFile(DEFAULT_CONFIG_PATH,mw));
-            config.port = mw.getInt("port",8808);
-            config.threads = mw.getInt("threads",24);
+            config.clickPort = mw.getInt("click_port",8808);
+            config.clickThreads = mw.getInt("click_threads",24);
+            config.runClick = mw.getBoolean("load_click", false);
             config.isDaemon = mw.getBoolean("isDaemon",true);
         }
 
         bool daemon_init(const char *pidfile);
 
-        class ADService final{
+        class AbstractService{
         public:
-            ADService(){
-                autoDetectEnv();
-            }
-            ADService(ServerConfig& config){
-                port = config.port;
-                threadNum = config.threads;
-                if(config.isDaemon){
-                    daemonFile = DEFAULT_DAEMON_FILE;
-                }
+            virtual void start() = 0;
+        };
 
+        class ADService;
+        typedef std::shared_ptr<ADService> ADServicePtr;
+
+        class ADService final{
+        private:
+            static volatile int instanceCnt = 0;
+            static ADService* instance = nullptr;
+        public:
+            static ADServicePtr&& getInstance(){
+                if(instance == nullptr){
+                    if(ATOM_INC(&instanceCnt)==1) {
+                        instance = new ADService();
+                    }else{
+                        assert(false); //也可以把instance设为volatile,但这样每次访问instance时都会浪费一个存储周期
+                    }
+                }
+                return ADServicePtr(instance);
+            }
+
+            void initWithConfig(ServerConfig& config){
+                this->config = config;
             }
             ~ADService(){
             }
@@ -53,16 +87,28 @@ namespace adservice{
                 adservice_start();
                 adservice_exit();
             }
+            void stop(){
+                running = false;
+            }
+            void reLaunchModule(pid_t pid);
+
         private:
+            ADService(){
+                autoDetectEnv();
+                running = true;
+            }
             void autoDetectEnv();
             void dosignals();
             void adservice_init();
             void adservice_start();
             void adservice_exit();
+            void launchModule(MODULE_TYPE mt);
+            MODULE_TYPE moduleTypeOfPid(pid_t pid);
         private:
-            unsigned short port;
-            int threadNum;
+            ServerConfig config;
             const char* daemonFile;
+            pid_t modules[MAX_MODULE+1];
+            bool running;
         };
     }
 }

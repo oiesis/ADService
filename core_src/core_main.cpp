@@ -11,7 +11,8 @@ int __main(int argc,char** argv){
     using namespace adservice::server;
     ServerConfig  config;
     loadServerConfig(config);
-    ADService service(config);
+    ADServicePtr service = ADService::getInstance();
+    service.initWithConfig(config);
     service.start();
 #else
     // 使用erlang actor模式
