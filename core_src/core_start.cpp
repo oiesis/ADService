@@ -44,8 +44,9 @@ namespace adservice {
         void handle_sigkill(){
             ADServicePtr service = ADService::getInstance();
             service->stop();
-            if(w_clickModule!=nullptr){
-                w_clickModule->stop();
+            if(w_clickModule!=nullptr && w_clickModule.use_count()>0){
+                ClickModule clickModule = w_clickModule.lock();
+                clickModule->stop();
             }
         }
 
