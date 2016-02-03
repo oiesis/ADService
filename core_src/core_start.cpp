@@ -14,13 +14,16 @@
 namespace adservice {
     namespace server {
 
+        volatile int ADService::instanceCnt = 0;
+        ADService* ADService::instance = nullptr;
+
         //维护一个点击模块的弱引用
-        static click::ClickModule_weak w_clickModule = nullptr;
+        static click::ClickModule_weak w_clickModule;
 
         /**
          * 处理子进程结束信号
          */
-        void handle_sigchild(){
+        void handle_sigchild(int sig){
             int wstat;
             pid_t	pid;
             ADServicePtr service = ADService::getInstance();
@@ -41,11 +44,12 @@ namespace adservice {
         /**
          * 当外部kill进程时,进行处理
          */
-        void handle_sigkill(){
+        void handle_sigkill(int sig){
             ADServicePtr service = ADService::getInstance();
             service->stop();
-            if(w_clickModule!=nullptr){
-                w_clickModule->stop();
+            if(!w_clickModule.expired()){
+                ClickModule clickModule = w_clickModule.lock();
+                clickModule->stop();
             }
         }
 
@@ -121,10 +125,10 @@ namespace adservice {
             }else if(pid == 0){ // submodule
                 switch(mt) {
                     case MODULE_TYPE::MODULE_CLICK:
-                        click::ClickModule clickService = std::make_shared(int(config.clickPort), int(config.clickThreads));
+                        click::ClickModule clickService = std::make_shared<click::ClickService>(int(config.clickPort), int(config.clickThreads));
                         w_clickModule = clickService;
                         clickService->start();
-                        w_clickModule = nullptr;
+                        w_clickModule.reset();
                         break;
                 }
                 exit(MTTY_EXIT_SUCCESS);

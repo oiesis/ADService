@@ -8,9 +8,18 @@ namespace adservice{
 
     namespace click{
 
+        using namespace std::placeholders;
+
         void ClickService::start(){
             server->start();
             loop.loop();
+        }
+
+        void ClickService::init(int port,int threads){
+            InetAddress addr(static_cast<uint16_t>(port));
+            server = std::make_shared<TcpServer>(&loop,addr,"mtty::click_service");
+            server->setConnectionCallback(std::bind(&ClickService::onConnection,this,std::placeholders::_1));
+            server->setThreadNum(threads);
         }
 
         void ClickService::onRequest(const TcpConnectionPtr& conn,
@@ -29,16 +38,8 @@ namespace adservice{
             LOG_DEBUG << "stdin " << in->retrieveAllAsString();
             Buffer response;
             response.append("Context-Type: text/plain\r\n\r\n");
-            if (uri.size() == kCells + kPath.size() && uri.find(kPath) == 0)
-            {
-                response.append(solveSudoku(uri.substr(kPath.size())));
-            }
-            else
-            {
-                // FIXME: set http status code 400
-                response.append("bad request");
-            }
-
+            // FIXME: set http status code 400
+            response.append("bad request");
             FastCgiCodec::respond(&response);
             conn->send(&response);
         }
@@ -48,10 +49,10 @@ namespace adservice{
             if (conn->connected())
             {
                 typedef boost::shared_ptr<FastCgiCodec> CodecPtr;
-                CodecPtr codec(new FastCgiCodec(onRequest));
+                CodecPtr codec(new FastCgiCodec(std::bind(&ClickService::onRequest,this,_1,_2,_3)));
                 conn->setContext(codec);
                 conn->setMessageCallback(
-                        std::bind(&FastCgiCodec::onMessage, codec, _1, _2, _3));
+                        std::bind(&FastCgiCodec::onMessage, codec, _1,_2,_3));
                 conn->setTcpNoDelay(true);
             }
         }

@@ -14,6 +14,7 @@ using namespace adservice::utility::cypher;
 using namespace adservice::utility::json;
 
 #define VERBOSE_DEBUG	1
+#define UNIT_TEST
 
 void cypher_generator_tester(){
 	const char cypherMap[4][16] = {{'e','S','U','s','K','n','M','O','[','C','l','-','Q','c','E','b'},
@@ -134,11 +135,7 @@ void json_test(){
 
 #include "../core_src/core.h"
 void server_test(){
-	using namespace adservice::server;
-	ServerConfig  config;
-	loadServerConfig(config);
-	ADService server(config);
-	server.start();
+	__main(0,NULL);
 }
 
 int main(int argc,char** argv){

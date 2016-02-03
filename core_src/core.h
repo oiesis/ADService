@@ -7,10 +7,15 @@
 
 #include <fstream>
 #include <sys/types.h>
+#include <memory>
 #include "types.h"
 #include "atomic.h"
 #include "utility.h"
 #include "net/click_service.h"
+
+#ifdef UNIT_TEST
+int __main(int argc,char** argv);
+#endif
 
 namespace adservice{
 
@@ -38,13 +43,13 @@ namespace adservice{
             bool isDaemon;
         } *PServerConfig;
 
-        const char* DEFAULT_CONFIG_PATH="conf/service.conf";
-        const char* DEFAULT_DAEMON_FILE="adservice.pid";
+        static const char* DEFAULT_CONFIG_PATH="conf/service.conf";
+        static const char* DEFAULT_DAEMON_FILE="adservice.pid";
 
-        inline void  loadServerConfig(ServerConfig& config){
+        inline void  loadServerConfig(ServerConfig& config,const char* path = DEFAULT_CONFIG_PATH){
             using namespace utility::json;
             MessageWraper mw;
-            assert(true==parseJsonFile(DEFAULT_CONFIG_PATH,mw));
+            assert(true==parseJsonFile(path,mw));
             config.clickPort = mw.getInt("click_port",8808);
             config.clickThreads = mw.getInt("click_threads",24);
             config.runClick = mw.getBoolean("load_click", false);
@@ -53,20 +58,20 @@ namespace adservice{
 
         bool daemon_init(const char *pidfile);
 
-        class AbstractService{
-        public:
-            virtual void start() = 0;
-        };
 
         class ADService;
         typedef std::shared_ptr<ADService> ADServicePtr;
 
         class ADService final{
         private:
-            static volatile int instanceCnt = 0;
-            static ADService* instance = nullptr;
+            static volatile int instanceCnt;
+            static ADService* instance;
         public:
-            static ADServicePtr&& getInstance(){
+            static void initClassVar(){
+                instance = nullptr;
+                instanceCnt = 0;
+            }
+            static ADServicePtr getInstance(){
                 if(instance == nullptr){
                     if(ATOM_INC(&instanceCnt)==1) {
                         instance = new ADService();
@@ -97,7 +102,7 @@ namespace adservice{
                 autoDetectEnv();
                 running = true;
             }
-            void autoDetectEnv();
+            void autoDetectEnv(){};
             void dosignals();
             void adservice_init();
             void adservice_start();

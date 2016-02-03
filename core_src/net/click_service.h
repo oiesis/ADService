@@ -11,6 +11,7 @@
 #include "muduo/net/TcpServer.h"
 #include "core_cgi.h"
 #include "types.h"
+#include "abstract_service.h"
 
 namespace adservice{
 
@@ -18,11 +19,10 @@ namespace adservice{
 
         using namespace muduo::net;
         using namespace adservice::net;
-        using namespace server;
 
-        class ClickService : public AbstractService{
+        class ClickService : public adservice::server::AbstractService{
         public:
-            explicit void ClickService(int port,int threads){
+            explicit ClickService(int port,int threads){
                 init(port,threads);
             }
             ClickService(const ClickService&) = delete;
@@ -35,12 +35,7 @@ namespace adservice{
 
             virtual void onConnection(const TcpConnectionPtr& conn);
 
-            inline void init(int port,int threads){
-                InetAddress addr(static_cast<uint16_t>(port));
-                server = std::make_shared(&loop,addr,"mtty::click_service");
-                server->setConnectionCallback(std::bind(onConnection,this,std::placeholders::_1));
-                server->setThreadNum(threads);
-            }
+            void init(int port,int threads);
 
             virtual void start();
 
