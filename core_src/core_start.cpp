@@ -14,6 +14,9 @@
 namespace adservice {
     namespace server {
 
+        volatile int ADService::instanceCnt = 0;
+        ADService* ADService::instance = nullptr;
+
         //维护一个点击模块的弱引用
         static click::ClickModule_weak w_clickModule;
 
