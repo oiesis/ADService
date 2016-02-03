@@ -7,6 +7,12 @@
 namespace adservice{
 
     namespace click{
+
+        void ClickService::start(){
+            server->start();
+            loop.loop();
+        }
+
         void ClickService::onRequest(const TcpConnectionPtr& conn,
                        FastCgiCodec::ParamMap& params,
                        Buffer* in)

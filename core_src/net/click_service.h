@@ -18,28 +18,45 @@ namespace adservice{
 
         using namespace muduo::net;
         using namespace adservice::net;
+        using namespace server;
 
-        class ClickService {
+        class ClickService : public AbstractService{
         public:
             explicit void ClickService(int port,int threads){
                 init(port,threads);
             }
             ClickService(const ClickService&) = delete;
 
-            void onRequest(const TcpConnectionPtr& conn,
+            virtual ~ClickService(){}
+
+            virtual void onRequest(const TcpConnectionPtr& conn,
                            FastCgiCodec::ParamMap& params,
                            Buffer* in);
-            void onConnection(const TcpConnectionPtr& conn);
 
-            void init(int port,int threads);
+            virtual void onConnection(const TcpConnectionPtr& conn);
 
-            void start();
+            inline void init(int port,int threads){
+                InetAddress addr(static_cast<uint16_t>(port));
+                server = std::make_shared(&loop,addr,"mtty::click_service");
+                server->setConnectionCallback(std::bind(onConnection,this,std::placeholders::_1));
+                server->setThreadNum(threads);
+            }
+
+            virtual void start();
+
+            void stop(){
+                loop.quit();
+            }
 
         private:
-            typedef share_ptr<TcpServer> ServerPtr;
+            typedef std::shared_ptr<TcpServer> ServerPtr;
             ServerPtr server;
+            muduo::net::EventLoop loop;
         };
-    }
+
+        typedef std::shared_ptr<ClickService> ClickModule;
+        typedef std::weak_ptr<ClickService> ClickModule_weak;
+     }
 
 }
 
