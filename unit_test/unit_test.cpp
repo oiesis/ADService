@@ -139,8 +139,10 @@ void json_test(){
 #include "core.h"
 
 void server_test(){
-	using namespace muduo::net;
-	__main(0,NULL);
+	cout<<"start server test"<<endl;
+	printf("%p",__main);
+	//__main(0,NULL);
+	cout<<"server test end"<<endl;
 }
 
 int main(int argc,char** argv){

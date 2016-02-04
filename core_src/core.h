@@ -19,7 +19,7 @@ int __main(int argc,char** argv);
 
 void DebugMessage(const char* str);
 #else
-#define DebugMessage(x) ((void)x)
+#define DebugMessage(x) {}
 #endif
 
 namespace adservice{
@@ -53,7 +53,8 @@ namespace adservice{
 
         inline void  loadServerConfig(ServerConfig& config,const char* path = DEFAULT_CONFIG_PATH){
             using namespace utility::json;
-            MessageWraper mw;
+            DebugMessage("fuck");
+	    MessageWraper mw;
             assert(true==parseJsonFile(path,mw));
             config.clickPort = mw.getInt("click_port",8808);
             config.clickThreads = mw.getInt("click_threads",24);

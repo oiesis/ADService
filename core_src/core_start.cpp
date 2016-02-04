@@ -142,7 +142,8 @@ namespace adservice {
          */
         void ADService::adservice_start() {
             if(config.runClick) {
-                launchModule(MODULE_TYPE::MODULE_CLICK);
+                DebugMessage("try to create click module");
+		launchModule(MODULE_TYPE::MODULE_CLICK);
             }
             while(running) {
                 sleep(60);
