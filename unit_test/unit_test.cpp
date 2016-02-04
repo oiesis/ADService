@@ -133,12 +133,17 @@ void json_test(){
 	cout<<"json test end"<<endl;
 }
 
-#include "../core_src/core.h"
+#include "muduo/base/Logging.h"
+#include "muduo/net/EventLoop.h"
+#include "muduo/net/TcpServer.h"
+#include "core.h"
+
 void server_test(){
+	using namespace muduo::net;
 	__main(0,NULL);
 }
 
 int main(int argc,char** argv){
-	json_test();
+	server_test();
 	return 0;
 }
