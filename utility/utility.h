@@ -15,6 +15,7 @@
 #include <iostream>
 #include <strings.h>
 #include "types.h"
+#include "functions.h"
 #include "rapidjson/reader.h"
 #include "rapidjson/document.h"
 #include "rapidjson/error/en.h"

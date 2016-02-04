@@ -14,7 +14,7 @@ using namespace adservice::utility::cypher;
 using namespace adservice::utility::json;
 
 #define VERBOSE_DEBUG	1
-#define UNIT_TEST
+#define UNIT_TEST	1
 
 void cypher_generator_tester(){
 	const char cypherMap[4][16] = {{'e','S','U','s','K','n','M','O','[','C','l','-','Q','c','E','b'},
@@ -133,15 +133,12 @@ void json_test(){
 	cout<<"json test end"<<endl;
 }
 
-#include "muduo/base/Logging.h"
-#include "muduo/net/EventLoop.h"
-#include "muduo/net/TcpServer.h"
 #include "core.h"
 
 void server_test(){
 	cout<<"start server test"<<endl;
-	printf("%p",__main);
-	//__main(0,NULL);
+	DebugMessage("what");
+	launch_service();
 	cout<<"server test end"<<endl;
 }
 

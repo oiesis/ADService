@@ -12,14 +12,10 @@
 #include "atomic.h"
 #include "utility.h"
 #include "net/click_service.h"
+#include "functions.h"
 
 #ifdef UNIT_TEST
-
-int __main(int argc,char** argv);
-
-void DebugMessage(const char* str);
-#else
-#define DebugMessage(x) {}
+int launch_service();
 #endif
 
 namespace adservice{
@@ -48,18 +44,21 @@ namespace adservice{
             bool isDaemon;
         } *PServerConfig;
 
-        static const char* DEFAULT_CONFIG_PATH="conf/service.conf";
+        static const char* DEFAULT_CONFIG_PATH="../conf/service.conf";
         static const char* DEFAULT_DAEMON_FILE="adservice.pid";
 
         inline void  loadServerConfig(ServerConfig& config,const char* path = DEFAULT_CONFIG_PATH){
             using namespace utility::json;
-            DebugMessage("fuck");
 	    MessageWraper mw;
-            assert(true==parseJsonFile(path,mw));
+	    bool bSuccess = parseJsonFile(path,mw);
+            if(!bSuccess){
+	    	DebugMessage("failed to read json file");
+	    }
             config.clickPort = mw.getInt("click_port",8808);
             config.clickThreads = mw.getInt("click_threads",24);
             config.runClick = mw.getBoolean("load_click", false);
             config.isDaemon = mw.getBoolean("isDaemon",true);
+	    DebugMessage(config.runClick);
         }
 
         bool daemon_init(const char *pidfile);
