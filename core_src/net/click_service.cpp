@@ -16,10 +16,10 @@ namespace adservice{
         }
 
         void ClickService::init(int port,int threads){
-            InetAddress addr(static_cast<uint16_t>(port));
-            server = std::make_shared<TcpServer>(&loop,addr,"mtty::click_service");
-            server->setConnectionCallback(std::bind(&ClickService::onConnection,this,std::placeholders::_1));
-            server->setThreadNum(threads);
+            //muduo::net::InetAddress addr(static_cast<uint16_t>(port));
+            //server = std::make_shared<TcpServer>(&loop,addr,"mtty::click_service");
+            //server->setConnectionCallback(std::bind(&ClickService::onConnection,this,std::placeholders::_1));
+            //server->setThreadNum(threads);
         }
 
         void ClickService::onRequest(const TcpConnectionPtr& conn,
