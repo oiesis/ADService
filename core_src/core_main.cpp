@@ -3,7 +3,11 @@
 //
 
 #include "core.h"
+#include <iostream>
 
+void DebugMessage(const char* str){
+    std::cout<<str<<std::endl;
+}
 
 int __main(int argc,char** argv){
     //是否使用高级服务端模型,默认不使用
@@ -12,6 +16,7 @@ int __main(int argc,char** argv){
     ADService::initClassVar();
     ServerConfig  config;
     loadServerConfig(config);
+    DebugMessage("load config done");
     ADServicePtr service = ADService::getInstance();
     service->initWithConfig(config);
     service->start();

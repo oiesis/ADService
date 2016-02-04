@@ -6,15 +6,23 @@ ROOT_PATH:=$(shell pwd)
 THIRD_LIB_PATH=$(ROOT_PATH)/3rdparty/lib
 INCLUDE_PATH:=-I$(ROOT_PATH)/3rdparty/include/ -I$(ROOT_PATH)/common/ -I$(ROOT_PATH)/utility/ -I$(ROOT_PATH)/core_src
 LOAD_LIB:= -lpthread
-ifeq ($(OS),Linux)
-LOAD_LIB+= -lrt
-LINK_DYNAMIC?= -rdynamic
-LD_LIBRARY_PATH?= /usr/lib/:/usr/lib64/:/usr/local/lib/:/usr/local/lib64/:/usr/lib/x86_64-linux-gnu/
-endif
-LIB_FLAGS:=-L$(THIRD_LIB_PATH) $(LOAD_LIB) -Wl,-rpath,$(ROOT_PATH)/3rdparty/lib/
-MUDUO_CCFLAGS:= -DMUDUO_STD_STRING -DCHECK_PTHREAD_RETURN_VALUE -D_FILE_OFFSET_BITS=64
 STRICT_CCFLAGS:=-Wall -Wextra -Werror -Wconversion -Wno-unused-parameter -Wold-style-cast -Woverloaded-virtual -Wpointer-arith -Wshadow -Wwrite-strings
 CCFlags:=--std=c++11 -g -march=native -O2 -finline-limit=1000 -DNDEBUG
+
+prerun:
+
+ifeq ($(OS),Linux)
+LOAD_LIB += -lrt
+LINK_DYNAMIC ?= -rdynamic
+LD_LIBRARY_PATH?= /usr/lib/:/usr/lib64/:/usr/local/lib/:/usr/local/lib64/:/usr/lib/x86_64-linux-gnu/
+else ifeq ($(OS),Darwin)
+CCFlags+= -D__MACH__
+else
+$(warning $(OS))
+endif
+
+LIB_FLAGS:=-L$(THIRD_LIB_PATH) $(LOAD_LIB) -Wl,-rpath,$(ROOT_PATH)/3rdparty/lib/
+MUDUO_CCFLAGS:= -DMUDUO_STD_STRING -DCHECK_PTHREAD_RETURN_VALUE -D_FILE_OFFSET_BITS=64
 MUDUO_LDFLAGS:= $(LINK_DYNAMIC) $(THIRD_LIB_PATH)/libmuduo_net.a $(THIRD_LIB_PATH)/libmuduo_base.a
 #-DVERBOSE_DEBUG
 SRC_FOLDER:=$(shell pwd)
@@ -33,7 +41,7 @@ init:
 final:
 	cd $(BUILD_PATH) && \
 	$(CC) $(CCFlags) $(MUDUO_CCFLAGS) $(ALL_OBJS) -o adservice $(MUDUO_LDFLAGS) $(LIB_FLAGS)
-all:init unit_test.o
+all:prerun init unit_test.o
 	$(MAKE) final
 
 UNIT_TEST_FOLDER = $(SRC_FOLDER)/unit_test/

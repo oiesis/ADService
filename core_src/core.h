@@ -14,7 +14,12 @@
 #include "net/click_service.h"
 
 #ifdef UNIT_TEST
+
 int __main(int argc,char** argv);
+
+void DebugMessage(const char* str);
+#else
+#define DebugMessage(x) ((void)x)
 #endif
 
 namespace adservice{
