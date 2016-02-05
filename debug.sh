@@ -3,4 +3,5 @@
 echo "connection info:"
 netstat -napt|grep "1922"
 echo "process info:"
-ps -ef|grep "adservice"
+ps xao pid,ppid,pgid,sid,command |grep "run.sh"
+ps xao pid,ppid,pgid,sid,command |grep "adservice"
