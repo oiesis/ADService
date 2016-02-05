@@ -1,5 +1,5 @@
 
-CC=g++
+CC=g++-5
 LD=ld
 OS:=$(shell uname -s)
 ROOT_PATH:=$(shell pwd)

@@ -45,7 +45,7 @@ namespace adservice{
                     std::cerr<<" can't open json file:"<<filePath<<std::endl;
                     return false;
                 }
-		DebugMessage("read json file ok");
+		        DebugMessage("read json file ok");
                 std::stringstream ss;
                 do{
                     std::string str;
