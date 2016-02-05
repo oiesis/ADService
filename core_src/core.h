@@ -70,21 +70,21 @@ namespace adservice{
         class ADService final{
         private:
             static volatile int instanceCnt;
-            static ADService* instance;
+            static ADServicePtr instance;
         public:
             static void initClassVar(){
                 instance = nullptr;
                 instanceCnt = 0;
             }
             static ADServicePtr getInstance(){
-                if(instance == nullptr){
+                if(instance.use_count()==0){ //use_count 为 0,意味着没有初始化
                     if(ATOM_INC(&instanceCnt)==1) {
-                        instance = new ADService();
+                        instance = std::make_shared<ADService>();
                     }else{
-                        assert(false); //也可以把instance设为volatile,但这样每次访问instance时都会浪费一个存储周期
+                        assert(false); //理论上这里应该设一个屏障,然后返回正确的对象
                     }
                 }
-                return ADServicePtr(instance);
+                return instance;
             }
 
             void initWithConfig(ServerConfig& config){

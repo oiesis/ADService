@@ -15,7 +15,7 @@ namespace adservice {
     namespace server {
 
         volatile int ADService::instanceCnt = 0;
-        ADService* ADService::instance = nullptr;
+        ADServicePtr ADService::instance;
 
         //维护一个点击模块的弱引用
         static click::ClickModule_weak w_clickModule;
@@ -52,7 +52,7 @@ namespace adservice {
             if(service.use_count()>0)
                 service->stop();
             if(!w_clickModule.expired()){
-		        DebugMessage("in pid: ",getpid()," terminate submodule click");
+		DebugMessage("in pid: ",getpid()," terminate submodule click");
                 ClickModule clickModule = w_clickModule.lock();
                 clickModule->stop();
             }
@@ -79,7 +79,11 @@ namespace adservice {
             struct sigaction sa;
             sa.sa_handler = handle_sigterm;
             sigaction(SIGTERM,&sa,0);
+<<<<<<< HEAD
             //sigaction(SIGHUP,&sa,0);
+=======
+            sigaction(SIGHUP,&sa,0);
+>>>>>>> df084ea51fe4ebe242c082ae1166381d7cdefa37
         }
 
         /**
@@ -150,7 +154,7 @@ namespace adservice {
         void ADService::adservice_start() {
             if(config.runClick) {
                 DebugMessage("try to create click module");
-		launchModule(MODULE_TYPE::MODULE_CLICK);
+		        launchModule(MODULE_TYPE::MODULE_CLICK);
             }
             while(running) {
                 sleep(60);
