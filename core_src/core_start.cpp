@@ -15,7 +15,7 @@ namespace adservice {
     namespace server {
 
         volatile int ADService::instanceCnt = 0;
-        ADServicePtr ADService::instance;
+        ADServicePtr ADService::instance = nullptr;
 
         //维护一个点击模块的弱引用
         static click::ClickModule_weak w_clickModule;
@@ -79,11 +79,7 @@ namespace adservice {
             struct sigaction sa;
             sa.sa_handler = handle_sigterm;
             sigaction(SIGTERM,&sa,0);
-<<<<<<< HEAD
-            //sigaction(SIGHUP,&sa,0);
-=======
             sigaction(SIGHUP,&sa,0);
->>>>>>> df084ea51fe4ebe242c082ae1166381d7cdefa37
         }
 
         /**
