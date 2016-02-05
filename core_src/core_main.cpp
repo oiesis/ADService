@@ -19,5 +19,6 @@ int launch_service(){
 #else
     // 使用erlang actor模式
 #endif
+    DebugMessage("end of _main");
     return 0;
 }
