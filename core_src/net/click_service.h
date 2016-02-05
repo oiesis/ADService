@@ -12,6 +12,7 @@
 #include "core_cgi.h"
 #include "types.h"
 #include "abstract_service.h"
+#include "functions.h"
 
 namespace adservice{
 
@@ -27,7 +28,9 @@ namespace adservice{
             }
             ClickService(const ClickService&) = delete;
 
-            virtual ~ClickService(){}
+            virtual ~ClickService(){
+                DebugMessage("in pid ",getpid()," clickservice module gone");
+            }
 
             virtual void onRequest(const TcpConnectionPtr& conn,
                            FastCgiCodec::ParamMap& params,

@@ -27,7 +27,7 @@ namespace adservice {
             int wstat;
             pid_t	pid;
             ADServicePtr service = ADService::getInstance();
-            DebugMessage("handle sigchild");
+            DebugMessage("in pid ",getpid()," handle sigchild");
 	    while (true) {
                 pid = wait3 (&wstat, WNOHANG, (struct rusage *)NULL );
                 if (pid == 0)
@@ -46,11 +46,12 @@ namespace adservice {
          * 当外部kill进程时,进行处理
          */
         void handle_sigkill(int sig){
-            DebugMessage("handle sigkill");
-	    ADServicePtr service = ADService::getInstance();
-            service->stop();
+            DebugMessage("in pid: ",getpid()," handle sigkill");
+            ADServicePtr service = ADService::getInstance();
+            if(!service!= nullptr && !service.use_count()>0)
+                service->stop();
             if(!w_clickModule.expired()){
-		DebugMessage("terminate submodule click");
+		        DebugMessage("in pid: ",getpid()," terminate submodule click");
                 ClickModule clickModule = w_clickModule.lock();
                 clickModule->stop();
             }
@@ -75,7 +76,7 @@ namespace adservice {
             struct sigaction sa;
             sa.sa_handler = handle_sigkill;
             sigaction(SIGKILL,&sa,0);
-            sigaction(SIGHUP,&sa,0);
+            //sigaction(SIGHUP,&sa,0);
         }
 
         /**

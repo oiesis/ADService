@@ -58,7 +58,7 @@ namespace adservice{
             config.clickThreads = mw.getInt("click_threads",24);
             config.runClick = mw.getBoolean("load_click", false);
             config.isDaemon = mw.getBoolean("isDaemon",true);
-	    DebugMessage(config.runClick);
+	        DebugMessage(config.runClick);
         }
 
         bool daemon_init(const char *pidfile);
@@ -91,6 +91,7 @@ namespace adservice{
                 this->config = config;
             }
             ~ADService(){
+                DebugMessage("in pid ",getpid()," adservice gone");
             }
             void start(){
                 adservice_init();
