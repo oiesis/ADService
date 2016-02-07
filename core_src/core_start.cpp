@@ -46,8 +46,7 @@ namespace adservice {
          * 当外部kill进程时,进行处理
          */
         void handle_sigterm(int sig){
-            DebugMessage("in pid: ",getpid()," handle sigterm");
-            {
+            DebugMessage("in pid: ",getpid()," handle signal ",sig);
 	    ADServicePtr service = ADService::getInstance();
             if(service.use_count()>0)
                 service->stop();
@@ -56,8 +55,7 @@ namespace adservice {
                 ClickModule clickModule = w_clickModule.lock();
                 clickModule->stop();
             }
-	    }
-	    DebugMessage("in pid: ",getpid()," end of handle sigterm");
+	    DebugMessage("in pid: ",getpid()," end of handle signal ",sig);
         }
 
         /**
@@ -79,9 +77,9 @@ namespace adservice {
             struct sigaction sa;
             sa.sa_handler = handle_sigterm;
             sigaction(SIGTERM,&sa,0);
-            sigaction(SIGHUP,&sa,0);
+            sigaction(SIGINT,&sa,0);
+	    sigaction(SIGHUP,&sa,0);
         }
-
         /**
          * 进行相关信号的注册
          */
@@ -149,8 +147,7 @@ namespace adservice {
          */
         void ADService::adservice_start() {
             if(config.runClick) {
-                DebugMessage("try to create click module");
-		        launchModule(MODULE_TYPE::MODULE_CLICK);
+		launchModule(MODULE_TYPE::MODULE_CLICK);
             }
             while(running) {
                 sleep(60);
@@ -162,7 +159,12 @@ namespace adservice {
          * 服务退出
          */
         void ADService::adservice_exit() {
-        }
+        	for(int i=MODULE_TYPE::MODULE_FIRST;i<=MODULE_TYPE::MODULE_LAST;i++){
+			if(modules[i]!=0){
+				kill(SIGTERM,modules[i]);
+			}
+		}
+	}
 
     }
 }

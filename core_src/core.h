@@ -58,7 +58,6 @@ namespace adservice{
             config.clickThreads = mw.getInt("click_threads",24);
             config.runClick = mw.getBoolean("load_click", false);
             config.isDaemon = mw.getBoolean("isDaemon",true);
-	    DebugMessage(config.runClick);
         }
 
         bool daemon_init(const char *pidfile);
