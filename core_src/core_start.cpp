@@ -117,6 +117,11 @@ namespace adservice {
         void ADService::adservice_init() {
             memset(modules,0,sizeof(modules));
             dosignals();
+	    int pid = write_pid(DEFAULT_DAEMON_FILE);
+	    if(pid==0){
+	   	DebugMessage("can not write pid file.exit");
+		exit(0);
+	    }
         }
 
         /**
@@ -161,9 +166,11 @@ namespace adservice {
         void ADService::adservice_exit() {
         	for(int i=MODULE_TYPE::MODULE_FIRST;i<=MODULE_TYPE::MODULE_LAST;i++){
 			if(modules[i]!=0){
-				kill(SIGTERM,modules[i]);
+				DebugMessage("main module exit,try to kill sub process ",modules[i]);
+				kill(modules[i],SIGTERM);
 			}
 		}
+		unlink(DEFAULT_DAEMON_FILE);
 	}
 
     }

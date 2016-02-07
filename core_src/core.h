@@ -60,8 +60,9 @@ namespace adservice{
             config.isDaemon = mw.getBoolean("isDaemon",true);
         }
 
+	int write_pid(const char *pidfile);
         bool daemon_init(const char *pidfile);
-
+	
 
         class ADService;
         typedef std::shared_ptr<ADService> ADServicePtr;

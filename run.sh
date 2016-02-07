@@ -1,9 +1,10 @@
 #!/bin/bash
 
 cd build
-if [[ $# == 2 && $2 == "back" ]];
+if [[ $# == 1 && $1 == "stop" ]];
 then
-	./adservice 2>&1 1>service.log &
+	mainPid=$(cat adservice.pid)
+	kill ${mainPid}	
 else
-	./adservice 2>&1 1>service.log
+	./adservice 2>&1 1>service.log &
 fi
