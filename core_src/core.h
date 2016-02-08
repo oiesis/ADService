@@ -86,7 +86,13 @@ namespace adservice{
                 }
                 return instance;
             }
-
+            explicit ADService(){
+                autoDetectEnv();
+                running = true;
+                if(instanceCnt>1){
+                    throw "more than one instance of ADService";
+                }
+            }
             void initWithConfig(ServerConfig& config){
                 this->config = config;
             }
@@ -104,10 +110,6 @@ namespace adservice{
             void reLaunchModule(pid_t pid);
 
         private:
-            ADService(){
-                autoDetectEnv();
-                running = true;
-            }
             void autoDetectEnv(){};
             void dosignals();
             void adservice_init();
