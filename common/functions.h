@@ -28,6 +28,7 @@ void DebugMessage(T obj,Args... args){
 #define DebugMessage(a,b,c) {}
 #define DebugMessage(a,b,c,d) {}
 #define DebugMessage(a,b,c,d,e) {}
+#define DebugMessage(a,b,c,d,e,f) {}
+#define DebugMessage(a,b,c,d,e,f,g) {}
 #endif
-
 #endif //ADCORE_FUNCTIONS_H

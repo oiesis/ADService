@@ -14,6 +14,9 @@
 #include <vector>
 #include <iostream>
 #include <strings.h>
+#include <cstring>
+#include <sstream>
+#include "google/protobuf/message.h"
 #include "types.h"
 #include "functions.h"
 #include "rapidjson/reader.h"
@@ -458,7 +461,24 @@ void adservice_free(void* ptr);
 
        }
 
+       namespace serialize{
+           //support of protobuf object
+           using google::protobuf::Message;
 
+           template<typename T>
+           inline T& getProtoBufObject(T& obj,std::stringstream& stream){
+               obj.ParseFromIstream(&stream);
+           }
+
+           template<typename T>
+           inline void writeProtoBufObject(T& obj,std::stringstream& stream){
+               obj.SerializeToOstream(&stream);
+           }
+
+
+
+
+       }
 
    }
 }

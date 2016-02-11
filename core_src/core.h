@@ -58,11 +58,11 @@ namespace adservice{
             config.clickThreads = mw.getInt("click_threads",24);
             config.runClick = mw.getBoolean("load_click", false);
             config.isDaemon = mw.getBoolean("isDaemon",true);
-	        DebugMessage(config.runClick);
         }
 
+	int write_pid(const char *pidfile);
         bool daemon_init(const char *pidfile);
-
+	
 
         class ADService;
         typedef std::shared_ptr<ADService> ADServicePtr;
@@ -86,7 +86,7 @@ namespace adservice{
                 }
                 return instance;
             }
-            explicit ADService(){
+	    explicit ADService(){
                 autoDetectEnv();
                 running = true;
                 if(instanceCnt>1){

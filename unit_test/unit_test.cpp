@@ -136,10 +136,7 @@ void json_test(){
 #include "core.h"
 
 void server_test(){
-	cout<<"start server test"<<endl;
-	DebugMessage("what",' '," the fuck!!");
 	launch_service();
-	cout<<"server test end"<<endl;
 }
 
 int main(int argc,char** argv){
