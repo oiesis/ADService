@@ -3,13 +3,14 @@
 //
 
 #include "click_service.h"
-#include <boost/bind.hpp>
 
 namespace adservice{
 
     namespace click{
 
         using namespace std::placeholders;
+        using namespace muduo;
+        using namespace muduo::net;
 
         void ClickService::start(){
             server->start();
@@ -18,45 +19,41 @@ namespace adservice{
 
         void ClickService::init(int port,int threads){
             muduo::net::InetAddress addr(static_cast<uint16_t>(port));
-            server = std::make_shared<TcpServer>(&loop,addr,"mtty::click_service");
-            server->setConnectionCallback(std::bind(&ClickService::onConnection,this,std::placeholders::_1));
+            server = std::make_shared<HttpServer>(&loop,addr,"mtty::click_service");
+            server->setHttpCallback(std::bind(&ClickService::onRequest,this,_1,_2));
             server->setThreadNum(threads);
         }
 
-        void ClickService::onRequest(const TcpConnectionPtr& conn,
-                       FastCgiCodec::ParamMap& params,
-                       Buffer* in)
-        {
-            string uri = params["REQUEST_URI"];
-            LOG_INFO << conn->name() << ": " << uri;
+        void ClickService::onRequest(const HttpRequest& req, HttpResponse* resp) {
+            std::cout << "Headers " << req.methodString() << " " << req.path() << std::endl;
+//            if (true) {
+//                const std::map<string, string> &headers = req.headers();
+//                for (std::map<string, string>::const_iterator it = headers.begin();
+//                     it != headers.end();
+//                     ++it) {
+//                    std::cout << it->first << ": " << it->second << std::endl;
+//                }
+//            }
 
-            for (FastCgiCodec::ParamMap::const_iterator it = params.begin();
-                 it != params.end(); ++it)
-            {
-                LOG_DEBUG << it->first << " = " << it->second;
+            if (req.path() == "/c") {
+                resp->setStatusCode(HttpResponse::k200Ok);
+                resp->setStatusMessage("OK");
+                resp->setContentType("text/html");
+                resp->addHeader("Server", "Mtty");
+                string now = Timestamp::now().toFormattedString();
+                resp->setBody("<html><head><title>This is title</title></head>"
+                                      "<body><h1>Hello</h1>Now is " + now +
+                              "</body></html>");
             }
-            if (in->readableBytes() > 0)
-            LOG_DEBUG << "stdin " << in->retrieveAllAsString();
-            Buffer response;
-            response.append("Context-Type: text/plain\r\n\r\n");
-            // FIXME: set http status code 400
-            response.append("bad request");
-            FastCgiCodec::respond(&response);
-            conn->send(&response);
+            else
+            {
+                resp->setStatusCode(HttpResponse::k404NotFound);
+                resp->setStatusMessage("Not Found");
+                resp->setCloseConnection(true);
+            }
+
         }
 
-        void ClickService::onConnection(const TcpConnectionPtr& conn)
-        {
-            if (conn->connected())
-            {
-                typedef boost::shared_ptr<FastCgiCodec> CodecPtr;
-                CodecPtr codec(new FastCgiCodec(boost::bind(&ClickService::onRequest,this,_1,_2,_3)));
-                conn->setContext(codec);
-                conn->setMessageCallback(
-                        boost::bind(&FastCgiCodec::onMessage, codec, _1,_2,_3));
-                conn->setTcpNoDelay(true);
-            }
-        }
     }
 
 }

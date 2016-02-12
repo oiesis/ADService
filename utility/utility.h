@@ -16,12 +16,14 @@
 #include <strings.h>
 #include <cstring>
 #include <sstream>
+#include <tuple>
 #include "google/protobuf/message.h"
 #include "types.h"
 #include "functions.h"
 #include "rapidjson/reader.h"
 #include "rapidjson/document.h"
 #include "rapidjson/error/en.h"
+#include "protocol/click/click.h"
 
 namespace adservice{
    namespace utility{
@@ -465,9 +467,11 @@ void adservice_free(void* ptr);
            //support of protobuf object
            using google::protobuf::Message;
 
+
            template<typename T>
            inline T& getProtoBufObject(T& obj,std::stringstream& stream){
                obj.ParseFromIstream(&stream);
+               return obj;
            }
 
            template<typename T>
@@ -475,8 +479,93 @@ void adservice_free(void* ptr);
                obj.SerializeToOstream(&stream);
            }
 
+           template<typename T>
+           inline T& getAvroObject(T& obj,const uint8_t* bytes,int size){
+               std::unique_ptr<avro::InputStream> in = avro::memoryInputStream(bytes,size); //需要考虑对象重用
+               avro::DecoderPtr decoderPtr = avro::binaryDecoder();
+               decoderPtr->init(*in);
+               avro::codec_traits<T>::decode(*decoderPtr,obj);
+               return obj;
+           }
 
+           template<typename T>
+           inline std::unique_ptr<avro::InputStream> writeAvroObject(T& obj){
+               std::unique_ptr<avro::OutputStream> out = avro::memoryOutputStream();
+               avro::EncoderPtr encoderPtr = avro::binaryEncoder();
+               encoderPtr->init(*out);
+               avro::codec_traits<T>::encode(*encoderPtr,obj);
+               out->flush();
+               return out;
+           }
 
+           template<typename T,int BUFFSIZE>
+           class AvroObjectReader{
+           public:
+               AvroObjectReader(){
+                   in = avro::memoryInputStream(buffer,BUFFSIZE);
+                   decoderPtr = avro::binaryDecoder();
+                   decoderPtr->init(*in);
+               }
+               std::tuple<uint8_t*,int> getBuffer(){
+                   std::make_tuple<uint8_t*,int>(buffer,BUFFSIZE);
+               }
+               void read(T& obj){
+                   avro::codec_traits<T>::decode(*decoderPtr,obj);
+               }
+               void rewind(){
+                   //in.release();
+                   //in = avro::memoryInputStream(buffer,BUFFSIZE);
+                   decoderPtr->init(*in);
+               }
+
+           private:
+               uint8_t buffer[BUFFSIZE];
+               std::unique_ptr<avro::InputStream> in;
+               avro::DecoderPtr decoderPtr;
+           };
+
+           template<typename T>
+           class AvroObjectWriter{
+           public:
+               typedef std::function<bool(const uint8_t*,int)> WriteDataCallback;
+               AvroObjectWriter(){
+                   out = avro::memoryOutputStream();
+                   encoderPtr = avro::binaryEncoder();
+                   encoderPtr->init(*out);
+               }
+               void write(std::vector<T>& v){
+                   using Iter = typename std::vector<T>::iterator;
+                   for(Iter iter = v.begin();iter!=v.end();iter++){
+                       avro::codec_traits<T>::encode(*encoderPtr,*iter);
+                   }
+                   out->flush();
+               }
+
+               void write(T* array,int size){
+                   for(int i=0;i<size;i++) {
+                       avro::codec_traits<T>::encode(*encoderPtr,array[i]);
+                   }
+                   out->flush();
+               }
+
+               void write(const T& obj){
+                   avro::codec_traits<T>::encode(*encoderPtr,obj);
+                   out->flush();
+               }
+
+               void commit(WriteDataCallback cb){
+                   std::unique_ptr<avro::InputStream> is = avro::memoryInputStream(*out);
+                   const uint8_t* nextBuffer = NULL;
+                   size_t bufferSize = 0;
+                   while(is->next(&nextBuffer,&bufferSize)){
+                        cb(nextBuffer,bufferSize);
+                   }
+               }
+
+           private:
+               std::unique_ptr<avro::OutputStream> out;
+               avro::EncoderPtr encoderPtr;
+           };
 
        }
 

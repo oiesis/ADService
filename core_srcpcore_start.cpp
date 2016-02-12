@@ -46,15 +46,16 @@ namespace adservice {
          * 当外部kill进程时,进行处理
          */
         void handle_sigterm(int sig){
-            DebugMessage("in pid: ",getpid()," handle sigkill");
-            ADServicePtr service = ADService::getInstance();
+            DebugMessage("in pid: ",getpid()," handle signal ",sig);
+	    ADServicePtr service = ADService::getInstance();
             if(service.use_count()>0)
                 service->stop();
             if(!w_clickModule.expired()){
-		        DebugMessage("in pid: ",getpid()," terminate submodule click");
+		DebugMessage("in pid: ",getpid()," terminate submodule click");
                 ClickModule clickModule = w_clickModule.lock();
                 clickModule->stop();
             }
+	    DebugMessage("in pid: ",getpid()," end of handle signal ",sig);
         }
 
         /**
@@ -76,9 +77,9 @@ namespace adservice {
             struct sigaction sa;
             sa.sa_handler = handle_sigterm;
             sigaction(SIGTERM,&sa,0);
-            sigaction(SIGHUP,&sa,0);
+            sigaction(SIGINT,&sa,0);
+	    sigaction(SIGHUP,&sa,0);
         }
-
         /**
          * 进行相关信号的注册
          */
@@ -116,6 +117,11 @@ namespace adservice {
         void ADService::adservice_init() {
             memset(modules,0,sizeof(modules));
             dosignals();
+	    int pid = write_pid(DEFAULT_DAEMON_FILE);
+	    if(pid==0){
+	   	DebugMessage("can not write pid file.exit");
+		exit(0);
+	    }
         }
 
         /**
@@ -149,7 +155,7 @@ namespace adservice {
             setsid();
             //检查各模块是否需要被加载
             if(config.runClick) {
-                DebugMessage("try to create click module");
+                DebugMessage("start click module");
 		        launchModule(MODULE_TYPE::MODULE_CLICK);
             }
             while(running) {
@@ -162,7 +168,14 @@ namespace adservice {
          * 服务退出
          */
         void ADService::adservice_exit() {
-        }
+        	for(int i=MODULE_TYPE::MODULE_FIRST;i<=MODULE_TYPE::MODULE_LAST;i++){
+			if(modules[i]!=0){
+				DebugMessage("main module exit,try to kill sub process ",modules[i]);
+				kill(modules[i],SIGTERM);
+			}
+		}
+		unlink(DEFAULT_DAEMON_FILE);
+	}
 
     }
 }

@@ -28,7 +28,7 @@ done
 java -jar avro-tools-1.8.0.jar idl $AVDL_SRC __tmp.avpr
 cat __tmp.avpr |awk -F'#' 'BEGIN{start=0;end=0;}{if(start==1&&end==0){if(!match($1,/"messages"/))printf("%s\n",$1);else end=1;};if(start==0&&match($1,/types.*:(.*)/,arr)){start=1;printf("%s\n",arr[1]);};}' |sed -e '${s/,//g}' > __tmp.json
 avrogencpp -i __tmp.json -o $OUTPUT -n $NAMESPACE
-SEDOPTION="1,30s/#::#/{\nnamespace /g;s/#::#/::/g;\$s/#endif/${paddingstring}\n#endif/g"
+SEDOPTION="1,30s/#::#/{\nnamespace /g;s/#::#/::/g;s/namespace avro/${paddingstring}\nnamespace avro/g"
 echo $SEDOPTION
 sed -i "$SEDOPTION" $OUTPUT
 rm __tmp.avpr

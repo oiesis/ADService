@@ -8,8 +8,10 @@
 #include <memory>
 #include "muduo/base/Logging.h"
 #include "muduo/net/EventLoop.h"
-#include "muduo/net/TcpServer.h"
-#include "core_cgi.h"
+#include "muduo/net/http/HttpServer.h"
+#include "muduo/net/http/HttpRequest.h"
+#include "muduo/net/http/HttpResponse.h"
+
 #include "types.h"
 #include "abstract_service.h"
 #include "functions.h"
@@ -19,7 +21,6 @@ namespace adservice{
     namespace click {
 
         using namespace muduo::net;
-        using namespace adservice::net;
 
         class ClickService : public adservice::server::AbstractService{
         public:
@@ -32,11 +33,8 @@ namespace adservice{
                 DebugMessage("in pid ",getpid()," clickservice module gone");
             }
 
-            virtual void onRequest(const TcpConnectionPtr& conn,
-                           FastCgiCodec::ParamMap& params,
-                           Buffer* in);
+            virtual void onRequest(const HttpRequest& req, HttpResponse* resp);
 
-            virtual void onConnection(const TcpConnectionPtr& conn);
 
             void init(int port,int threads);
 
@@ -47,7 +45,7 @@ namespace adservice{
             }
 
         private:
-            typedef std::shared_ptr<TcpServer> ServerPtr;
+            typedef std::shared_ptr<HttpServer> ServerPtr;
             ServerPtr server;
             muduo::net::EventLoop loop;
         };
