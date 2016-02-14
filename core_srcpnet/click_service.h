@@ -15,6 +15,8 @@
 #include "types.h"
 #include "abstract_service.h"
 #include "functions.h"
+#include "core_executor.h"
+#include "net/log_pusher.h"
 
 namespace adservice{
 
@@ -24,7 +26,9 @@ namespace adservice{
 
         class ClickService : public adservice::server::AbstractService{
         public:
-            explicit ClickService(int port,int threads){
+            typedef std::shared_ptr<HttpServer> ServerPtr;
+        public:
+            explicit ClickService(int port,int threads):executor("mtty_click"){
                 init(port,threads);
             }
             ClickService(const ClickService&) = delete;
@@ -42,12 +46,19 @@ namespace adservice{
 
             void stop(){
                 loop.quit();
+                executor.stop();
+                clickLogger.stop();
+            }
+
+            adservice::log::LogPusher& getLogger(){
+                return clickLogger;
             }
 
         private:
-            typedef std::shared_ptr<HttpServer> ServerPtr;
             ServerPtr server;
+            adservice::log::LogPusher clickLogger;
             muduo::net::EventLoop loop;
+            adservice::server::Executor executor;
         };
 
         typedef std::shared_ptr<ClickService> ClickModule;

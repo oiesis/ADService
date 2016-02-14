@@ -7,6 +7,7 @@
 
 #include <sys/types.h>
 #include <cstdlib>
+#include <memory>
 
 #ifndef char_t
 typedef char char_t;
@@ -38,6 +39,18 @@ typedef u_int64_t uint64_t;
 
 namespace adservice {
 	namespace types {
+
+		enum MttyMessageType : char{
+			TYPE_LOG,
+			TYPE_UNKNOWN
+		};
+
+		struct MttyMessage{
+			MttyMessageType  type;
+			std::shared_ptr<LogItem> body;
+			MttyMessage(){}
+			MttyMessage(const MttyMessageType& t,const std::shared_ptr<LogItem>& d):type(t),body(d){}
+		} MttyMessage;
 
 		/** IPV4 地址组 */
 		typedef struct IP32_t {

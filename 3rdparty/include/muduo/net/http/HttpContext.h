@@ -15,6 +15,8 @@
 
 #include <muduo/net/http/HttpRequest.h>
 
+#include <boost/shared_array.hpp>
+
 namespace muduo
 {
 namespace net
@@ -34,7 +36,7 @@ class HttpContext : public muduo::copyable
   };
 
   HttpContext()
-    : state_(kExpectRequestLine)
+    : state_(kExpectRequestLine),postdata_()
   {
   }
 
@@ -64,6 +66,7 @@ class HttpContext : public muduo::copyable
 
   HttpRequestParseState state_;
   HttpRequest request_;
+  boost::shared_array<char> postdata_; // 如果希望深拷贝,这里将出现问题;也就是多个处理线程间不应该共享HttpContext,如果要支持,设置成线程局部变量
 };
 
 }

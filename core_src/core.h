@@ -49,11 +49,11 @@ namespace adservice{
 
         inline void  loadServerConfig(ServerConfig& config,const char* path = DEFAULT_CONFIG_PATH){
             using namespace utility::json;
-	    MessageWraper mw;
-	    bool bSuccess = parseJsonFile(path,mw);
+            MessageWraper mw;
+	        bool bSuccess = parseJsonFile(path,mw);
             if(!bSuccess){
-	    	DebugMessage("failed to read json file");
-	    }
+	    	    DebugMessage("failed to read json file");
+	        }
             config.clickPort = mw.getInt("click_port",8808);
             config.clickThreads = mw.getInt("click_threads",24);
             config.runClick = mw.getBoolean("load_click", false);
@@ -70,7 +70,7 @@ namespace adservice{
         class ADService final{
         private:
             static volatile int instanceCnt;
-            static ADServicePtr instance;
+            static volatile ADServicePtr instance;
         public:
             static void initClassVar(){
                 instance = nullptr;

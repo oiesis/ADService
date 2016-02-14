@@ -37,7 +37,7 @@ class HttpServer : boost::noncopyable
              const string& name,
              TcpServer::Option option = TcpServer::kNoReusePort);
 
-  ~HttpServer();  // force out-line dtor, for scoped_ptr members.
+  virtual ~HttpServer();  // force out-line dtor, for scoped_ptr members.
 
   EventLoop* getLoop() const { return server_.getLoop(); }
 
@@ -54,12 +54,12 @@ class HttpServer : boost::noncopyable
 
   void start();
 
- private:
-  void onConnection(const TcpConnectionPtr& conn);
-  void onMessage(const TcpConnectionPtr& conn,
+ protected:
+  virtual void onConnection(const TcpConnectionPtr& conn);
+  virtual void onMessage(const TcpConnectionPtr& conn,
                  Buffer* buf,
                  Timestamp receiveTime);
-  void onRequest(const TcpConnectionPtr&, const HttpRequest&);
+  virtual void onRequest(const TcpConnectionPtr&, const HttpRequest&);
 
   TcpServer server_;
   HttpCallback httpCallback_;

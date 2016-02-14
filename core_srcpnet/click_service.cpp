@@ -3,6 +3,9 @@
 //
 
 #include "click_service.h"
+#include "utility/utility.h"
+#include "protocol/click/click.h"
+#include "common/types.h"
 
 namespace adservice{
 
@@ -11,8 +14,36 @@ namespace adservice{
         using namespace std::placeholders;
         using namespace muduo;
         using namespace muduo::net;
+        using namespace adservice::utility::serialize;
+        using namespace adservice::utility::cypher;
+        using namespace adservice::server;
+
+        class HandleClickQueryTask{
+        public:
+            explicit HandleClickQueryTask(ClickService* service,const string& query):clickservice(service),data(query){
+            }
+            operator()(){
+                protocol::click::ClickRequest clickRequest;
+                getAvroObject(clickRequest,data.c_str(),data.length());
+                if(clickRequest.cookiesId.empty()){
+                    CypherResult128 cookiesResult;
+                    makeCookies(cookiesResult);
+                    clickRequest.cookiesId = cookiesResult.bytes;
+                }
+                // 根据clickRequest生成日志对象
+                std::shared_ptr<LogItem> log = std::make_shared<LogItem>();
+                //todo:fixme
+                // 将日志对象推送到阿里云队列
+                clickservice->getLogger().push(MttyMessage(MttyMessage::TYPE_LOG,log));
+            }
+        private:
+            string data;
+            ClickService* clickservice;
+        };
 
         void ClickService::start(){
+            executor.start();
+            clickLogger.start();
             server->start();
             loop.loop();
         }
@@ -25,25 +56,16 @@ namespace adservice{
         }
 
         void ClickService::onRequest(const HttpRequest& req, HttpResponse* resp) {
-            std::cout << "Headers " << req.methodString() << " " << req.path() << std::endl;
-//            if (true) {
-//                const std::map<string, string> &headers = req.headers();
-//                for (std::map<string, string>::const_iterator it = headers.begin();
-//                     it != headers.end();
-//                     ++it) {
-//                    std::cout << it->first << ": " << it->second << std::endl;
-//                }
-//            }
-
+            DebugMessage("Headers ", req.methodString(), " ",req.path());
             if (req.path() == "/c") {
                 resp->setStatusCode(HttpResponse::k200Ok);
                 resp->setStatusMessage("OK");
                 resp->setContentType("text/html");
                 resp->addHeader("Server", "Mtty");
                 string now = Timestamp::now().toFormattedString();
-                resp->setBody("<html><head><title>This is title</title></head>"
-                                      "<body><h1>Hello</h1>Now is " + now +
-                              "</body></html>");
+                const string& data = req.query();
+                executor.run(std::bind(HandleClickQueryTask(this,data)));
+                resp->setCloseConnection(true);
             }
             else
             {
