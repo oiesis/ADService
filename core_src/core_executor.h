@@ -7,6 +7,7 @@
 
 #include <unistd.h>
 #include "muduo/base/ThreadPool.h"
+#include "core_threadlocal_manager.h"
 
 namespace adservice{
     namespace server{

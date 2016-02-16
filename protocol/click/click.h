@@ -17,8 +17,8 @@
  */
 
 
-#ifndef CLICK_AVRO_CLICK_H_1192853921__H_
-#define CLICK_AVRO_CLICK_H_1192853921__H_
+#ifndef CLICK_AVRO_CLICK_H_659754449__H_
+#define CLICK_AVRO_CLICK_H_659754449__H_
 
 
 #include <sstream>
@@ -27,170 +27,161 @@
 #include "avro/Encoder.hh"
 #include "avro/Decoder.hh"
 
-namespace protocol {
-    namespace click {
-        struct GeoInfo {
-            std::string latitude;
-            std::string longitude;
-            int32_t country;
-            int32_t province;
-            int32_t city;
-            int32_t district;
-            int32_t street;
+namespace protocol{
+namespace click {
+struct GeoInfo {
+    std::string latitude;
+    std::string longitude;
+    int32_t country;
+    int32_t province;
+    int32_t city;
+    int32_t district;
+    int32_t street;
+    GeoInfo() :
+        latitude(std::string()),
+        longitude(std::string()),
+        country(int32_t()),
+        province(int32_t()),
+        city(int32_t()),
+        district(int32_t()),
+        street(int32_t())
+        { }
+};
 
-            GeoInfo() :
-                    latitude(std::string()),
-                    longitude(std::string()),
-                    country(int32_t()),
-                    province(int32_t()),
-                    city(int32_t()),
-                    district(int32_t()),
-                    street(int32_t()) { }
-        };
+struct AdInfo {
+    int32_t advId;
+    int32_t cpid;
+    int32_t sid;
+    int32_t bid;
+    int32_t clickId;
+    int32_t adxid;
+    int32_t mid;
+    int32_t cid;
+    int32_t pid;
+    std::string landingUrl;
+    int32_t cost;
+    int32_t bidPrice;
+    AdInfo() :
+        advId(int32_t()),
+        cpid(int32_t()),
+        sid(int32_t()),
+        bid(int32_t()),
+        clickId(int32_t()),
+        adxid(int32_t()),
+        mid(int32_t()),
+        cid(int32_t()),
+        pid(int32_t()),
+        landingUrl(std::string()),
+        cost(int32_t()),
+        bidPrice(int32_t())
+        { }
+};
 
-        struct AdInfo {
-            int32_t advId;
-            int32_t cpid;
-            int32_t sid;
-            int32_t bid;
-            int32_t clickId;
-            int32_t adxid;
-            int32_t mid;
-            int32_t cid;
-            int32_t pid;
-            std::string landingUrl;
-            int32_t cost;
-            int32_t bidPrice;
+struct ClickRequest {
+    std::string cookiesId;
+    int32_t age;
+    int32_t sex;
+    GeoInfo geoInfo;
+    AdInfo adInfo;
+    ClickRequest() :
+        cookiesId(std::string()),
+        age(int32_t()),
+        sex(int32_t()),
+        geoInfo(GeoInfo()),
+        adInfo(AdInfo())
+        { }
+};
 
-            AdInfo() :
-                    advId(int32_t()),
-                    cpid(int32_t()),
-                    sid(int32_t()),
-                    bid(int32_t()),
-                    clickId(int32_t()),
-                    adxid(int32_t()),
-                    mid(int32_t()),
-                    cid(int32_t()),
-                    pid(int32_t()),
-                    landingUrl(std::string()),
-                    cost(int32_t()),
-                    bidPrice(int32_t()) { }
-        };
+struct ClickResponse {
+    std::string cookiesId;
+    int32_t age;
+    int32_t sex;
+    GeoInfo geoInfo;
+    AdInfo adInfo;
+    ClickResponse() :
+        cookiesId(std::string()),
+        age(int32_t()),
+        sex(int32_t()),
+        geoInfo(GeoInfo()),
+        adInfo(AdInfo())
+        { }
+};
 
-        struct ClickRequest {
-            std::string cookiesId;
-            int32_t age;
-            int32_t sex;
-            GeoInfo geoInfo;
-            AdInfo adInfo;
+struct __tmp_json_Union__0__ {
+private:
+    size_t idx_;
+    boost::any value_;
+public:
+    size_t idx() const { return idx_; }
+    GeoInfo get_GeoInfo() const;
+    void set_GeoInfo(const GeoInfo& v);
+    AdInfo get_AdInfo() const;
+    void set_AdInfo(const AdInfo& v);
+    ClickRequest get_ClickRequest() const;
+    void set_ClickRequest(const ClickRequest& v);
+    ClickResponse get_ClickResponse() const;
+    void set_ClickResponse(const ClickResponse& v);
+    __tmp_json_Union__0__();
+};
 
-            ClickRequest() :
-                    cookiesId(std::string()),
-                    age(int32_t()),
-                    sex(int32_t()),
-                    geoInfo(GeoInfo()),
-                    adInfo(AdInfo()) { }
-        };
-
-        struct ClickResponse {
-            std::string cookiesId;
-            int32_t age;
-            int32_t sex;
-            GeoInfo geoInfo;
-            AdInfo adInfo;
-
-            ClickResponse() :
-                    cookiesId(std::string()),
-                    age(int32_t()),
-                    sex(int32_t()),
-                    geoInfo(GeoInfo()),
-                    adInfo(AdInfo()) { }
-        };
-
-        struct __tmp_json_Union__0__ {
-        private:
-            size_t idx_;
-            boost::any value_;
-        public:
-            size_t idx() const { return idx_; }
-
-            GeoInfo get_GeoInfo() const;
-
-            void set_GeoInfo(const GeoInfo &v);
-
-            AdInfo get_AdInfo() const;
-
-            void set_AdInfo(const AdInfo &v);
-
-            ClickRequest get_ClickRequest() const;
-
-            void set_ClickRequest(const ClickRequest &v);
-
-            ClickResponse get_ClickResponse() const;
-
-            void set_ClickResponse(const ClickResponse &v);
-
-            __tmp_json_Union__0__();
-        };
-
-        inline
-        GeoInfo __tmp_json_Union__0__::get_GeoInfo() const {
-            if (idx_ != 0) {
-                throw avro::Exception("Invalid type for union");
-            }
-            return boost::any_cast<GeoInfo>(value_);
-        }
-
-        inline
-        void __tmp_json_Union__0__::set_GeoInfo(const GeoInfo &v) {
-            idx_ = 0;
-            value_ = v;
-        }
-
-        inline
-        AdInfo __tmp_json_Union__0__::get_AdInfo() const {
-            if (idx_ != 1) {
-                throw avro::Exception("Invalid type for union");
-            }
-            return boost::any_cast<AdInfo>(value_);
-        }
-
-        inline
-        void __tmp_json_Union__0__::set_AdInfo(const AdInfo &v) {
-            idx_ = 1;
-            value_ = v;
-        }
-
-        inline
-        ClickRequest __tmp_json_Union__0__::get_ClickRequest() const {
-            if (idx_ != 2) {
-                throw avro::Exception("Invalid type for union");
-            }
-            return boost::any_cast<ClickRequest>(value_);
-        }
-
-        inline
-        void __tmp_json_Union__0__::set_ClickRequest(const ClickRequest &v) {
-            idx_ = 2;
-            value_ = v;
-        }
-
-        inline
-        ClickResponse __tmp_json_Union__0__::get_ClickResponse() const {
-            if (idx_ != 3) {
-                throw avro::Exception("Invalid type for union");
-            }
-            return boost::any_cast<ClickResponse>(value_);
-        }
-
-        inline
-        void __tmp_json_Union__0__::set_ClickResponse(const ClickResponse &v) {
-            idx_ = 3;
-            value_ = v;
-        }
-
-        inline __tmp_json_Union__0__::__tmp_json_Union__0__() : idx_(0), value_(GeoInfo()) { }
+inline
+GeoInfo __tmp_json_Union__0__::get_GeoInfo() const {
+    if (idx_ != 0) {
+        throw avro::Exception("Invalid type for union");
     }
+    return boost::any_cast<GeoInfo >(value_);
+}
+
+inline
+void __tmp_json_Union__0__::set_GeoInfo(const GeoInfo& v) {
+    idx_ = 0;
+    value_ = v;
+}
+
+inline
+AdInfo __tmp_json_Union__0__::get_AdInfo() const {
+    if (idx_ != 1) {
+        throw avro::Exception("Invalid type for union");
+    }
+    return boost::any_cast<AdInfo >(value_);
+}
+
+inline
+void __tmp_json_Union__0__::set_AdInfo(const AdInfo& v) {
+    idx_ = 1;
+    value_ = v;
+}
+
+inline
+ClickRequest __tmp_json_Union__0__::get_ClickRequest() const {
+    if (idx_ != 2) {
+        throw avro::Exception("Invalid type for union");
+    }
+    return boost::any_cast<ClickRequest >(value_);
+}
+
+inline
+void __tmp_json_Union__0__::set_ClickRequest(const ClickRequest& v) {
+    idx_ = 2;
+    value_ = v;
+}
+
+inline
+ClickResponse __tmp_json_Union__0__::get_ClickResponse() const {
+    if (idx_ != 3) {
+        throw avro::Exception("Invalid type for union");
+    }
+    return boost::any_cast<ClickResponse >(value_);
+}
+
+inline
+void __tmp_json_Union__0__::set_ClickResponse(const ClickResponse& v) {
+    idx_ = 3;
+    value_ = v;
+}
+
+inline __tmp_json_Union__0__::__tmp_json_Union__0__() : idx_(0), value_(GeoInfo()) { }
+}
 }
 namespace avro {
 template<> struct codec_traits<protocol::click::GeoInfo> {

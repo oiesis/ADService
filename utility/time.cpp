@@ -30,6 +30,23 @@ namespace adservice{
                 return (long) mktime(&beginTime);
             }
 
+            int32_t getTimeSecondOfToday(){
+                time_t currentTime;
+                int64_t todayStartTime = getTodayStartTime();
+                return currentTime - todayStartTime;
+            }
+
+            int64_t getTodayStartTime(){
+                time_t currentTime;
+                ::time(&currentTime);
+                tm* ltime = localtime(&currentTime);
+                tm todayTime = *ltime;
+                todayTime.tm_hour = 0;
+                todayTime.tm_min = 0;
+                todayTime.tm_sec = 0;
+                return (int64_t)mktime(&todayTime);
+            }
+
         }
     }
 }

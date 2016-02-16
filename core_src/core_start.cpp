@@ -11,14 +11,13 @@
 #include <sys/wait.h>
 #include "core.h"
 
+adservice::click::ClickModule g_clickService = nullptr;
+
 namespace adservice {
     namespace server {
 
         volatile int ADService::instanceCnt = 0;
         ADServicePtr ADService::instance = nullptr;
-
-        //维护一个点击模块的弱引用
-        static click::ClickModule_weak w_clickModule;
 
         /**
          * 处理子进程结束信号
@@ -28,7 +27,7 @@ namespace adservice {
             pid_t	pid;
             ADServicePtr service = ADService::getInstance();
             DebugMessage("in pid ",getpid()," handle sigchild");
-	    while (true) {
+	        while (true) {
                 pid = wait3 (&wstat, WNOHANG, (struct rusage *)NULL );
                 if (pid == 0)
                     return;
@@ -47,15 +46,14 @@ namespace adservice {
          */
         void handle_sigterm(int sig){
             DebugMessage("in pid: ",getpid()," handle signal ",sig);
-	    ADServicePtr service = ADService::getInstance();
+	        ADServicePtr service = ADService::getInstance();
             if(service.use_count()>0)
                 service->stop();
-            if(!w_clickModule.expired()){
-		DebugMessage("in pid: ",getpid()," terminate submodule click");
-                ClickModule clickModule = w_clickModule.lock();
-                clickModule->stop();
+            if(g_clickService.use_count()>0){
+		        DebugMessage("in pid: ",getpid()," terminate submodule click");
+                g_clickService->stop();
             }
-	    DebugMessage("in pid: ",getpid()," end of handle signal ",sig);
+	        DebugMessage("in pid: ",getpid()," end of handle signal ",sig);
         }
 
         /**
@@ -78,7 +76,7 @@ namespace adservice {
             sa.sa_handler = handle_sigterm;
             sigaction(SIGTERM,&sa,0);
             sigaction(SIGINT,&sa,0);
-	    sigaction(SIGHUP,&sa,0);
+	        sigaction(SIGHUP,&sa,0);
         }
         /**
          * 进行相关信号的注册
@@ -117,11 +115,11 @@ namespace adservice {
         void ADService::adservice_init() {
             memset(modules,0,sizeof(modules));
             dosignals();
-	    int pid = write_pid(DEFAULT_DAEMON_FILE);
-	    if(pid==0){
-	   	DebugMessage("can not write pid file.exit");
-		exit(0);
-	    }
+	        int pid = write_pid(DEFAULT_DAEMON_FILE);
+	        if(pid==0){
+	   	        DebugMessage("can not write pid file.exit");
+		        exit(0);
+	        }
         }
 
         /**
@@ -135,10 +133,11 @@ namespace adservice {
             }else if(pid == 0){ // submodule
                 switch(mt) {
                     case MODULE_TYPE::MODULE_CLICK:
-                        click::ClickModule clickService = std::make_shared<click::ClickService>(int(config.clickPort), int(config.clickThreads));
-                        w_clickModule = clickService;
-                        clickService->start();
-                        w_clickModule.reset();
+                        g_clickService = std::make_shared<click::ClickService>(int(config.clickPort),
+                                                                                                int(config.clickThreads),
+                                                                                                bool(config.clickLogRemote));
+                        g_clickService->start();
+                        g_clickService.reset();
                         break;
                 }
                 exit(MTTY_EXIT_SUCCESS);
@@ -169,13 +168,13 @@ namespace adservice {
          */
         void ADService::adservice_exit() {
         	for(int i=MODULE_TYPE::MODULE_FIRST;i<=MODULE_TYPE::MODULE_LAST;i++){
-			if(modules[i]!=0){
-				DebugMessage("main module exit,try to kill sub process ",modules[i]);
-				kill(modules[i],SIGTERM);
-			}
-		}
-		unlink(DEFAULT_DAEMON_FILE);
-	}
+			    if(modules[i]!=0){
+				    DebugMessage("main module exit,try to kill sub process ",modules[i]);
+				    kill(modules[i],SIGTERM);
+			    }
+		    }
+		    unlink(DEFAULT_DAEMON_FILE);
+	    }
 
     }
 }

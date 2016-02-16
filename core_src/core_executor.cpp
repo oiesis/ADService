@@ -14,7 +14,7 @@ namespace adservice{
                 runCore = 0;
                 SPIN_INIT(this);
             }
-            operator()(){
+            void operator()(){
                 int myCore = 0;
                 SPIN_LOCK(this);
                 myCore = runCore++;
@@ -28,13 +28,20 @@ namespace adservice{
                 SPIN_DESTROY(this);
             }
             volatile int runCore;
-            volatile spinlock lock;
+            spinlock lock;
+        };
+
+        struct DefaultThreadInitializer{
+            void operator()(){
+            }
         };
 
         void Executor::start(){
             if(pureCompute){
                 configureForCompute();
                 threadpool.setThreadInitCallback(std::bind(RunInCore()));
+            }else{
+                threadpool.setThreadInitCallback(std::bind(DefaultThreadInitializer()));
             }
             threadpool.start(threadNum);
         }
@@ -42,7 +49,7 @@ namespace adservice{
         void Executor::configureForCompute() {
             long nprocessors = sysconf(_SC_NPROCESSORS_ONLN);
             if(nprocessors<=0){
-                threadNum = DEFAULT_THREAD_NUM;
+                threadNum = DEFAULT_CORE_NUM;
             }else{
                 threadNum = nprocessors;
             }

@@ -265,9 +265,10 @@ namespace adservice{
             */
            int32_t getTimeSecondOfToday();
 
-       }
-
-       namespace http{
+           /**
+            * 获取当日零点Unix时间戳
+            */
+           int64_t getTodayStartTime();
 
        }
 
@@ -489,13 +490,22 @@ void adservice_free(void* ptr);
            }
 
            template<typename T>
-           inline std::unique_ptr<avro::InputStream> writeAvroObject(T& obj){
+           inline std::unique_ptr<avro::OutputStream> writeAvroObject(T& obj){
                std::unique_ptr<avro::OutputStream> out = avro::memoryOutputStream();
                avro::EncoderPtr encoderPtr = avro::binaryEncoder();
                encoderPtr->init(*out);
                avro::codec_traits<T>::encode(*encoderPtr,obj);
                out->flush();
                return out;
+           }
+           template<typename T>
+           inline void writeAvroObject(T& obj,std::string& output){
+               std::unique_ptr<avro::OutputStream> out = writeAvroObject(obj);
+               uint8_t* data;
+               size_t size;
+               while(out->next(&data,&size)){
+                    output.append((const char*)data,size);
+               }
            }
 
            template<typename T,int BUFFSIZE>

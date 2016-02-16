@@ -18,6 +18,8 @@
 int launch_service();
 #endif
 
+extern adservice::click::ClickModule g_clickService;
+
 namespace adservice{
 
     namespace server{
@@ -41,6 +43,7 @@ namespace adservice{
             int clickPort;
             int clickThreads;
             bool runClick;
+            bool clickLogRemote;
             bool isDaemon;
         } *PServerConfig;
 
@@ -57,12 +60,13 @@ namespace adservice{
             config.clickPort = mw.getInt("click_port",8808);
             config.clickThreads = mw.getInt("click_threads",24);
             config.runClick = mw.getBoolean("load_click", false);
+            config.clickLogRemote = mw.getBoolean("click_log_remote",false);
             config.isDaemon = mw.getBoolean("isDaemon",true);
         }
 
-	int write_pid(const char *pidfile);
+	    int write_pid(const char *pidfile);
         bool daemon_init(const char *pidfile);
-	
+
 
         class ADService;
         typedef std::shared_ptr<ADService> ADServicePtr;
@@ -70,7 +74,7 @@ namespace adservice{
         class ADService final{
         private:
             static volatile int instanceCnt;
-            static volatile ADServicePtr instance;
+            static ADServicePtr instance;
         public:
             static void initClassVar(){
                 instance = nullptr;

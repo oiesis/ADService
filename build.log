@@ -1,624 +1,456 @@
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from utility.h:21,
                  from cypher.cpp:5:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:125:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<OutputStream> memoryOutputStream(size_t chunkSize = 4 * 1024);
                 ^
 In file included from /usr/include/c++/5.3.1/memory:81:0,
-                 from /usr/include/boost/config/no_tr1/memory.hpp:21,
-                 from /usr/include/boost/smart_ptr/shared_ptr.hpp:23,
-                 from /usr/include/boost/shared_ptr.hpp:17,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Node.hh:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/ValidSchema.hh:23,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:27,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from utility.h:21,
                  from cypher.cpp:5:
 /usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
    template<typename> class auto_ptr;
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from utility.h:21,
                  from cypher.cpp:5:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:132:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<InputStream> memoryInputStream(const uint8_t* data, size_t len);
                 ^
 In file included from /usr/include/c++/5.3.1/memory:81:0,
-                 from /usr/include/boost/config/no_tr1/memory.hpp:21,
-                 from /usr/include/boost/smart_ptr/shared_ptr.hpp:23,
-                 from /usr/include/boost/shared_ptr.hpp:17,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Node.hh:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/ValidSchema.hh:23,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:27,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from utility.h:21,
                  from cypher.cpp:5:
 /usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
    template<typename> class auto_ptr;
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from utility.h:21,
                  from cypher.cpp:5:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:141:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<InputStream> memoryInputStream(const OutputStream& source);
                 ^
 In file included from /usr/include/c++/5.3.1/memory:81:0,
-                 from /usr/include/boost/config/no_tr1/memory.hpp:21,
-                 from /usr/include/boost/smart_ptr/shared_ptr.hpp:23,
-                 from /usr/include/boost/shared_ptr.hpp:17,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Node.hh:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/ValidSchema.hh:23,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:27,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from utility.h:21,
                  from cypher.cpp:5:
 /usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
    template<typename> class auto_ptr;
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from utility.h:21,
                  from cypher.cpp:5:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:157:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<OutputStream> fileOutputStream(const char* filename,
                 ^
 In file included from /usr/include/c++/5.3.1/memory:81:0,
-                 from /usr/include/boost/config/no_tr1/memory.hpp:21,
-                 from /usr/include/boost/smart_ptr/shared_ptr.hpp:23,
-                 from /usr/include/boost/shared_ptr.hpp:17,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Node.hh:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/ValidSchema.hh:23,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:27,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from utility.h:21,
                  from cypher.cpp:5:
 /usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
    template<typename> class auto_ptr;
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from utility.h:21,
                  from cypher.cpp:5:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:164:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<InputStream> fileInputStream(const char* filename,
                 ^
 In file included from /usr/include/c++/5.3.1/memory:81:0,
-                 from /usr/include/boost/config/no_tr1/memory.hpp:21,
-                 from /usr/include/boost/smart_ptr/shared_ptr.hpp:23,
-                 from /usr/include/boost/shared_ptr.hpp:17,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Node.hh:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/ValidSchema.hh:23,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:27,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from utility.h:21,
                  from cypher.cpp:5:
 /usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
    template<typename> class auto_ptr;
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from utility.h:21,
                  from cypher.cpp:5:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:172:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<OutputStream> ostreamOutputStream(std::ostream& os,
                 ^
 In file included from /usr/include/c++/5.3.1/memory:81:0,
-                 from /usr/include/boost/config/no_tr1/memory.hpp:21,
-                 from /usr/include/boost/smart_ptr/shared_ptr.hpp:23,
-                 from /usr/include/boost/shared_ptr.hpp:17,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Node.hh:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/ValidSchema.hh:23,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:27,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from utility.h:21,
                  from cypher.cpp:5:
 /usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
    template<typename> class auto_ptr;
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from utility.h:21,
                  from cypher.cpp:5:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:180:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<InputStream> istreamInputStream(std::istream& in,
                 ^
 In file included from /usr/include/c++/5.3.1/memory:81:0,
-                 from /usr/include/boost/config/no_tr1/memory.hpp:21,
-                 from /usr/include/boost/smart_ptr/shared_ptr.hpp:23,
-                 from /usr/include/boost/shared_ptr.hpp:17,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Node.hh:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/ValidSchema.hh:23,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:27,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from utility.h:21,
                  from cypher.cpp:5:
 /usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
    template<typename> class auto_ptr;
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from utility.h:21,
                  from hash.cpp:5:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:125:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<OutputStream> memoryOutputStream(size_t chunkSize = 4 * 1024);
                 ^
 In file included from /usr/include/c++/5.3.1/memory:81:0,
-                 from /usr/include/boost/config/no_tr1/memory.hpp:21,
-                 from /usr/include/boost/smart_ptr/shared_ptr.hpp:23,
-                 from /usr/include/boost/shared_ptr.hpp:17,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Node.hh:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/ValidSchema.hh:23,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:27,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from utility.h:21,
                  from hash.cpp:5:
 /usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
    template<typename> class auto_ptr;
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from utility.h:21,
                  from hash.cpp:5:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:132:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<InputStream> memoryInputStream(const uint8_t* data, size_t len);
                 ^
 In file included from /usr/include/c++/5.3.1/memory:81:0,
-                 from /usr/include/boost/config/no_tr1/memory.hpp:21,
-                 from /usr/include/boost/smart_ptr/shared_ptr.hpp:23,
-                 from /usr/include/boost/shared_ptr.hpp:17,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Node.hh:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/ValidSchema.hh:23,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:27,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from utility.h:21,
                  from hash.cpp:5:
 /usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
    template<typename> class auto_ptr;
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from utility.h:21,
                  from hash.cpp:5:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:141:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<InputStream> memoryInputStream(const OutputStream& source);
                 ^
 In file included from /usr/include/c++/5.3.1/memory:81:0,
-                 from /usr/include/boost/config/no_tr1/memory.hpp:21,
-                 from /usr/include/boost/smart_ptr/shared_ptr.hpp:23,
-                 from /usr/include/boost/shared_ptr.hpp:17,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Node.hh:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/ValidSchema.hh:23,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:27,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from utility.h:21,
                  from hash.cpp:5:
 /usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
    template<typename> class auto_ptr;
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from utility.h:21,
                  from hash.cpp:5:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:157:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<OutputStream> fileOutputStream(const char* filename,
                 ^
 In file included from /usr/include/c++/5.3.1/memory:81:0,
-                 from /usr/include/boost/config/no_tr1/memory.hpp:21,
-                 from /usr/include/boost/smart_ptr/shared_ptr.hpp:23,
-                 from /usr/include/boost/shared_ptr.hpp:17,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Node.hh:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/ValidSchema.hh:23,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:27,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from utility.h:21,
                  from hash.cpp:5:
 /usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
    template<typename> class auto_ptr;
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from utility.h:21,
                  from hash.cpp:5:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:164:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<InputStream> fileInputStream(const char* filename,
                 ^
 In file included from /usr/include/c++/5.3.1/memory:81:0,
-                 from /usr/include/boost/config/no_tr1/memory.hpp:21,
-                 from /usr/include/boost/smart_ptr/shared_ptr.hpp:23,
-                 from /usr/include/boost/shared_ptr.hpp:17,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Node.hh:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/ValidSchema.hh:23,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:27,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from utility.h:21,
                  from hash.cpp:5:
 /usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
    template<typename> class auto_ptr;
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from utility.h:21,
                  from hash.cpp:5:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:172:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<OutputStream> ostreamOutputStream(std::ostream& os,
                 ^
 In file included from /usr/include/c++/5.3.1/memory:81:0,
-                 from /usr/include/boost/config/no_tr1/memory.hpp:21,
-                 from /usr/include/boost/smart_ptr/shared_ptr.hpp:23,
-                 from /usr/include/boost/shared_ptr.hpp:17,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Node.hh:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/ValidSchema.hh:23,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:27,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from utility.h:21,
                  from hash.cpp:5:
 /usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
    template<typename> class auto_ptr;
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from utility.h:21,
                  from hash.cpp:5:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:180:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<InputStream> istreamInputStream(std::istream& in,
                 ^
 In file included from /usr/include/c++/5.3.1/memory:81:0,
-                 from /usr/include/boost/config/no_tr1/memory.hpp:21,
-                 from /usr/include/boost/smart_ptr/shared_ptr.hpp:23,
-                 from /usr/include/boost/shared_ptr.hpp:17,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Node.hh:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/ValidSchema.hh:23,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:27,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from utility.h:21,
                  from hash.cpp:5:
 /usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
    template<typename> class auto_ptr;
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from utility.h:21,
                  from time.cpp:5:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:125:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<OutputStream> memoryOutputStream(size_t chunkSize = 4 * 1024);
                 ^
 In file included from /usr/include/c++/5.3.1/memory:81:0,
-                 from /usr/include/boost/config/no_tr1/memory.hpp:21,
-                 from /usr/include/boost/smart_ptr/shared_ptr.hpp:23,
-                 from /usr/include/boost/shared_ptr.hpp:17,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Node.hh:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/ValidSchema.hh:23,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:27,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from utility.h:21,
                  from time.cpp:5:
 /usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
    template<typename> class auto_ptr;
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from utility.h:21,
                  from time.cpp:5:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:132:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<InputStream> memoryInputStream(const uint8_t* data, size_t len);
                 ^
 In file included from /usr/include/c++/5.3.1/memory:81:0,
-                 from /usr/include/boost/config/no_tr1/memory.hpp:21,
-                 from /usr/include/boost/smart_ptr/shared_ptr.hpp:23,
-                 from /usr/include/boost/shared_ptr.hpp:17,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Node.hh:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/ValidSchema.hh:23,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:27,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from utility.h:21,
                  from time.cpp:5:
 /usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
    template<typename> class auto_ptr;
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from utility.h:21,
                  from time.cpp:5:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:141:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<InputStream> memoryInputStream(const OutputStream& source);
                 ^
 In file included from /usr/include/c++/5.3.1/memory:81:0,
-                 from /usr/include/boost/config/no_tr1/memory.hpp:21,
-                 from /usr/include/boost/smart_ptr/shared_ptr.hpp:23,
-                 from /usr/include/boost/shared_ptr.hpp:17,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Node.hh:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/ValidSchema.hh:23,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:27,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from utility.h:21,
                  from time.cpp:5:
 /usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
    template<typename> class auto_ptr;
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from utility.h:21,
                  from time.cpp:5:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:157:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<OutputStream> fileOutputStream(const char* filename,
                 ^
 In file included from /usr/include/c++/5.3.1/memory:81:0,
-                 from /usr/include/boost/config/no_tr1/memory.hpp:21,
-                 from /usr/include/boost/smart_ptr/shared_ptr.hpp:23,
-                 from /usr/include/boost/shared_ptr.hpp:17,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Node.hh:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/ValidSchema.hh:23,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:27,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from utility.h:21,
                  from time.cpp:5:
 /usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
    template<typename> class auto_ptr;
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from utility.h:21,
                  from time.cpp:5:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:164:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<InputStream> fileInputStream(const char* filename,
                 ^
 In file included from /usr/include/c++/5.3.1/memory:81:0,
-                 from /usr/include/boost/config/no_tr1/memory.hpp:21,
-                 from /usr/include/boost/smart_ptr/shared_ptr.hpp:23,
-                 from /usr/include/boost/shared_ptr.hpp:17,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Node.hh:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/ValidSchema.hh:23,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:27,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from utility.h:21,
                  from time.cpp:5:
 /usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
    template<typename> class auto_ptr;
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from utility.h:21,
                  from time.cpp:5:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:172:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<OutputStream> ostreamOutputStream(std::ostream& os,
                 ^
 In file included from /usr/include/c++/5.3.1/memory:81:0,
-                 from /usr/include/boost/config/no_tr1/memory.hpp:21,
-                 from /usr/include/boost/smart_ptr/shared_ptr.hpp:23,
-                 from /usr/include/boost/shared_ptr.hpp:17,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Node.hh:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/ValidSchema.hh:23,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:27,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from utility.h:21,
                  from time.cpp:5:
 /usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
    template<typename> class auto_ptr;
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from utility.h:21,
                  from time.cpp:5:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:180:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<InputStream> istreamInputStream(std::istream& in,
                 ^
 In file included from /usr/include/c++/5.3.1/memory:81:0,
-                 from /usr/include/boost/config/no_tr1/memory.hpp:21,
-                 from /usr/include/boost/smart_ptr/shared_ptr.hpp:23,
-                 from /usr/include/boost/shared_ptr.hpp:17,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Node.hh:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/ValidSchema.hh:23,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:27,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from utility.h:21,
                  from time.cpp:5:
 /usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
    template<typename> class auto_ptr;
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from utility.h:21,
                  from json.cpp:5:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:125:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<OutputStream> memoryOutputStream(size_t chunkSize = 4 * 1024);
                 ^
 In file included from /usr/include/c++/5.3.1/memory:81:0,
-                 from /usr/include/boost/config/no_tr1/memory.hpp:21,
-                 from /usr/include/boost/smart_ptr/shared_ptr.hpp:23,
-                 from /usr/include/boost/shared_ptr.hpp:17,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Node.hh:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/ValidSchema.hh:23,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:27,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from utility.h:21,
                  from json.cpp:5:
 /usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
    template<typename> class auto_ptr;
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from utility.h:21,
                  from json.cpp:5:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:132:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<InputStream> memoryInputStream(const uint8_t* data, size_t len);
                 ^
 In file included from /usr/include/c++/5.3.1/memory:81:0,
-                 from /usr/include/boost/config/no_tr1/memory.hpp:21,
-                 from /usr/include/boost/smart_ptr/shared_ptr.hpp:23,
-                 from /usr/include/boost/shared_ptr.hpp:17,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Node.hh:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/ValidSchema.hh:23,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:27,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from utility.h:21,
                  from json.cpp:5:
 /usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
    template<typename> class auto_ptr;
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from utility.h:21,
                  from json.cpp:5:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:141:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<InputStream> memoryInputStream(const OutputStream& source);
                 ^
 In file included from /usr/include/c++/5.3.1/memory:81:0,
-                 from /usr/include/boost/config/no_tr1/memory.hpp:21,
-                 from /usr/include/boost/smart_ptr/shared_ptr.hpp:23,
-                 from /usr/include/boost/shared_ptr.hpp:17,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Node.hh:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/ValidSchema.hh:23,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:27,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from utility.h:21,
                  from json.cpp:5:
 /usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
    template<typename> class auto_ptr;
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from utility.h:21,
                  from json.cpp:5:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:157:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<OutputStream> fileOutputStream(const char* filename,
                 ^
 In file included from /usr/include/c++/5.3.1/memory:81:0,
-                 from /usr/include/boost/config/no_tr1/memory.hpp:21,
-                 from /usr/include/boost/smart_ptr/shared_ptr.hpp:23,
-                 from /usr/include/boost/shared_ptr.hpp:17,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Node.hh:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/ValidSchema.hh:23,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:27,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from utility.h:21,
                  from json.cpp:5:
 /usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
    template<typename> class auto_ptr;
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from utility.h:21,
                  from json.cpp:5:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:164:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<InputStream> fileInputStream(const char* filename,
                 ^
 In file included from /usr/include/c++/5.3.1/memory:81:0,
-                 from /usr/include/boost/config/no_tr1/memory.hpp:21,
-                 from /usr/include/boost/smart_ptr/shared_ptr.hpp:23,
-                 from /usr/include/boost/shared_ptr.hpp:17,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Node.hh:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/ValidSchema.hh:23,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:27,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from utility.h:21,
                  from json.cpp:5:
 /usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
    template<typename> class auto_ptr;
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from utility.h:21,
                  from json.cpp:5:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:172:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<OutputStream> ostreamOutputStream(std::ostream& os,
                 ^
 In file included from /usr/include/c++/5.3.1/memory:81:0,
-                 from /usr/include/boost/config/no_tr1/memory.hpp:21,
-                 from /usr/include/boost/smart_ptr/shared_ptr.hpp:23,
-                 from /usr/include/boost/shared_ptr.hpp:17,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Node.hh:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/ValidSchema.hh:23,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:27,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from utility.h:21,
                  from json.cpp:5:
 /usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
    template<typename> class auto_ptr;
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from utility.h:21,
                  from json.cpp:5:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:180:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<InputStream> istreamInputStream(std::istream& in,
                 ^
 In file included from /usr/include/c++/5.3.1/memory:81:0,
-                 from /usr/include/boost/config/no_tr1/memory.hpp:21,
-                 from /usr/include/boost/smart_ptr/shared_ptr.hpp:23,
-                 from /usr/include/boost/shared_ptr.hpp:17,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Node.hh:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/ValidSchema.hh:23,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:27,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from utility.h:21,
                  from json.cpp:5:
 /usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
    template<typename> class auto_ptr;
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/utility/utility.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:13,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:11,
                  from /media/sf_Workspace/guoze.lin/ADCore/core_src/core_start.cpp:12:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:125:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<OutputStream> memoryOutputStream(size_t chunkSize = 4 * 1024);
@@ -631,9 +463,9 @@ In file included from /usr/include/c++/5.3.1/memory:81:0,
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/utility/utility.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:13,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:11,
                  from /media/sf_Workspace/guoze.lin/ADCore/core_src/core_start.cpp:12:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:132:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<InputStream> memoryInputStream(const uint8_t* data, size_t len);
@@ -646,9 +478,9 @@ In file included from /usr/include/c++/5.3.1/memory:81:0,
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/utility/utility.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:13,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:11,
                  from /media/sf_Workspace/guoze.lin/ADCore/core_src/core_start.cpp:12:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:141:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<InputStream> memoryInputStream(const OutputStream& source);
@@ -661,9 +493,9 @@ In file included from /usr/include/c++/5.3.1/memory:81:0,
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/utility/utility.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:13,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:11,
                  from /media/sf_Workspace/guoze.lin/ADCore/core_src/core_start.cpp:12:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:157:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<OutputStream> fileOutputStream(const char* filename,
@@ -676,9 +508,9 @@ In file included from /usr/include/c++/5.3.1/memory:81:0,
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/utility/utility.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:13,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:11,
                  from /media/sf_Workspace/guoze.lin/ADCore/core_src/core_start.cpp:12:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:164:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<InputStream> fileInputStream(const char* filename,
@@ -691,9 +523,9 @@ In file included from /usr/include/c++/5.3.1/memory:81:0,
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/utility/utility.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:13,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:11,
                  from /media/sf_Workspace/guoze.lin/ADCore/core_src/core_start.cpp:12:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:172:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<OutputStream> ostreamOutputStream(std::ostream& os,
@@ -706,9 +538,9 @@ In file included from /usr/include/c++/5.3.1/memory:81:0,
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/utility/utility.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:13,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:11,
                  from /media/sf_Workspace/guoze.lin/ADCore/core_src/core_start.cpp:12:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:180:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<InputStream> istreamInputStream(std::istream& in,
@@ -721,9 +553,9 @@ In file included from /usr/include/c++/5.3.1/memory:81:0,
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/utility/utility.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:13,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:11,
                  from /media/sf_Workspace/guoze.lin/ADCore/core_src/core_main.cpp:5:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:125:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<OutputStream> memoryOutputStream(size_t chunkSize = 4 * 1024);
@@ -736,9 +568,9 @@ In file included from /usr/include/c++/5.3.1/memory:81:0,
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/utility/utility.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:13,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:11,
                  from /media/sf_Workspace/guoze.lin/ADCore/core_src/core_main.cpp:5:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:132:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<InputStream> memoryInputStream(const uint8_t* data, size_t len);
@@ -751,9 +583,9 @@ In file included from /usr/include/c++/5.3.1/memory:81:0,
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/utility/utility.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:13,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:11,
                  from /media/sf_Workspace/guoze.lin/ADCore/core_src/core_main.cpp:5:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:141:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<InputStream> memoryInputStream(const OutputStream& source);
@@ -766,9 +598,9 @@ In file included from /usr/include/c++/5.3.1/memory:81:0,
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/utility/utility.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:13,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:11,
                  from /media/sf_Workspace/guoze.lin/ADCore/core_src/core_main.cpp:5:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:157:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<OutputStream> fileOutputStream(const char* filename,
@@ -781,9 +613,9 @@ In file included from /usr/include/c++/5.3.1/memory:81:0,
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/utility/utility.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:13,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:11,
                  from /media/sf_Workspace/guoze.lin/ADCore/core_src/core_main.cpp:5:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:164:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<InputStream> fileInputStream(const char* filename,
@@ -796,9 +628,9 @@ In file included from /usr/include/c++/5.3.1/memory:81:0,
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/utility/utility.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:13,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:11,
                  from /media/sf_Workspace/guoze.lin/ADCore/core_src/core_main.cpp:5:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:172:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<OutputStream> ostreamOutputStream(std::ostream& os,
@@ -811,9 +643,9 @@ In file included from /usr/include/c++/5.3.1/memory:81:0,
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/utility/utility.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:13,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:11,
                  from /media/sf_Workspace/guoze.lin/ADCore/core_src/core_main.cpp:5:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:180:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<InputStream> istreamInputStream(std::istream& in,
@@ -826,9 +658,9 @@ In file included from /usr/include/c++/5.3.1/memory:81:0,
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/utility/utility.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:13,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:11,
                  from /media/sf_Workspace/guoze.lin/ADCore/core_src/core_daemon.cpp:12:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:125:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<OutputStream> memoryOutputStream(size_t chunkSize = 4 * 1024);
@@ -841,9 +673,9 @@ In file included from /usr/include/c++/5.3.1/memory:81:0,
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/utility/utility.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:13,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:11,
                  from /media/sf_Workspace/guoze.lin/ADCore/core_src/core_daemon.cpp:12:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:132:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<InputStream> memoryInputStream(const uint8_t* data, size_t len);
@@ -856,9 +688,9 @@ In file included from /usr/include/c++/5.3.1/memory:81:0,
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/utility/utility.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:13,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:11,
                  from /media/sf_Workspace/guoze.lin/ADCore/core_src/core_daemon.cpp:12:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:141:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<InputStream> memoryInputStream(const OutputStream& source);
@@ -871,9 +703,9 @@ In file included from /usr/include/c++/5.3.1/memory:81:0,
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/utility/utility.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:13,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:11,
                  from /media/sf_Workspace/guoze.lin/ADCore/core_src/core_daemon.cpp:12:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:157:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<OutputStream> fileOutputStream(const char* filename,
@@ -886,9 +718,9 @@ In file included from /usr/include/c++/5.3.1/memory:81:0,
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/utility/utility.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:13,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:11,
                  from /media/sf_Workspace/guoze.lin/ADCore/core_src/core_daemon.cpp:12:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:164:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<InputStream> fileInputStream(const char* filename,
@@ -901,9 +733,9 @@ In file included from /usr/include/c++/5.3.1/memory:81:0,
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/utility/utility.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:13,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:11,
                  from /media/sf_Workspace/guoze.lin/ADCore/core_src/core_daemon.cpp:12:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:172:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<OutputStream> ostreamOutputStream(std::ostream& os,
@@ -916,9 +748,9 @@ In file included from /usr/include/c++/5.3.1/memory:81:0,
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/utility/utility.h:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:13,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/core.h:11,
                  from /media/sf_Workspace/guoze.lin/ADCore/core_src/core_daemon.cpp:12:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:180:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<InputStream> istreamInputStream(std::istream& in,
@@ -931,154 +763,339 @@ In file included from /usr/include/c++/5.3.1/memory:81:0,
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from ../utility/utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/log_pusher.h:8,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/log_pusher.cpp:7:
+/media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:125:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+ AVRO_DECL std::auto_ptr<OutputStream> memoryOutputStream(size_t chunkSize = 4 * 1024);
+                ^
+In file included from /usr/include/c++/5.3.1/memory:81:0,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/log_pusher.h:8,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/log_pusher.cpp:7:
+/usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^
+In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
+                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/log_pusher.h:8,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/log_pusher.cpp:7:
+/media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:132:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+ AVRO_DECL std::auto_ptr<InputStream> memoryInputStream(const uint8_t* data, size_t len);
+                ^
+In file included from /usr/include/c++/5.3.1/memory:81:0,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/log_pusher.h:8,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/log_pusher.cpp:7:
+/usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^
+In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
+                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/log_pusher.h:8,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/log_pusher.cpp:7:
+/media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:141:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+ AVRO_DECL std::auto_ptr<InputStream> memoryInputStream(const OutputStream& source);
+                ^
+In file included from /usr/include/c++/5.3.1/memory:81:0,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/log_pusher.h:8,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/log_pusher.cpp:7:
+/usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^
+In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
+                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/log_pusher.h:8,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/log_pusher.cpp:7:
+/media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:157:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+ AVRO_DECL std::auto_ptr<OutputStream> fileOutputStream(const char* filename,
+                ^
+In file included from /usr/include/c++/5.3.1/memory:81:0,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/log_pusher.h:8,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/log_pusher.cpp:7:
+/usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^
+In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
+                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/log_pusher.h:8,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/log_pusher.cpp:7:
+/media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:164:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+ AVRO_DECL std::auto_ptr<InputStream> fileInputStream(const char* filename,
+                ^
+In file included from /usr/include/c++/5.3.1/memory:81:0,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/log_pusher.h:8,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/log_pusher.cpp:7:
+/usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^
+In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
+                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/log_pusher.h:8,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/log_pusher.cpp:7:
+/media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:172:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+ AVRO_DECL std::auto_ptr<OutputStream> ostreamOutputStream(std::ostream& os,
+                ^
+In file included from /usr/include/c++/5.3.1/memory:81:0,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/log_pusher.h:8,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/log_pusher.cpp:7:
+/usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^
+In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
+                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/log_pusher.h:8,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/log_pusher.cpp:7:
+/media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:180:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+ AVRO_DECL std::auto_ptr<InputStream> istreamInputStream(std::istream& in,
+                ^
+In file included from /usr/include/c++/5.3.1/memory:81:0,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/log_pusher.h:8,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/log_pusher.cpp:7:
+/usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^
+In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
+                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/click_service.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/click_service.cpp:5:
+/media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:125:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+ AVRO_DECL std::auto_ptr<OutputStream> memoryOutputStream(size_t chunkSize = 4 * 1024);
+                ^
+In file included from /usr/include/c++/5.3.1/memory:81:0,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/click_service.h:8,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/click_service.cpp:5:
+/usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^
+In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
+                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/click_service.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/click_service.cpp:5:
+/media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:132:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+ AVRO_DECL std::auto_ptr<InputStream> memoryInputStream(const uint8_t* data, size_t len);
+                ^
+In file included from /usr/include/c++/5.3.1/memory:81:0,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/click_service.h:8,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/click_service.cpp:5:
+/usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^
+In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
+                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/click_service.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/click_service.cpp:5:
+/media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:141:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+ AVRO_DECL std::auto_ptr<InputStream> memoryInputStream(const OutputStream& source);
+                ^
+In file included from /usr/include/c++/5.3.1/memory:81:0,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/click_service.h:8,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/click_service.cpp:5:
+/usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^
+In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
+                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/click_service.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/click_service.cpp:5:
+/media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:157:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+ AVRO_DECL std::auto_ptr<OutputStream> fileOutputStream(const char* filename,
+                ^
+In file included from /usr/include/c++/5.3.1/memory:81:0,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/click_service.h:8,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/click_service.cpp:5:
+/usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^
+In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
+                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/click_service.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/click_service.cpp:5:
+/media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:164:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+ AVRO_DECL std::auto_ptr<InputStream> fileInputStream(const char* filename,
+                ^
+In file included from /usr/include/c++/5.3.1/memory:81:0,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/click_service.h:8,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/click_service.cpp:5:
+/usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^
+In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
+                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/click_service.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/click_service.cpp:5:
+/media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:172:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+ AVRO_DECL std::auto_ptr<OutputStream> ostreamOutputStream(std::ostream& os,
+                ^
+In file included from /usr/include/c++/5.3.1/memory:81:0,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/click_service.h:8,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/click_service.cpp:5:
+/usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^
+In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
+                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/click_service.h:11,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/click_service.cpp:5:
+/media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:180:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+ AVRO_DECL std::auto_ptr<InputStream> istreamInputStream(std::istream& in,
+                ^
+In file included from /usr/include/c++/5.3.1/memory:81:0,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/click_service.h:8,
+                 from /media/sf_Workspace/guoze.lin/ADCore/core_src/net/click_service.cpp:5:
+/usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^
+/media/sf_Workspace/guoze.lin/ADCore/core_src/net/click_service.cpp: In member function ‘void adservice::click::HandleClickQueryTask::operator()()’:
+/media/sf_Workspace/guoze.lin/ADCore/core_src/net/click_service.cpp:31:71: warning: use of old-style cast [-Wold-style-cast]
+                 getAvroObject(clickRequest,(const uint8_t*)data.c_str(),data.length());
+                                                                       ^
+/media/sf_Workspace/guoze.lin/ADCore/core_src/net/click_service.cpp:31:86: warning: conversion to ‘int’ from ‘std::basic_string<char>::size_type {aka long unsigned int}’ may alter its value [-Wconversion]
+                 getAvroObject(clickRequest,(const uint8_t*)data.c_str(),data.length());
+                                                                                      ^
+/media/sf_Workspace/guoze.lin/ADCore/core_src/net/click_service.cpp:35:67: warning: use of old-style cast [-Wold-style-cast]
+                     clickRequest.cookiesId = (char*)cookiesResult.bytes;
+                                                                   ^
+In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
+                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from ../utility/utility.h:21,
                  from unit_test.cpp:9:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:125:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<OutputStream> memoryOutputStream(size_t chunkSize = 4 * 1024);
                 ^
 In file included from /usr/include/c++/5.3.1/memory:81:0,
-                 from /usr/include/boost/config/no_tr1/memory.hpp:21,
-                 from /usr/include/boost/smart_ptr/shared_ptr.hpp:23,
-                 from /usr/include/boost/shared_ptr.hpp:17,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Node.hh:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/ValidSchema.hh:23,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:27,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from ../utility/utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from ../utility/utility.h:21,
                  from unit_test.cpp:9:
 /usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
    template<typename> class auto_ptr;
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from ../utility/utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from ../utility/utility.h:21,
                  from unit_test.cpp:9:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:132:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<InputStream> memoryInputStream(const uint8_t* data, size_t len);
                 ^
 In file included from /usr/include/c++/5.3.1/memory:81:0,
-                 from /usr/include/boost/config/no_tr1/memory.hpp:21,
-                 from /usr/include/boost/smart_ptr/shared_ptr.hpp:23,
-                 from /usr/include/boost/shared_ptr.hpp:17,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Node.hh:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/ValidSchema.hh:23,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:27,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from ../utility/utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from ../utility/utility.h:21,
                  from unit_test.cpp:9:
 /usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
    template<typename> class auto_ptr;
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from ../utility/utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from ../utility/utility.h:21,
                  from unit_test.cpp:9:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:141:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<InputStream> memoryInputStream(const OutputStream& source);
                 ^
 In file included from /usr/include/c++/5.3.1/memory:81:0,
-                 from /usr/include/boost/config/no_tr1/memory.hpp:21,
-                 from /usr/include/boost/smart_ptr/shared_ptr.hpp:23,
-                 from /usr/include/boost/shared_ptr.hpp:17,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Node.hh:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/ValidSchema.hh:23,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:27,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from ../utility/utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from ../utility/utility.h:21,
                  from unit_test.cpp:9:
 /usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
    template<typename> class auto_ptr;
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from ../utility/utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from ../utility/utility.h:21,
                  from unit_test.cpp:9:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:157:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<OutputStream> fileOutputStream(const char* filename,
                 ^
 In file included from /usr/include/c++/5.3.1/memory:81:0,
-                 from /usr/include/boost/config/no_tr1/memory.hpp:21,
-                 from /usr/include/boost/smart_ptr/shared_ptr.hpp:23,
-                 from /usr/include/boost/shared_ptr.hpp:17,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Node.hh:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/ValidSchema.hh:23,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:27,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from ../utility/utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from ../utility/utility.h:21,
                  from unit_test.cpp:9:
 /usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
    template<typename> class auto_ptr;
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from ../utility/utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from ../utility/utility.h:21,
                  from unit_test.cpp:9:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:164:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<InputStream> fileInputStream(const char* filename,
                 ^
 In file included from /usr/include/c++/5.3.1/memory:81:0,
-                 from /usr/include/boost/config/no_tr1/memory.hpp:21,
-                 from /usr/include/boost/smart_ptr/shared_ptr.hpp:23,
-                 from /usr/include/boost/shared_ptr.hpp:17,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Node.hh:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/ValidSchema.hh:23,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:27,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from ../utility/utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from ../utility/utility.h:21,
                  from unit_test.cpp:9:
 /usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
    template<typename> class auto_ptr;
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from ../utility/utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from ../utility/utility.h:21,
                  from unit_test.cpp:9:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:172:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<OutputStream> ostreamOutputStream(std::ostream& os,
                 ^
 In file included from /usr/include/c++/5.3.1/memory:81:0,
-                 from /usr/include/boost/config/no_tr1/memory.hpp:21,
-                 from /usr/include/boost/smart_ptr/shared_ptr.hpp:23,
-                 from /usr/include/boost/shared_ptr.hpp:17,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Node.hh:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/ValidSchema.hh:23,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:27,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from ../utility/utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from ../utility/utility.h:21,
                  from unit_test.cpp:9:
 /usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
    template<typename> class auto_ptr;
                             ^
 In file included from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:28:0,
                  from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from ../utility/utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/log/log.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:11,
+                 from ../utility/utility.h:21,
                  from unit_test.cpp:9:
 /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Stream.hh:180:16: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
  AVRO_DECL std::auto_ptr<InputStream> istreamInputStream(std::istream& in,
                 ^
 In file included from /usr/include/c++/5.3.1/memory:81:0,
-                 from /usr/include/boost/config/no_tr1/memory.hpp:21,
-                 from /usr/include/boost/smart_ptr/shared_ptr.hpp:23,
-                 from /usr/include/boost/shared_ptr.hpp:17,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Node.hh:26,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/ValidSchema.hh:23,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Encoder.hh:27,
-                 from /media/sf_Workspace/guoze.lin/ADCore/3rdparty/include/avro/Specific.hh:30,
-                 from /media/sf_Workspace/guoze.lin/ADCore/protocol/click/click.h:26,
-                 from ../utility/utility.h:26,
+                 from /media/sf_Workspace/guoze.lin/ADCore/common/types.h:10,
+                 from ../utility/utility.h:21,
                  from unit_test.cpp:9:
 /usr/include/c++/5.3.1/bits/unique_ptr.h:49:28: note: declared here
    template<typename> class auto_ptr;

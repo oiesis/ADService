@@ -1,0 +1,44 @@
+
+
+protocol log{
+import idl "common.inc";
+record LogItem {
+	// 处理请求时的UNIX时间戳
+	long timeStamp;
+	// 时区
+	int timeZone;
+	// 日志产生的模块
+	LogPhaseType logType;
+	// 请求状态
+	int reqStatus;
+	// 请求方法,true:GET,false:POST
+	boolean reqMethod = false;
+	// 用户的IP信息
+	IPInfo ipInfo;
+	// 请求来源
+	string referer;
+	// 请求主机
+	string host;
+	// 请求的路径
+	string path;
+	// 用户Id,不同模块可能有不同的定义
+	string userId;
+	// 用户浏览器代理
+	string userAgent;
+	// 第三方平台提供的用户信息
+	UserInfo userInfo;
+	// 第三方平台提供的地理信息
+	GeoInfo geoInfo;
+	// 用户访问的页面信息
+	string pageInfo;
+	// 前端脚本挖掘到的信息
+	string jsInfo;
+	// 设备信息
+	string deviceInfo;
+	// 跟踪Id
+	int traceId;
+	// 广告信息
+	AdInfo adInfo;
+}
+
+}

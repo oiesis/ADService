@@ -7,16 +7,15 @@
 
 #include <memory>
 #include "muduo/base/Logging.h"
-#include "muduo/net/EventLoop.h"
-#include "muduo/net/http/HttpServer.h"
-#include "muduo/net/http/HttpRequest.h"
-#include "muduo/net/http/HttpResponse.h"
 
 #include "types.h"
 #include "abstract_service.h"
 #include "functions.h"
 #include "core_executor.h"
 #include "net/log_pusher.h"
+#include "core_http_server.h"
+#include "constants.h"
+
 
 namespace adservice{
 
@@ -24,12 +23,20 @@ namespace adservice{
 
         using namespace muduo::net;
 
+        class ClickService;
+
+        typedef std::shared_ptr<ClickService> ClickModule;
+        typedef std::weak_ptr<ClickService> ClickModule_weak;
+
+
+
         class ClickService : public adservice::server::AbstractService{
         public:
-            typedef std::shared_ptr<HttpServer> ServerPtr;
+            typedef std::shared_ptr<adservice::server::CoreHttpServer> ServerPtr;
+            static ClickModule getInstance();
         public:
-            explicit ClickService(int port,int threads):executor("mtty_click"){
-                init(port,threads);
+            explicit ClickService(int port,int threads,bool logRemote=true):executor("mtty_click"){
+                init(port,threads,logRemote);
             }
             ClickService(const ClickService&) = delete;
 
@@ -37,32 +44,30 @@ namespace adservice{
                 DebugMessage("in pid ",getpid()," clickservice module gone");
             }
 
-            virtual void onRequest(const HttpRequest& req, HttpResponse* resp);
+            virtual void onRequest(const TcpConnectionPtr& conn,const HttpRequest& req, bool isClose);
 
 
-            void init(int port,int threads);
+            void init(int port,int threads,bool logRemote=true);
 
             virtual void start();
 
             void stop(){
                 loop.quit();
                 executor.stop();
-                clickLogger.stop();
+                clickLogger->stop();
             }
 
-            adservice::log::LogPusher& getLogger(){
+            adservice::log::LogPusherPtr& getLogger(){
                 return clickLogger;
             }
-
         private:
             ServerPtr server;
-            adservice::log::LogPusher clickLogger;
+            adservice::log::LogPusherPtr clickLogger;
             muduo::net::EventLoop loop;
             adservice::server::Executor executor;
         };
 
-        typedef std::shared_ptr<ClickService> ClickModule;
-        typedef std::weak_ptr<ClickService> ClickModule_weak;
+
      }
 
 }
