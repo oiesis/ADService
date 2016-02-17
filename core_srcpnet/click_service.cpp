@@ -7,6 +7,7 @@
 #include "protocol/click/click.h"
 #include "protocol/log/log.h"
 #include "common/types.h"
+#include <exception>
 
 extern adservice::click::ClickModule g_clickService;
 
@@ -27,41 +28,56 @@ namespace adservice{
             explicit HandleClickQueryTask(const TcpConnectionPtr& _conn,const muduo::string& query):conn(_conn),data(query.c_str()){
             }
             void operator()(){
-                protocol::click::ClickRequest clickRequest;
-                getAvroObject(clickRequest,(const uint8_t*)data.c_str(),data.length());
-                if(clickRequest.cookiesId.empty()){
-                    CypherResult128 cookiesResult;
-                    makeCookies(cookiesResult);
-                    clickRequest.cookiesId = (char*)cookiesResult.bytes;
+                try {
+                    protocol::click::ClickRequest clickRequest;
+                    getAvroObject(clickRequest, (const uint8_t *) data.c_str(), data.length());
+                    if (clickRequest.cookiesId.empty()) {
+                        CypherResult128 cookiesResult;
+                        makeCookies(cookiesResult);
+                        clickRequest.cookiesId = (char *) cookiesResult.bytes;
+                    }
+                    protocol::click::ClickResponse clickResponse;
+                    clickResponse.cookiesId = clickRequest.cookiesId;
+                    std::string clickResponseAvroData;
+                    writeAvroObject(clickResponse, clickResponseAvroData);
+                    // 根据clickRequest生成日志对象
+                    protocol::log::LogItem log;
+                    log.userId = clickRequest.cookiesId;
+                    log.userInfo.age = clickRequest.age;
+                    log.userInfo.interest = clickRequest.age;
+                    log.adInfo = *(reinterpret_cast<protocol::log::AdInfo *>(&clickRequest.adInfo));
+                    log.geoInfo = *(reinterpret_cast<protocol::log::GeoInfo *>(&clickRequest.geoInfo));
+                    std::shared_ptr<std::string> logString = std::make_shared<std::string>();
+                    writeAvroObject(log, *(logString.get()));
+                    // 将日志对象推送到阿里云队列
+                    ClickModule clickModule = ClickService::getInstance();
+                    if (clickModule.use_count() > 0)
+                        clickModule->getLogger()->push(logString);
+                    //返回请求
+                    Buffer buf;
+                    HttpResponse resp(true);
+                    resp.setStatusCode(HttpResponse::k200Ok);
+//                    resp.setStatusCode(HttpResponse::k302);
+                    resp.setStatusMessage("OK");
+                    resp.setContentType("text/html");
+                    resp.addHeader("Server", "Mtty");
+                    resp.addHeader("Location","http://www.mtty.com");
+//                    resp.setBody(clickResponseAvroData.c_str());
+                    resp.appendToBuffer(&buf);
+                    conn->send(&buf); //这里将异步调用IO线程,进行数据回写
+                    conn->shutdown(); //假定都是短链接
+                }catch(std::exception& e){
+                    LOG_ERROR<<"error occured in HandleClickQueryTask:"<<e.what();
+                    HttpResponse resp(true);
+                    resp.setStatusCode(HttpResponse::k500ServerErr);
+                    resp.setStatusMessage("error");
+                    resp.setContentType("text/html");
+                    resp.addHeader("Server", "Mtty");
+                    Buffer buf;
+                    resp.appendToBuffer(&buf);
+                    conn->send(&buf);
+                    conn->shutdown();
                 }
-                protocol::click::ClickResponse clickResponse;
-                clickResponse.cookiesId = clickRequest.cookiesId;
-                std::string clickResponseAvroData;
-                writeAvroObject(clickResponse,clickResponseAvroData);
-                // 根据clickRequest生成日志对象
-                protocol::log::LogItem log;
-                log.userId = clickRequest.cookiesId;
-                log.userInfo.age = clickRequest.age;
-                log.userInfo.interest = clickRequest.age;
-                log.adInfo = *(reinterpret_cast<protocol::log::AdInfo*>(&clickRequest.adInfo));
-                log.geoInfo = *(reinterpret_cast<protocol::log::GeoInfo*>(&clickRequest.geoInfo));
-                std::shared_ptr<std::string> logString = std::make_shared<std::string>();
-                writeAvroObject(log,*(logString.get()));
-                // 将日志对象推送到阿里云队列
-                ClickModule clickModule = ClickService::getInstance();
-                if(clickModule.use_count()>0)
-                    clickModule->getLogger()->push(logString);
-                //返回请求
-                Buffer buf;
-                HttpResponse resp(true);
-                resp.setStatusCode(HttpResponse::k200Ok);
-                resp.setStatusMessage("OK");
-                resp.setContentType("text/html");
-                resp.addHeader("Server", "Mtty");
-                resp.setBody(clickResponseAvroData.c_str());
-                resp.appendToBuffer(&buf);
-                conn->send(&buf); //这里将异步调用IO线程,进行数据回写
-                conn->shutdown(); //假定都是短链接
             }
         private:
             std::string data;
@@ -92,6 +108,7 @@ namespace adservice{
             DebugMessage("Headers ", req.methodString(), " ",req.path());
             if (req.path() == "/c") {
                 const muduo::string& data = req.query();
+                DebugMessage("in request c,query=",req.query().c_str());
                 executor.run(std::bind(HandleClickQueryTask(conn,data)));
             }
             else
