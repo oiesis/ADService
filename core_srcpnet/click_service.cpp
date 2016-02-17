@@ -61,18 +61,19 @@ namespace adservice{
                     resp.setStatusMessage("OK");
                     resp.setContentType("text/html");
                     resp.addHeader("Server", "Mtty");
-                    resp.addHeader("Location","http://www.mtty.com");
-//                    resp.setBody(clickResponseAvroData.c_str());
+//                    resp.addHeader("Location","http://www.mtty.com");
+                    resp.setBody(clickResponseAvroData.c_str());
                     resp.appendToBuffer(&buf);
                     conn->send(&buf); //这里将异步调用IO线程,进行数据回写
                     conn->shutdown(); //假定都是短链接
                 }catch(std::exception& e){
                     LOG_ERROR<<"error occured in HandleClickQueryTask:"<<e.what();
                     HttpResponse resp(true);
-                    resp.setStatusCode(HttpResponse::k500ServerErr);
+                    resp.setStatusCode(HttpResponse::k302Redirect);
                     resp.setStatusMessage("error");
                     resp.setContentType("text/html");
                     resp.addHeader("Server", "Mtty");
+                    resp.addHeader("Location","http://www.baidu.com");
                     Buffer buf;
                     resp.appendToBuffer(&buf);
                     conn->send(&buf);

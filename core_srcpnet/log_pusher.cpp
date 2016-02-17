@@ -21,7 +21,7 @@ namespace adservice{
             LogPushClickTask(Producer* p,std::shared_ptr<std::string>& l):producer(p),log(l){}
             LogPushClickTask(Producer* p,std::shared_ptr<std::string>&& l):producer(p),log(l){}
             void operator()(){
-                Message msg("mtty_click","tagA",*(log.get()));
+                ons::Message msg("mtty_click","tagA",*(log.get()));
                 try{
                     SendResultONS sendResult = producer->send(msg);
                 }catch(ONSClientException& e){
@@ -162,7 +162,7 @@ namespace adservice{
             return NULL;
         }
 
-        void LogPusher::startRemoteMonitor(Message& msg) {
+        void LogPusher::startRemoteMonitor(ons::Message& msg) {
             static RemoteMonitorThreadParam param;
             if(param.started)
                 return;

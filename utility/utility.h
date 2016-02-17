@@ -166,6 +166,7 @@ namespace adservice{
            };
 
            typedef union {
+               char_t char_bytes[20];
                uchar_t bytes[16];
                int32_t words[4];
                int64_t dwords[2];
@@ -480,6 +481,9 @@ void adservice_free(void* ptr);
                obj.SerializeToOstream(&stream);
            }
 
+           /**
+            * 本方法从avro字节流中获取对象
+            */
            template<typename T>
            inline T& getAvroObject(T& obj,const uint8_t* bytes,int size){
                std::unique_ptr<avro::InputStream> in = avro::memoryInputStream(bytes,size); //需要考虑对象重用
@@ -495,15 +499,19 @@ void adservice_free(void* ptr);
                avro::EncoderPtr encoderPtr = avro::binaryEncoder();
                encoderPtr->init(*out);
                avro::codec_traits<T>::encode(*encoderPtr,obj);
-               out->flush();
                return out;
            }
+
+           /**
+            * 本方法从给定对象获取avro二进制串
+            */
            template<typename T>
            inline void writeAvroObject(T& obj,std::string& output){
                std::unique_ptr<avro::OutputStream> out = writeAvroObject(obj);
-               uint8_t* data;
+               std::unique_ptr<avro::InputStream> is = avro::memoryInputStream(*out);
+               const uint8_t* data;
                size_t size;
-               while(out->next(&data,&size)){
+               while(is->next(&data,&size)){
                     output.append((const char*)data,size);
                }
            }

@@ -333,6 +333,7 @@ namespace adservice {
                     p[i]=key2.bytes[i];
                 }
                 cookiesEncode(midResult,8,result);
+                result.char_bytes[16]='\0';
             }
 
         }

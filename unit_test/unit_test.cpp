@@ -6,12 +6,14 @@
 #include <iostream>
 #include <cassert>
 #include <string.h>
+#include <utility/utility.h>
 #include "../utility/utility.h"
 
 using namespace std;
 using namespace adservice::utility::time;
 using namespace adservice::utility::cypher;
 using namespace adservice::utility::json;
+using namespace adservice::utility::serialize;
 
 #define VERBOSE_DEBUG	1
 #define UNIT_TEST	1
@@ -139,7 +141,25 @@ void server_test(){
 	launch_service();
 }
 
+#include "protocol/click/click.h"
+
+void avro_test(){
+	cout<<"avro test"<<endl;
+	protocol::click::ClickRequest clickRequest;
+	CypherResult128 cypherCookies;
+	makeCookies(cypherCookies);
+	clickRequest.cookiesId = (const char*)cypherCookies.char_bytes;
+	cout<<clickRequest.cookiesId<<endl;
+	string avroString;
+	writeAvroObject(clickRequest,avroString);
+	protocol::click::ClickRequest clickRequestDecoded;
+	getAvroObject(clickRequestDecoded,(const uint8_t*)avroString.c_str(),avroString.length());
+	cout<<clickRequestDecoded.cookiesId<<endl;
+	cout<<"avro test end"<<endl;
+}
+
 int main(int argc,char** argv){
-	server_test();
+	//server_test();
+	avro_test();
 	return 0;
 }

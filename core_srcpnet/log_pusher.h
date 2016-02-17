@@ -82,7 +82,7 @@ namespace adservice{
             void setWorkMode(bool workLocal){
                 modeLocal = workLocal;
             }
-            void startRemoteMonitor(Message& msg);
+            void startRemoteMonitor(ons::Message& msg);
 
             void push(std::shared_ptr<std::string>& logstring);
             void push(std::shared_ptr<std::string>&& logstring);
