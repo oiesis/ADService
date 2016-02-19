@@ -150,7 +150,7 @@ void avro_test(){
 	makeCookies(cypherCookies);
 	clickRequest.cookiesId = (const char*)cypherCookies.char_bytes;
 	cout<<clickRequest.cookiesId<<endl;
-	string avroString;
+	adservice::types::string avroString;
 	writeAvroObject(clickRequest,avroString);
 	protocol::click::ClickRequest clickRequestDecoded;
 	getAvroObject(clickRequestDecoded,(const uint8_t*)avroString.c_str(),avroString.length());
@@ -159,7 +159,7 @@ void avro_test(){
 }
 
 int main(int argc,char** argv){
-	//server_test();
-	avro_test();
+	server_test();
+	//avro_test();
 	return 0;
 }

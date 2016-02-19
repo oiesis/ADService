@@ -17,8 +17,8 @@
  */
 
 
-#ifndef CLICK_AVRO_CLICK_H_659754449__H_
-#define CLICK_AVRO_CLICK_H_659754449__H_
+#ifndef CLICK_AVRO_CLICK_H_136448074__H_
+#define CLICK_AVRO_CLICK_H_136448074__H_
 
 
 #include <sstream>
@@ -26,7 +26,6 @@
 #include "avro/Specific.hh"
 #include "avro/Encoder.hh"
 #include "avro/Decoder.hh"
-#include <ostream>
 
 namespace protocol{
 namespace click {

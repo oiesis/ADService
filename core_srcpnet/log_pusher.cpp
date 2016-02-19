@@ -4,6 +4,7 @@
 
 #include <cstdlib>
 #include <sys/stat.h>
+#include <sys/types.h>
 #include "log_pusher.h"
 #include "muduo/base/logging.h"
 #include "utility/utility.h"
@@ -18,10 +19,10 @@ namespace adservice{
 
 
         struct LogPushClickTask{
-            LogPushClickTask(Producer* p,std::shared_ptr<std::string>& l):producer(p),log(l){}
-            LogPushClickTask(Producer* p,std::shared_ptr<std::string>&& l):producer(p),log(l){}
+            LogPushClickTask(Producer* p,std::shared_ptr<adservice::types::string>& l):producer(p),log(l){}
+            LogPushClickTask(Producer* p,std::shared_ptr<adservice::types::string>&& l):producer(p),log(l){}
             void operator()(){
-                ons::Message msg("mtty_click","tagA",*(log.get()));
+                ons::Message msg("mtty_click","tagA",std::string(log.get()->begin(),log.get()->end()));
                 try{
                     SendResultONS sendResult = producer->send(msg);
                 }catch(ONSClientException& e){
@@ -32,7 +33,7 @@ namespace adservice{
                 }
             }
             Producer* producer;
-            std::shared_ptr<std::string> log;
+            std::shared_ptr<adservice::types::string> log;
         };
 
         struct LogPushClickLocalThreadData{
@@ -53,8 +54,8 @@ namespace adservice{
 
 
         struct LogPushClickLocalTask{
-            LogPushClickLocalTask(std::shared_ptr<std::string>& l):log(l){}
-            LogPushClickLocalTask(std::shared_ptr<std::string>&& l):log(l){}
+            LogPushClickLocalTask(std::shared_ptr<adservice::types::string>& l):log(l){}
+            LogPushClickLocalTask(std::shared_ptr<adservice::types::string>&& l):log(l){}
             void operator()(){
                 pthread_t thread = pthread_self();
                 LogPushClickLocalThreadData* data = (LogPushClickLocalThreadData*)ThreadLocalManager::getInstance().get(thread);
@@ -80,7 +81,7 @@ namespace adservice{
                     ::time(&currentTime);
                     tm* ltime = localtime(&currentTime);
                     char dirname[50];
-                    sprintf(dirname,"log/%d%d%d",ltime->tm_year,ltime->tm_mon+1,ltime->tm_mday);
+                    sprintf(dirname,"log/%d%02d%d",1900+ltime->tm_year,ltime->tm_mon+1,ltime->tm_mday);
                     if(access(dirname,F_OK)==-1){
                         if(mkdir(dirname,S_IRWXU|S_IRWXG)<0){
                             LOG_ERROR << "dir "<<dirname<<" can not be created!";
@@ -96,11 +97,11 @@ namespace adservice{
                     data->lastTime = utility::time::getTodayStartTime();
                 }
                 char flag[20]={'\0'};
-                sprintf(flag,"mt%%d^",log->length());
+                sprintf(flag,"mt%d^",log->length());
                 fwrite(flag,strlen(flag),1,fp);
                 fwrite(log->c_str(),log->length(),1,fp);
             }
-            std::shared_ptr<std::string> log;
+            std::shared_ptr<adservice::types::string> log;
         };
 
         void LogPusher::loadLoggerFactoryProperty(const char* file){
@@ -117,7 +118,7 @@ namespace adservice{
             factoryInfo.setFactoryProperty(ONSFactoryProperty::SecretKey, mw.getString("SecretKey",DEFAULT_SECRET_KEY));
         }
 
-        void LogPusher::push(std::shared_ptr<std::string>& logstring){
+        void LogPusher::push(std::shared_ptr<adservice::types::string>& logstring){
             if(!modeLocal) {
                 executor.run(std::bind(LogPushClickTask(producer, logstring)));
             }else{
@@ -125,7 +126,7 @@ namespace adservice{
             }
         }
 
-        void LogPusher::push(std::shared_ptr<std::string>&& logstring){
+        void LogPusher::push(std::shared_ptr<adservice::types::string>&& logstring){
             if(!modeLocal) {
                 executor.run(std::bind(LogPushClickTask(producer, logstring)));
             }else{

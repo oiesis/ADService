@@ -22,13 +22,19 @@ namespace adservice{
         using namespace adservice::utility::cypher;
         using namespace adservice::server;
 
+        void checkParseClickResponse(protocol::click::ClickResponse& resp,adservice::types::string& data){
+            getAvroObject(resp, (const uint8_t *) data.c_str(), data.length());
+            DebugMessage("in check parse back:", resp.cookiesId);
+        }
+
 
         class HandleClickQueryTask{
         public:
-            explicit HandleClickQueryTask(const TcpConnectionPtr& _conn,const muduo::string& query):conn(_conn),data(query.c_str()){
+            explicit HandleClickQueryTask(const TcpConnectionPtr& _conn,const adservice::types::string& query):conn(_conn),data(query){
             }
             void operator()(){
                 try {
+                    DebugMessage("received data,length:",data.length());
                     protocol::click::ClickRequest clickRequest;
                     getAvroObject(clickRequest, (const uint8_t *) data.c_str(), data.length());
                     if (clickRequest.cookiesId.empty()) {
@@ -36,10 +42,14 @@ namespace adservice{
                         makeCookies(cookiesResult);
                         clickRequest.cookiesId = (char *) cookiesResult.bytes;
                     }
+                    DebugMessage("click request,cookiesId:",clickRequest.cookiesId);
+                    DebugMessage("after parse clickrequest");
                     protocol::click::ClickResponse clickResponse;
                     clickResponse.cookiesId = clickRequest.cookiesId;
-                    std::string clickResponseAvroData;
+                    adservice::types::string clickResponseAvroData;
                     writeAvroObject(clickResponse, clickResponseAvroData);
+                    DebugMessage("after generate clickresponse");
+                    checkParseClickResponse(clickResponse,clickResponseAvroData);
                     // 根据clickRequest生成日志对象
                     protocol::log::LogItem log;
                     log.userId = clickRequest.cookiesId;
@@ -47,8 +57,9 @@ namespace adservice{
                     log.userInfo.interest = clickRequest.age;
                     log.adInfo = *(reinterpret_cast<protocol::log::AdInfo *>(&clickRequest.adInfo));
                     log.geoInfo = *(reinterpret_cast<protocol::log::GeoInfo *>(&clickRequest.geoInfo));
-                    std::shared_ptr<std::string> logString = std::make_shared<std::string>();
+                    std::shared_ptr<adservice::types::string> logString = std::make_shared<adservice::types::string>();
                     writeAvroObject(log, *(logString.get()));
+                    DebugMessage("after generate log object");
                     // 将日志对象推送到阿里云队列
                     ClickModule clickModule = ClickService::getInstance();
                     if (clickModule.use_count() > 0)
@@ -69,11 +80,11 @@ namespace adservice{
                 }catch(std::exception& e){
                     LOG_ERROR<<"error occured in HandleClickQueryTask:"<<e.what();
                     HttpResponse resp(true);
-                    resp.setStatusCode(HttpResponse::k302Redirect);
+                    resp.setStatusCode(HttpResponse::k500ServerError);
                     resp.setStatusMessage("error");
                     resp.setContentType("text/html");
                     resp.addHeader("Server", "Mtty");
-                    resp.addHeader("Location","http://www.baidu.com");
+                    resp.setBody("error occured in click query");
                     Buffer buf;
                     resp.appendToBuffer(&buf);
                     conn->send(&buf);
@@ -81,7 +92,7 @@ namespace adservice{
                 }
             }
         private:
-            std::string data;
+            adservice::types::string data;
             const TcpConnectionPtr& conn;
         };
 
@@ -108,7 +119,7 @@ namespace adservice{
         void ClickService::onRequest(const TcpConnectionPtr& conn,const HttpRequest& req, bool isClose) {
             DebugMessage("Headers ", req.methodString(), " ",req.path());
             if (req.path() == "/c") {
-                const muduo::string& data = req.query();
+                const adservice::types::string& data = req.query();
                 DebugMessage("in request c,query=",req.query().c_str());
                 executor.run(std::bind(HandleClickQueryTask(conn,data)));
             }

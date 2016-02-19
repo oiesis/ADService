@@ -10,6 +10,27 @@
 #include <memory>
 #include "protocol/log/log.h"
 
+#ifdef linux
+#include <ext/vstring.h>
+#include <ext/vstring_fwd.h>
+
+namespace adservice{
+	namespace types{
+		// c++11 small string optimization
+		// https://gcc.gnu.org/ml/gcc-patches/2014-11/msg01785.html
+		typedef __gnu_cxx::__sso_string string;
+	}
+}
+#else
+#include "muduo/base/Types.h"
+namespace adservice{
+	namespace types{
+		typedef muduo::string string;
+	}
+}
+
+#endif
+
 #ifndef char_t
 typedef char char_t;
 #endif
@@ -33,6 +54,7 @@ typedef u_int32_t uint32_t;
 #ifndef uint64_t
 typedef u_int64_t uint64_t;
 #endif
+
 
 #define IN
 #define OUT

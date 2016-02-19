@@ -506,7 +506,7 @@ void adservice_free(void* ptr);
             * 本方法从给定对象获取avro二进制串
             */
            template<typename T>
-           inline void writeAvroObject(T& obj,std::string& output){
+           inline void writeAvroObject(T& obj,adservice::types::string& output){
                std::unique_ptr<avro::OutputStream> out = writeAvroObject(obj);
                std::unique_ptr<avro::InputStream> is = avro::memoryInputStream(*out);
                const uint8_t* data;

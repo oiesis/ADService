@@ -12,6 +12,7 @@ CCFlags:=--std=c++11 -g -march=native -O2 -finline-limit=1000 -DNDEBUG -DUNIT_TE
 prerun:
 
 ifeq ($(OS),Linux)
+CCFlags+= -Dlinux
 LOAD_LIB += -lrt -ldl
 LINK_DYNAMIC ?= -rdynamic
 LD_LIBRARY_PATH?= /usr/lib/:/usr/lib64/:/usr/local/lib/:/usr/local/lib64/:/usr/lib/x86_64-linux-gnu/
