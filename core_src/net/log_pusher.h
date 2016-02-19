@@ -58,7 +58,8 @@ namespace adservice{
                 producer = NULL;//ONSFactory::getInstance()->createProducer(factoryInfo);
             }
             ~LogPusher(){
-                producer->shutdown();
+                if(!modeLocal&&producer!=NULL)
+                    producer->shutdown();
                 DebugMessage("logger ",this->loggerName, " gone");
             }
 
@@ -82,10 +83,10 @@ namespace adservice{
             void setWorkMode(bool workLocal){
                 modeLocal = workLocal;
             }
-            void startRemoteMonitor(Message& msg);
+            void startRemoteMonitor(ons::Message& msg);
 
-            void push(std::shared_ptr<std::string>& logstring);
-            void push(std::shared_ptr<std::string>&& logstring);
+            void push(std::shared_ptr<adservice::types::string>& logstring);
+            void push(std::shared_ptr<adservice::types::string>&& logstring);
         private:
         public:
             static struct spinlock lock;
