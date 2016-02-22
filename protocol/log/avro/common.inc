@@ -19,24 +19,28 @@ record GeoInfo{
 
 
 record AdInfo{
+    // 地域Id
+    string areaId;
     // 广告主Id
     int advId;
     // 推广计划Id
-    int cpid;
+    string cpid;
     // 推广单元Id
-    int sid;
+    string sid;
     // 创意Id
-    int bid;
+    string creativeId;
     // 点击Id
-    int clickId;
+    string clickId;
     // 广告交换商Id
-    int adxid ;
+    string adxid ;
     // 网站Id
-    int mid ;
+    string mid ;
     // 频道Id
-    int cid ;
+    string cid ;
     // 广告位Id
-    int pid ;
+    string pid ;
+    // 曝光Id
+    string imp_id;
     // 广告的落地页面,仅在click模块有用
     string landingUrl;
     // 成本

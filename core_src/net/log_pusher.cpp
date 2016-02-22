@@ -6,7 +6,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include "log_pusher.h"
-#include "muduo/base/logging.h"
+#include "muduo/base/Logging.h"
 #include "utility/utility.h"
 #include "core_threadlocal_manager.h"
 #include "atomic.h"
@@ -22,7 +22,7 @@ namespace adservice{
             LogPushClickTask(Producer* p,std::shared_ptr<adservice::types::string>& l):producer(p),log(l){}
             LogPushClickTask(Producer* p,std::shared_ptr<adservice::types::string>&& l):producer(p),log(l){}
             void operator()(){
-                ons::Message msg("mtty_click","tagA",std::string(log.get()->begin(),log.get()->end()));
+                ons::Message msg("mtty_click","tagA",std::string(log.get()->begin(),log.get()->end())); //overhead!!consider no-copy
                 try{
                     SendResultONS sendResult = producer->send(msg);
                 }catch(ONSClientException& e){

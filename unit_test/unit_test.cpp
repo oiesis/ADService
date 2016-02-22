@@ -6,14 +6,15 @@
 #include <iostream>
 #include <cassert>
 #include <string.h>
-#include <utility/utility.h>
-#include "../utility/utility.h"
+#include "utility/utility.h"
+#include "common/types.h"
 
 using namespace std;
 using namespace adservice::utility::time;
 using namespace adservice::utility::cypher;
 using namespace adservice::utility::json;
 using namespace adservice::utility::serialize;
+using namespace adservice::utility::url;
 
 #define VERBOSE_DEBUG	1
 #define UNIT_TEST	1
@@ -158,8 +159,59 @@ void avro_test(){
 	cout<<"avro test end"<<endl;
 }
 
+void url_test(){
+	cout<<"url test"<<endl;
+	std::string url="http://click.mtty.com/test?s=144105&x=99&r=0490337e-d6ce-11e5-8300-00163e08015d&d=12&t=144105&e=38&c=273&f=http%3A%2F%2Fwww.mtty.com%2Fdemo%2Fpcdd.html&h=000&a=0086-0010-0010&url=http%3A%2F%2Fm.rong360.com%2Fexpress%3Ffrom%3Dsem22%26utm_source%3Dmtwj%26utm_medium%3Dmtwj_dk";
+	adservice::types::string url2=url.c_str();
+	adservice::types::string output;
+	char buffer[1024];
+	urlDecode_f(url2,output,buffer);
+	cout<<output<<endl;
+	time_t beginTime;
+	time_t endTime;
+	cout<<"origin version:"<<endl;
+	time(&beginTime);
+	for(int i=0;i<1000000;i++){
+		std::string decodedUrl=urlDecode(url);
+	}
+	time(&endTime);
+	cout<<"time cost:"<<(endTime-beginTime)<<endl;
+	cout<<"modified version:"<<endl;
+	time(&beginTime);
+	for(int i=0;i<1000000;i++){
+		urlDecode_f(url2,output,buffer);
+	}
+	time(&endTime);
+	cout<<"time cost:"<<(endTime-beginTime)<<endl; //modified version is 5 times faster than old version
+	cout<<"url test end"<<endl;
+}
+
+void url_param_test(){
+	cout<<"url param test"<<endl;
+	std::string url="s=144105&x=99&r=0490337e-d6ce-11e5-8300-00163e08015d&d=12&t=144105&e=38&c=273&f=http%3A%2F%2Fwww.mtty.com%2Fdemo%2Fpcdd.html&h=000&a=0086-0010-0010&url=http%3A%2F%2Fm.rong360.com%2Fexpress%3Ffrom%3Dsem22%26utm_source%3Dmtwj%26utm_medium%3Dmtwj_dk";
+	adservice::utility::url::ParamMap paramMap;
+	getParam(paramMap,url.c_str());
+	typedef typename ParamMap::iterator Iter;
+	for(Iter iter = paramMap.begin();iter!=paramMap.end();iter++){
+		cout<<iter->first<<":"<<iter->second<<endl;
+	}
+	time_t beginTime;
+	time_t endTime;
+	cout<<"getparam pressure test:"<<endl;
+	time(&beginTime);
+	for(int i=0;i<1000000;i++){
+		paramMap.erase(paramMap.cbegin(),paramMap.cend());
+		getParam(paramMap,url.c_str());
+	}
+	time(&endTime);
+	cout<<"getparam pressure test,cost time:"<<(endTime-beginTime)<<endl;
+	cout<<"url param test end"<<endl;
+}
+
 int main(int argc,char** argv){
 	server_test();
 	//avro_test();
+//	url_test();
+//	url_param_test();
 	return 0;
 }
