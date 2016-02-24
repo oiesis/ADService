@@ -24,41 +24,37 @@ namespace adservice{
         static const int LOGGER_THREAD_NUM = 100;
 
         static const char* DEFAULT_PRODUCER_ID = "PID_mtty001";
+        static const char* DEFAULT_TOPIC = "adlog";
         static const char* DEFAULT_ACCESS_KEY = "5jaQzkjjARFVFUrE";
         static const char* DEFAULT_SECRET_KEY = "SbFRrY6y1cnSKcdC0QpK1Vkv0QMmTw";
-        static const char* DEFAULT_TOPIC = "mtty_click";
+
 
         class LogPusher;
         typedef std::shared_ptr<LogPusher> LogPusherPtr;
 
         class LogPusher{
         public:
-            static LogPusherPtr getLogger(const std::string& name){ //fixme: std::map is not thread-safe,risk still holds
-                LogPusherPtr log = logMap[name];
-                if(log.use_count()==0){
-                    spinlock_lock(&lock);
-                    if((log=logMap[name]).use_count()==0) {
-                        log = std::make_shared<LogPusher>(name.c_str());
-                        logMap[name] = log;
-                    }
-                    spinlock_unlock(&lock);
-                }
-                return log;
-            }
+            static LogPusherPtr getLogger(const std::string& name,int ifnodefineThreads =10,bool logLocal = false);
+
+            static void removeLogger(const std::string& name);
+
         public:
-            LogPusher(const char* logger = "log_default"):loggerName(logger),
-                                                          executor(logger,false,LOGGER_THREAD_NUM,LOG_QUEUE_SIZE),
-                                                          modeLocal(false)
+            LogPusher(const char* logger = "log_default",int loggerThreads = LOGGER_THREAD_NUM,bool modeLocal = false):loggerName(logger),
+                                                          executor(logger,false,loggerThreads,LOG_QUEUE_SIZE),
+                                                          modeLocal(modeLocal)
             {
                 factoryInfo.setFactoryProperty(ONSFactoryProperty::ProducerId, DEFAULT_PRODUCER_ID);
                 factoryInfo.setFactoryProperty(ONSFactoryProperty::PublishTopics, DEFAULT_TOPIC);
                 factoryInfo.setFactoryProperty(ONSFactoryProperty::MsgContent, "input msg content");
                 factoryInfo.setFactoryProperty(ONSFactoryProperty::AccessKey, DEFAULT_ACCESS_KEY);
                 factoryInfo.setFactoryProperty(ONSFactoryProperty::SecretKey, DEFAULT_SECRET_KEY );
-                producer = NULL;//ONSFactory::getInstance()->createProducer(factoryInfo);
+                if(!modeLocal)
+                    producer = ONSFactory::getInstance()->createProducer(factoryInfo);
+                else
+                    producer = NULL;
             }
             ~LogPusher(){
-                if(!modeLocal&&producer!=NULL)
+                if(producer!=NULL)
                     producer->shutdown();
                 DebugMessage("logger ",this->loggerName, " gone");
             }
@@ -73,14 +69,18 @@ namespace adservice{
             }
 
             void start(){
-                if(!modeLocal&&producer!=NULL)
+                if(!modeLocal&&producer!=NULL) {
                     producer->start();
+                }
                 executor.start();
             }
             void stop(){
                 executor.stop();
             }
             void setWorkMode(bool workLocal){
+                if(!workLocal && modeLocal==false && producer == NULL){
+                    producer = ONSFactory::getInstance()->createProducer(factoryInfo);
+                }
                 modeLocal = workLocal;
             }
             void startRemoteMonitor(ons::Message& msg);

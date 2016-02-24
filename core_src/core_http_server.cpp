@@ -24,6 +24,9 @@ namespace adservice{
           httpCallback_(conn,req, &close);
         }
 
+        /**
+         * 当需要进一步提升httpserver的性能,请重写这里的parser
+         */
         bool requestParser(HttpContext* context,Buffer* buf,muduo::Timestamp receiveTime){
             bool ok = true;
             bool hasMore = true;

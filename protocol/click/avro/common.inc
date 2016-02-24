@@ -24,11 +24,11 @@ record AdInfo{
     // 广告主Id
     int advId;
     // 推广计划Id
-    string cpid;
+    int cpid;
     // 推广单元Id
-    string sid;
+    int sid;
     // 创意Id
-    string creativeId;
+    int creativeId;
     // 点击Id
     string clickId;
     // 广告交换商Id
@@ -38,7 +38,9 @@ record AdInfo{
     // 频道Id
     string cid ;
     // 广告位Id
-    string pid ;
+    int pid ;
+    // 平台Id
+    int unionId;
     // 曝光Id
     string imp_id;
     // 广告的落地页面,仅在click模块有用

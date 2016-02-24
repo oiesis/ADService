@@ -14,6 +14,8 @@
 namespace adservice{
     namespace log{
 
+        using namespace adservice::utility::escape;
+
         struct spinlock LogPusher::lock={0};
         std::map<std::string,LogPusherPtr> LogPusher::logMap;
 
@@ -22,14 +24,19 @@ namespace adservice{
             LogPushClickTask(Producer* p,std::shared_ptr<adservice::types::string>& l):producer(p),log(l){}
             LogPushClickTask(Producer* p,std::shared_ptr<adservice::types::string>&& l):producer(p),log(l){}
             void operator()(){
-                ons::Message msg("mtty_click","tagA",std::string(log.get()->begin(),log.get()->end())); //overhead!!consider no-copy
+                std::string ali_escapeString = encode4ali(*(log.get()));
+                DebugMessage("encoded log string for aliyun,length:",ali_escapeString.length());
+                ons::Message msg(DEFAULT_TOPIC,"tagA",ali_escapeString);
                 try{
                     SendResultONS sendResult = producer->send(msg);
+                    DebugMessage("sendResult:",sendResult.getMessageId());
                 }catch(ONSClientException& e){
                     LOG_ERROR << "ONSClient error:" << e.GetMsg() << " errorcode:" << e.GetError();
                     LogPusherPtr logger = LogPusher::getLogger(CLICK_SERVICE_LOGGER);
                     logger->setWorkMode(true);
                     logger->startRemoteMonitor(msg);
+                }catch(std::exception& e){
+                    LOG_ERROR << "error occured in LogPushClickTask,err:"<<e.what();
                 }
             }
             Producer* producer;
@@ -95,6 +102,7 @@ namespace adservice{
                         return;
                     }
                     data->lastTime = utility::time::getTodayStartTime();
+                    data->fp = fp;
                 }
                 char flag[20]={'\0'};
                 sprintf(flag,"mt%d^",log->length());
@@ -103,6 +111,26 @@ namespace adservice{
             }
             std::shared_ptr<adservice::types::string> log;
         };
+
+
+        LogPusherPtr LogPusher::getLogger(const std::string& name,int ifnodefineThreads,bool logLocal){ //fixme: std::map is not thread-safe,risk still holds
+            LogPusherPtr log = logMap[name];
+            if(log.use_count()==0){
+                spinlock_lock(&lock);
+                if((log=logMap[name]).use_count()==0) {
+                    log = std::make_shared<LogPusher>(name.c_str(),ifnodefineThreads,logLocal);
+                    logMap[name] = log;
+                }
+                spinlock_unlock(&lock);
+            }
+            return log;
+        }
+
+        void LogPusher::removeLogger(const std::string& name){
+            spinlock_lock(&lock);
+            logMap.erase(name);
+            spinlock_unlock(&lock);
+        }
 
         void LogPusher::loadLoggerFactoryProperty(const char* file){
             using namespace utility::json;
@@ -156,8 +184,9 @@ namespace adservice{
                     LogPusher::getLogger(CLICK_SERVICE_LOGGER)->setWorkMode(false);
                     break;
                 } catch (ONSClientException &e) {
+                    LOG_ERROR<<"aliyun ons error still exists,error:"<<e.GetError();
                 }
-                sleep(10);
+                sleep(2);
             }
             _param->started = 0;
             return NULL;

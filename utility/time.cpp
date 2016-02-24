@@ -39,8 +39,8 @@ namespace adservice{
             int64_t getTodayStartTime(){
                 time_t currentTime;
                 ::time(&currentTime);
-                tm* ltime = localtime(&currentTime);
-                tm todayTime = *ltime;
+                tm todayTime;
+                localtime_r(&currentTime,&todayTime);
                 todayTime.tm_hour = 0;
                 todayTime.tm_min = 0;
                 todayTime.tm_sec = 0;

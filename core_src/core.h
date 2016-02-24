@@ -42,9 +42,12 @@ namespace adservice{
         typedef struct ServerConfig{
             int clickPort;
             int clickThreads;
+            int clickLoggerThreads;
             bool runClick;
             bool clickLogRemote;
             bool isDaemon;
+            int loggingLevel;
+
         } *PServerConfig;
 
         static const char* DEFAULT_CONFIG_PATH="../conf/service.conf";
@@ -59,9 +62,11 @@ namespace adservice{
 	        }
             config.clickPort = mw.getInt("click_port",8808);
             config.clickThreads = mw.getInt("click_threads",24);
+            config.clickLoggerThreads = mw.getInt("click_logger_threads",10);
             config.runClick = mw.getBoolean("load_click", false);
             config.clickLogRemote = mw.getBoolean("click_log_remote",false);
             config.isDaemon = mw.getBoolean("isDaemon",true);
+            config.loggingLevel = mw.getInt("logging_level",4);
         }
 
 	    int write_pid(const char *pidfile);

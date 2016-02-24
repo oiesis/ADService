@@ -4,6 +4,7 @@
 #include <array>
 #include <algorithm>
 #include <iostream>
+#include <iomanip>
 #include <cassert>
 #include <string.h>
 #include "utility/utility.h"
@@ -15,6 +16,7 @@ using namespace adservice::utility::cypher;
 using namespace adservice::utility::json;
 using namespace adservice::utility::serialize;
 using namespace adservice::utility::url;
+using namespace adservice::utility::escape;
 
 #define VERBOSE_DEBUG	1
 #define UNIT_TEST	1
@@ -208,10 +210,49 @@ void url_param_test(){
 	cout<<"url param test end"<<endl;
 }
 
+void ali_shit_test(){
+	cout<<"ali shit test"<<endl;
+	uint8_t tmp[56];
+	uint8_t* tmpbuf = tmp;
+	numberEncode(300,tmpbuf);
+	for(uint8_t* p=tmp;p<tmpbuf;p++){
+		cout<<(int)*p<<" ";
+	}
+	cout<<endl;
+	uint8_t input[256];
+	for(int i=0;i<200;i++){
+		input[i]=i;
+	}
+	input[1]=0;
+	input[5]=0;
+	input[6]=0;
+	input[30]=0;
+	input[40]=0;
+	input[200]='\0';
+	std::string test((char*)input,(char*)(input+200));
+	std::string encoded=encode4ali(test);
+	std::string decoded=decode4ali(encoded);
+	if(test.length()==decoded.length()){
+		bool isSame = true;
+		for(int i=0;i<test.length();i++){
+			if(test[i]!=decoded[i]){
+				isSame = false;
+				break;
+			}
+		}
+		if(isSame){
+			cout<<"decoded string equal origin"<<endl;
+		}else{
+			cout<<"decoded string not equal origin"<<endl;
+		}
+	}else{
+		cout<<"length not equal"<<endl;
+	}
+	cout<<"ali shit test end"<<endl;
+}
+
 int main(int argc,char** argv){
 	server_test();
-	//avro_test();
-//	url_test();
-//	url_param_test();
+    //ali_shit_test();
 	return 0;
 }

@@ -7,7 +7,9 @@
 
 #define CLICK_SERVICE_LOGGER    "ClickServiceLog"
 
-#define COOKIES_MTTY_ID         "MTTYID"
+#define COOKIES_MTTY_ID         "m1"
+
+#define COOKIES_MTTY_DOMAIN     "mtty.com"
 
 #define DAY_SECOND              86440
 

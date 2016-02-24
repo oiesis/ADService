@@ -9,6 +9,7 @@
 #include <signal.h>
 #include <iostream>
 #include <sys/wait.h>
+#include "muduo/base/Logging.h"
 #include "core.h"
 
 adservice::click::ClickModule g_clickService = nullptr;
@@ -120,6 +121,25 @@ namespace adservice {
 	   	        DebugMessage("can not write pid file.exit");
 		        exit(0);
 	        }
+            switch(config.loggingLevel){
+                case 1:
+                    muduo::Logger::setLogLevel(muduo::Logger::LogLevel::DEBUG);
+                    break;
+                case 2:
+                    muduo::Logger::setLogLevel(muduo::Logger::LogLevel::INFO);
+                    break;
+                case 3:
+                    muduo::Logger::setLogLevel(muduo::Logger::LogLevel::WARN);
+                    break;
+                case 4:
+                    muduo::Logger::setLogLevel(muduo::Logger::LogLevel::ERROR);
+                    break;
+                case 5:
+                    muduo::Logger::setLogLevel(muduo::Logger::LogLevel::FATAL);
+                    break;
+                default:
+                    break;
+            }
         }
 
         /**
@@ -134,8 +154,9 @@ namespace adservice {
                 switch(mt) {
                     case MODULE_TYPE::MODULE_CLICK:
                         g_clickService = std::make_shared<click::ClickService>(int(config.clickPort),
-                                                                                                int(config.clickThreads),
-                                                                                                bool(config.clickLogRemote));
+                                                                               int(config.clickThreads),
+                                                                               bool(config.clickLogRemote),
+                                                                               int(config.clickLoggerThreads));
                         g_clickService->start();
                         g_clickService.reset();
                         break;

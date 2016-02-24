@@ -255,6 +255,10 @@ namespace adservice{
                return unixTimeStamp - UTC_TIME_DIFF_SEC;
            }
 
+           inline int64_t getCurrentTimeStampUtc(){
+               return localTimeStamptoUtc(getCurrentTimeStamp());
+           }
+
            /**
             * 用于离线计算mtty基准时间
             */
@@ -498,6 +502,8 @@ void adservice_free(void* ptr);
                avro::EncoderPtr encoderPtr = avro::binaryEncoder();
                encoderPtr->init(*out);
                avro::codec_traits<T>::encode(*encoderPtr,obj);
+               encoderPtr->flush();
+               //out->flush();
                return out;
            }
 
@@ -601,7 +607,7 @@ void adservice_free(void* ptr);
            typedef std::map<adservice::types::string,adservice::types::string> ParamMap;
 
            /**
-            * 从buffer中的url query中获取参数,其中url query应该是被url encode的
+            * 从buffer中的url query中获取参数,其中url query应该是被url encode的,格式为xxx=xx&xx=xxx
             */
            void getParam(ParamMap &m,const char* buffer,char seperator='&');
 
@@ -616,6 +622,21 @@ void adservice_free(void* ptr);
             * 从cookies串中提取目标参数
             */
            adservice::types::string extractCookiesParam(const adservice::types::string& key,const adservice::types::string& input);
+       }
+
+       namespace escape{
+
+           //number should not be zero
+           //这个数值encode算法灵感源自protobuf
+           void numberEncode(int number,uint8_t* &buf);
+
+           int numberDecode(const uint8_t* &buf);
+
+           //aliyun的c++ api不支持二进制中有0,需要转义
+           std::string encode4ali(const std::string& input);
+
+           std::string decode4ali(const std::string& input);
+
        }
 
    }

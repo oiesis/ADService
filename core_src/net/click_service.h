@@ -15,7 +15,7 @@
 #include "net/log_pusher.h"
 #include "core_http_server.h"
 #include "constants.h"
-
+#include "core_threadlocal_manager.h"
 
 namespace adservice{
 
@@ -35,19 +35,20 @@ namespace adservice{
             typedef std::shared_ptr<adservice::server::CoreHttpServer> ServerPtr;
             static ClickModule getInstance();
         public:
-            explicit ClickService(int port,int threads,bool logRemote=true):executor("mtty_click"){
-                init(port,threads,logRemote);
+            explicit ClickService(int port,int threads,bool logRemote=true,int loggerThreads=10):executor("mtty_click"){
+                init(port,threads,logRemote,loggerThreads);
             }
             ClickService(const ClickService&) = delete;
 
             virtual ~ClickService(){
                 DebugMessage("in pid ",getpid()," clickservice module gone");
+                adservice::server::ThreadLocalManager::getInstance().destroy();
             }
 
             virtual void onRequest(const TcpConnectionPtr& conn,const HttpRequest& req, bool isClose);
 
 
-            void init(int port,int threads,bool logRemote=true);
+            void init(int port,int threads,bool logRemote=true,int loggerThreads = 10);
 
             virtual void start();
 
@@ -55,6 +56,7 @@ namespace adservice{
                 loop.quit();
                 executor.stop();
                 clickLogger->stop();
+                adservice::log::LogPusher::removeLogger(CLICK_SERVICE_LOGGER);
             }
 
             adservice::log::LogPusherPtr& getLogger(){

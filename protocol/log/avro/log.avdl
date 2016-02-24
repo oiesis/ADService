@@ -3,14 +3,12 @@
 protocol log{
 import idl "common.inc";
 record LogItem {
-	// 处理请求时的UNIX时间戳
-	long timeStamp;
-	// 时区
-	int timeZone;
+	// 处理请求时的UNIX时间戳,按照需求,这个时间是UTC标准时
+	long timeStamp = 1;
 	// 日志产生的模块
 	LogPhaseType logType;
 	// 请求状态
-	int reqStatus;
+	int reqStatus = 200;
 	// 请求方法,true:GET,false:POST
 	boolean reqMethod = false;
 	// 用户的IP信息

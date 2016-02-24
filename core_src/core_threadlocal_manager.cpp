@@ -8,10 +8,25 @@
 namespace adservice{
     namespace server{
 
+        ThreadLocalManager& ThreadLocalManager::getInstance(){
+            static ThreadLocalManager instance;
+            return instance;
+        }
+
         ThreadLocalManager::~ThreadLocalManager(){
-            typedef typename std::map<pthread_t,pthread_key_t>::iterator Iter;
-            for(Iter p  =threadLocalEntry.begin();p!=threadLocalEntry.end();p++){
-                pthread_key_delete(p->second);
+            DebugMessage("ThreadLocalManager gone");
+            destroy();
+        }
+
+        void ThreadLocalManager::destroy() {
+            static bool destroyOnce;
+            if(!destroyOnce){
+                destroyOnce = true;
+                typedef typename std::map<pthread_t,pthread_key_t>::iterator Iter;
+                for(Iter p  =threadLocalEntry.begin();p!=threadLocalEntry.end();p++){
+                    pthread_key_delete(p->second);
+                }
+                DebugMessage("ThreadLocalManager destroyed");
             }
         }
 

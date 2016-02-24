@@ -7,6 +7,7 @@
 
 #include <map>
 #include <unistd.h>
+#include "functions.h"
 #include "spinlock.h"
 
 namespace adservice{
@@ -16,10 +17,7 @@ namespace adservice{
 
         struct ThreadLocalManager{
         public:
-            static ThreadLocalManager& getInstance(){
-                static ThreadLocalManager instance;
-                return instance;
-            }
+            static ThreadLocalManager& getInstance();
         private:
             ThreadLocalManager(){
                 slock.lock = 0;
@@ -30,6 +28,7 @@ namespace adservice{
             void registerEntry(const pthread_t& t,pthread_key_t& k,void* dataPtr,void(*destructor)(void*)=NULL);
             void* get(const pthread_t& t);
             void put(const pthread_t& t,void* dataPtr,void(*destructor)(void*)=NULL);
+            void destroy();
         public:
             map<pthread_t,pthread_key_t> threadLocalEntry; //should use tbb concurrent map to improve effeciency
             struct spinlock slock;

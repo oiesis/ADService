@@ -36,6 +36,7 @@ ALL_OBJS:= unit_test.o \
 	time.o \
 	json.o \
 	url.o \
+	escape.o \
 	core.o \
 
 init:
@@ -60,7 +61,8 @@ UTILITY_BUILD_SOURCE:= cypher.cpp \
 			hash.cpp \
 			time.cpp \
 			json.cpp \
-			url.cpp
+			url.cpp \
+			escape.cpp
 utility.o:
 	cd $(UTILITY_FOLDER) && \
 	$(CC) $(CCFlags) $(INCLUDE_PATH) -c $(UTILITY_BUILD_SOURCE) && \
