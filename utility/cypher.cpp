@@ -2,12 +2,10 @@
 // Created by guoze.lin on 16/1/22.
 //
 
-#include "utility.h"
 #include <random>
 #include <array>
 #include <algorithm>
-#include <cassert>
-#include <cstring>
+#include "cypher.h"
 
 namespace adservice {
     namespace utility {

@@ -2,6 +2,7 @@
 
 protocol log{
 import idl "common.inc";
+@namespace("com.mtty.protocol")
 record LogItem {
 	// 处理请求时的UNIX时间戳,按照需求,这个时间是UTC标准时
 	long timeStamp = 1;

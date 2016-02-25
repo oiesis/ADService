@@ -17,8 +17,8 @@
  */
 
 
-#ifndef LOG_AVRO_LOG_H_924356563__H_
-#define LOG_AVRO_LOG_H_924356563__H_
+#ifndef LOG_AVRO_LOG_H_1526951321__H_
+#define LOG_AVRO_LOG_H_1526951321__H_
 
 
 #include <sstream>
@@ -50,32 +50,32 @@ struct GeoInfo {
 
 struct AdInfo {
     std::string areaId;
-    int32_t advId;
-    int32_t cpid;
-    int32_t sid;
-    int32_t creativeId;
+    int64_t advId;
+    std::string cpid;
+    int64_t sid;
+    int64_t creativeId;
     std::string clickId;
     std::string adxid;
     std::string mid;
     std::string cid;
-    int32_t pid;
-    int32_t unionId;
+    int64_t pid;
+    int64_t unionId;
     std::string imp_id;
     std::string landingUrl;
     int32_t cost;
     int32_t bidPrice;
     AdInfo() :
         areaId(std::string()),
-        advId(int32_t()),
-        cpid(int32_t()),
-        sid(int32_t()),
-        creativeId(int32_t()),
+        advId(int64_t()),
+        cpid(std::string()),
+        sid(int64_t()),
+        creativeId(int64_t()),
         clickId(std::string()),
         adxid(std::string()),
         mid(std::string()),
         cid(std::string()),
-        pid(int32_t()),
-        unionId(int32_t()),
+        pid(int64_t()),
+        unionId(int64_t()),
         imp_id(std::string()),
         landingUrl(std::string()),
         cost(int32_t()),

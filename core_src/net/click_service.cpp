@@ -55,47 +55,52 @@ namespace adservice{
         void parseObjectToLogItem(ParamMap &paramMap,protocol::log::LogItem &log){ //考虑将临时对象作为static const对象来处理
             char buf[1024];
             adservice::types::string output;
-            if(paramMap.find("url")!=paramMap.end()){ //落地页
-                adservice::types::string& url = paramMap["url"];
-                urlDecode_f(url,output,buf);
-                log.adInfo.landingUrl = buf;
-            }
-            if(paramMap.find("f")!=paramMap.end()){ //ref
-                adservice::types::string& f = paramMap["f"];
-                urlDecode_f(f,output,buf);
-                log.referer = f;
-            }
-            if(paramMap.find("s")!=paramMap.end()){ //广告位Id
-                adservice::types::string& s = paramMap["s"];
-                log.adInfo.pid = std::stoi(s);
-            }
-            if(paramMap.find("r")!=paramMap.end()){ //曝光Id
-                adservice::types::string& r = paramMap["r"];
-                log.adInfo.imp_id = r;
-            }
-            if(paramMap.find("d")!=paramMap.end()){ //广告主Id
-                adservice::types::string& d = paramMap["d"];
-                log.adInfo.advId = std::stoi(d);
-            }
-            if(paramMap.find("t")!=paramMap.end()){ // 推广计划Id
-                adservice::types::string& t = paramMap["t"];
-                log.adInfo.cpid = std::stoi(t);
-            }
-            if(paramMap.find("e")!=paramMap.end()){ // 推广单元Id
-                adservice::types::string& e = paramMap["e"];
-                log.adInfo.sid = std::stoi(e);
-            }
-            if(paramMap.find("c")!=paramMap.end()){ // 创意Id
-                adservice::types::string& c = paramMap["c"];
-                log.adInfo.creativeId = std::stoi(c);
-            }
-            if(paramMap.find("h")!=paramMap.end()){ // clickId
-                adservice::types::string& h = paramMap["h"];
-                log.adInfo.clickId = h;
-            }
-            if(paramMap.find("a")!=paramMap.end()){ //areaId
-                adservice::types::string& a = paramMap["a"];
-                log.adInfo.areaId = a;
+            try {
+                if (paramMap.find("url") != paramMap.end()) { //落地页
+                    adservice::types::string &url = paramMap["url"];
+                    urlDecode_f(url, output, buf);
+                    log.adInfo.landingUrl = buf;
+                }
+                if (paramMap.find("f") != paramMap.end()) { //ref
+                    adservice::types::string &f = paramMap["f"];
+                    urlDecode_f(f, output, buf);
+                    log.referer = f;
+                }
+                if (paramMap.find("s") != paramMap.end()) { //广告位Id
+                    adservice::types::string &s = paramMap["s"];
+                    log.adInfo.pid = std::stol(s);
+                }
+                if (paramMap.find("r") != paramMap.end()) { //曝光Id
+                    adservice::types::string &r = paramMap["r"];
+                    log.adInfo.imp_id = r;
+                }
+                if (paramMap.find("d") != paramMap.end()) { //广告主Id
+                    adservice::types::string &d = paramMap["d"];
+                    log.adInfo.advId = std::stol(d);
+                }
+                if (paramMap.find("t") != paramMap.end()) { // 推广计划Id
+                    adservice::types::string &t = paramMap["t"];
+                    log.adInfo.cpid = std::stol(t);
+                }
+                if (paramMap.find("e") != paramMap.end()) { // 推广单元Id
+                    adservice::types::string &e = paramMap["e"];
+                    log.adInfo.sid = std::stol(e);
+                }
+                if (paramMap.find("c") != paramMap.end()) { // 创意Id
+                    adservice::types::string &c = paramMap["c"];
+                    log.adInfo.creativeId = std::stol(c);
+                }
+                if (paramMap.find("h") != paramMap.end()) { // clickId
+                    adservice::types::string &h = paramMap["h"];
+                    log.adInfo.clickId = h;
+                }
+                if (paramMap.find("a") != paramMap.end()) { //areaId
+                    adservice::types::string &a = paramMap["a"];
+                    log.adInfo.areaId = a;
+                }
+            }catch(std::exception& e){
+                log.reqStatus = 500;
+                LOG_ERROR<<e.what();
             }
         }
 
@@ -212,11 +217,11 @@ namespace adservice{
                     ParamMap paramMap;
                     getParam(paramMap,data.c_str()+1);
                     protocol::log::LogItem log;
-                    parseObjectToLogItem(paramMap,log);
                     log.logType = protocol::log::LogPhaseType::CLICK;
                     log.reqMethod = true; //true for GET,false for POST
                     log.reqStatus = 302;
                     log.timeStamp = utility::time::getCurrentTimeStampUtc();
+                    parseObjectToLogItem(paramMap,log);
                     const muduo::net::InetAddress& peerAddr = conn->peerAddress();
                     log.ipInfo.ipv4=peerAddr.ipNetEndian(); //因为现在的服务器是基于ipv4的,所以只需设置ipv4
                     adservice::types::string userId = extractCookiesParam(COOKIES_MTTY_ID,userCookies);
@@ -309,7 +314,7 @@ namespace adservice{
             }
             else
             {
-                DebugMessage("req.path() not math target!");
+                DebugMessage("req.path() not math target!",req.path());
                 HttpResponse resp(isClose);
                 resp.setStatusCode(HttpResponse::k404NotFound);
                 resp.setStatusMessage("Not Found");

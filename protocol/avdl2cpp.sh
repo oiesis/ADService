@@ -31,8 +31,12 @@ avrogencpp -i __tmp.json -o $OUTPUT -n $NAMESPACE
 SEDOPTION="1,30s/#::#/{\nnamespace /g;s/#::#/::/g;s/namespace avro/${paddingstring}\nnamespace avro/g"
 echo $SEDOPTION
 sed -i "$SEDOPTION" $OUTPUT
+
+TARGET_AVSC=${AVDL_SRC/avdl/avsc}
+TARGET_AVSC=${TARGET_AVSC##*/}
+JAVA_PROJ_DIR=../mttyJava/src/main/avro
 #mv __tmp.avpr $OUTPUT_DIR/
 #mv __tmp.json $OUTPUT_DIR/
 rm __tmp.avpr
-rm __tmp.json
+mv  __tmp.json $JAVA_PROJ_DIR/$TARGET_AVSC
 mv $OUTPUT $OUTPUT_DIR/

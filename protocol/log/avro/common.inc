@@ -1,5 +1,6 @@
 
 protocol log{
+@namespace("com.mtty.protocol")
 record GeoInfo{
     // 纬度
     string latitude;
@@ -17,18 +18,18 @@ record GeoInfo{
     int street;
 }
 
-
+@namespace("com.mtty.protocol")
 record AdInfo{
     // 地域Id
     string areaId;
     // 广告主Id
-    int advId;
+    long advId;
     // 推广计划Id
-    int cpid;
+    string cpid;
     // 推广单元Id
-    int sid;
+    long sid;
     // 创意Id
-    int creativeId;
+    long creativeId;
     // 点击Id
     string clickId;
     // 广告交换商Id
@@ -38,9 +39,9 @@ record AdInfo{
     // 频道Id
     string cid ;
     // 广告位Id
-    int pid ;
+    long pid ;
     // 平台Id
-    int unionId;
+    long unionId;
     // 曝光Id
     string imp_id;
     // 广告的落地页面,仅在click模块有用
@@ -51,16 +52,19 @@ record AdInfo{
     int bidPrice;
 }
 
+@namespace("com.mtty.protocol")
 enum LogPhaseType {
     BID,SHOW,VIEW,CLICK,TRACK,MAPPING
 }
 
+@namespace("com.mtty.protocol")
 record IPInfo{
     int ipv4;
     array<int> ipv6;
     string proxy;
 }
 
+@namespace("com.mtty.protocol")
 record UserInfo{
     int age;
     int sex;

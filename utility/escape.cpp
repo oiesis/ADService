@@ -2,7 +2,7 @@
 // Created by guoze.lin on 16/2/23.
 //
 
-#include "utility.h"
+#include "escape.h"
 
 namespace adservice {
     namespace utility {
@@ -36,11 +36,13 @@ namespace adservice {
                 return result;
             }
 
-            std::string encode4ali(const std::string &input) {
+            std::string encode4ali(const std::string& input){
+                decode4ali(input.c_str(),input.length());
+            }
+
+            std::string encode4ali(const char* buf,int len) {
                 int zeroIndex[1024];
                 int zeroCnt = 0;
-                const char *buf = input.c_str();
-                int len = input.length();
                 for (int i = 0; i < len; i++) {
                     if (buf[i] == '\0') {
                         zeroIndex[zeroCnt++] = i + 1;
@@ -49,8 +51,8 @@ namespace adservice {
                 char stub[1024];
                 if (zeroCnt == 0) {
                     stub[0] = '0';
-                    memcpy(stub + 1, input.c_str(), input.length());
-                    return std::string(stub, stub + input.length() + 1);
+                    memcpy(stub + 1, buf, len);
+                    return std::string(stub, stub + len + 1);
                 }
                 stub[0] = '1';
                 uint8_t *stubbuf = (uint8_t *) (stub + 1);
@@ -68,10 +70,14 @@ namespace adservice {
                 return std::string(stub, (char *) stubbuf);
             }
 
-            std::string decode4ali(const std::string &input) {
-                const char *inputBuf = input.c_str();
+
+            std::string decode4ali(const std::string& input){
+                return decode4ali(input.c_str(),input.length());
+            }
+
+            std::string decode4ali(const char* inputBuf,int len) {
                 if (inputBuf[0] == '0') {
-                    return std::string(inputBuf + 1, inputBuf + input.length());
+                    return std::string(inputBuf + 1, inputBuf + len);
                 }
                 const uint8_t *p = (const uint8_t *) (inputBuf + 1);
                 int zeroIdx[1024];
@@ -96,7 +102,6 @@ namespace adservice {
                     result[k++] = p[i++];
                 }
                 result[k] = 0;
-                std::cout<<std::endl;
                 return std::string(result, result + k);
             }
 

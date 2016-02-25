@@ -33,7 +33,7 @@ BUILD_PATH:= $(SRC_FOLDER)/build
 ALL_OBJS:= unit_test.o \
 	cypher.o \
 	hash.o  \
-	time.o \
+	mttytime.o \
 	json.o \
 	url.o \
 	escape.o \
@@ -59,7 +59,7 @@ UTILITY_FOLDER:=$(SRC_FOLDER)/utility/
 
 UTILITY_BUILD_SOURCE:= cypher.cpp \
 			hash.cpp \
-			time.cpp \
+			mttytime.cpp \
 			json.cpp \
 			url.cpp \
 			escape.cpp
@@ -79,3 +79,12 @@ core.o:
 
 clean:
 	rm -rf $(BUILD_PATH)
+	make clean_jni
+
+JNI_FOLDER= jni/
+
+export:
+	cd $(JNI_FOLDER) && make jni
+
+clean_jni:
+	cd $(JNI_FOLDER) && make clean

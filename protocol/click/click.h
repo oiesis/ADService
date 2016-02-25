@@ -17,8 +17,8 @@
  */
 
 
-#ifndef CLICK_AVRO_CLICK_H_4002404229__H_
-#define CLICK_AVRO_CLICK_H_4002404229__H_
+#ifndef CLICK_AVRO_CLICK_H_2390181789__H_
+#define CLICK_AVRO_CLICK_H_2390181789__H_
 
 
 #include <sstream>

@@ -25,11 +25,11 @@ namespace adservice{
             LogPushClickTask(Producer* p,std::shared_ptr<adservice::types::string>&& l):producer(p),log(l){}
             void operator()(){
                 std::string ali_escapeString = encode4ali(*(log.get()));
-                DebugMessage("encoded log string for aliyun,length:",ali_escapeString.length());
-                ons::Message msg(DEFAULT_TOPIC,"tagA",ali_escapeString);
+                //DebugMessage("encoded log string for aliyun,length:",ali_escapeString.length());
+                ons::Message msg(DEFAULT_TOPIC,"click",ali_escapeString);
                 try{
                     SendResultONS sendResult = producer->send(msg);
-                    DebugMessage("sendResult:",sendResult.getMessageId());
+                    //DebugMessage("sendResult:",sendResult.getMessageId());
                 }catch(ONSClientException& e){
                     LOG_ERROR << "ONSClient error:" << e.GetMsg() << " errorcode:" << e.GetError();
                     LogPusherPtr logger = LogPusher::getLogger(CLICK_SERVICE_LOGGER);
@@ -178,13 +178,16 @@ namespace adservice{
             RemoteMonitorThreadParam* _param = (RemoteMonitorThreadParam*)param;
             Producer* producer = _param->producer;
             Message& msg = _param->msg;
+            int retryTimes = 0;
             while(true) {
+                retryTimes++;
                 try {
                     SendResultONS result = producer->send(msg);
                     LogPusher::getLogger(CLICK_SERVICE_LOGGER)->setWorkMode(false);
                     break;
                 } catch (ONSClientException &e) {
-                    LOG_ERROR<<"aliyun ons error still exists,error:"<<e.GetError();
+                    if(retryTimes%30==0)
+                        LOG_ERROR<<"aliyun ons error still exists,error:"<<e.GetError();
                 }
                 sleep(2);
             }
@@ -202,6 +205,7 @@ namespace adservice{
             pthread_t monitorThread;
             if(pthread_create(&monitorThread,NULL,&monitorRemoteLog,&param)){
                 LOG_ERROR<<"create remote log monitor error";
+                return;
             }
             pthread_detach(monitorThread);
         }
