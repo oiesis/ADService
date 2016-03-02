@@ -207,6 +207,7 @@ void adservice_free(void* ptr);
                    for(Iter iter = v.begin();iter!=v.end();iter++){
                        avro::codec_traits<T>::encode(*encoderPtr,*iter);
                    }
+                   encoderPtr->flush();
                    out->flush();
                }
 
@@ -214,11 +215,13 @@ void adservice_free(void* ptr);
                    for(int i=0;i<size;i++) {
                        avro::codec_traits<T>::encode(*encoderPtr,array[i]);
                    }
+                   encoderPtr->flush();
                    out->flush();
                }
 
                void write(const T& obj){
                    avro::codec_traits<T>::encode(*encoderPtr,obj);
+                   encoderPtr->flush();
                    out->flush();
                }
 

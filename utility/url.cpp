@@ -135,6 +135,19 @@ namespace adservice{
                 return m[key];
             }
 
+            long extractNumber(const char* input){
+                long result = 0;
+                const char* p = input;
+                while(*p!='\0'){
+                    if(*p>=0x30 && *p<=0x39){
+                        result=(result<<3)+(result<<1) + (*p - 0x30); //result*=10; which is faster?need to profile
+                        //result = result*10 + (*p - 0x30);
+                    }
+                    p++;
+                }
+                return result;
+            }
+
         }
     }
 }

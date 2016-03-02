@@ -19,19 +19,42 @@ namespace adservice{
         struct spinlock LogPusher::lock={0};
         std::map<std::string,LogPusherPtr> LogPusher::logMap;
 
+        LogProducer* LogProducerFactory::createProducer(LogProducerType type) {
+            switch(type){
+                case LOG_ALIYUN:
+                    DebugMessage("using aliyun log");
+                    return new AliyunLogProducer();
+                    break;
+                case LOG_KAFKA:
+                    DebugMessage("using kafka log");
+                    return new KafkaLogProducer();
+                    break;
+                default:
+                    DebugMessage("using local log");
+                    return NULL;
+            }
+        }
+
 
         struct LogPushClickTask{
-            LogPushClickTask(Producer* p,std::shared_ptr<adservice::types::string>& l):producer(p),log(l){}
-            LogPushClickTask(Producer* p,std::shared_ptr<adservice::types::string>&& l):producer(p),log(l){}
+            LogPushClickTask(LogProducer* p,std::shared_ptr<adservice::types::string>& l):producer(p),log(l){}
+            LogPushClickTask(LogProducer* p,std::shared_ptr<adservice::types::string>&& l):producer(p),log(l){}
             void operator()(){
+#if defined(USE_ALIYUN_LOG)
                 std::string ali_escapeString = encode4ali(*(log.get()));
-                //DebugMessage("encoded log string for aliyun,length:",ali_escapeString.length());
                 ons::Message msg(DEFAULT_TOPIC,"click",ali_escapeString);
+#else
+                Message msg("",*(log.get()));
+#endif
                 try{
-                    SendResultONS sendResult = producer->send(msg);
-                    //DebugMessage("sendResult:",sendResult.getMessageId());
-                }catch(ONSClientException& e){
-                    LOG_ERROR << "ONSClient error:" << e.GetMsg() << " errorcode:" << e.GetError();
+#if defined(USE_ALIYUN_LOG)
+                    SendResultONS sendResult = producer->send(msg); //尽管不加宏也可以,但并不希望加一些冗余的类型转换开销
+                    DebugMessage("sendResult:",sendResult.getMessageId());
+#else
+                    SendResult sendResult = producer->send(msg);
+#endif
+                }catch(LogClientException& e){
+                    LOG_ERROR << "LogClient error:" << e.GetMsg() << " errorcode:" << e.GetError();
                     LogPusherPtr logger = LogPusher::getLogger(CLICK_SERVICE_LOGGER);
                     logger->setWorkMode(true);
                     logger->startRemoteMonitor(msg);
@@ -39,7 +62,7 @@ namespace adservice{
                     LOG_ERROR << "error occured in LogPushClickTask,err:"<<e.what();
                 }
             }
-            Producer* producer;
+            LogProducer* producer;
             std::shared_ptr<adservice::types::string> log;
         };
 
@@ -132,23 +155,14 @@ namespace adservice{
             spinlock_unlock(&lock);
         }
 
-        void LogPusher::loadLoggerFactoryProperty(const char* file){
-            using namespace utility::json;
-            MessageWraper mw;
-            bool bSuccess = parseJsonFile(file,mw);
-            if(!bSuccess){
-                DebugMessage("failed to read json file");
-            }
-            factoryInfo.setFactoryProperty(ONSFactoryProperty::ProducerId, mw.getString("ProducerId",DEFAULT_PRODUCER_ID));
-            factoryInfo.setFactoryProperty(ONSFactoryProperty::PublishTopics, mw.getString("PublishTopics",DEFAULT_TOPIC));
-            factoryInfo.setFactoryProperty(ONSFactoryProperty::MsgContent, "input msg content");
-            factoryInfo.setFactoryProperty(ONSFactoryProperty::AccessKey, mw.getString("AccessKey",DEFAULT_ACCESS_KEY));
-            factoryInfo.setFactoryProperty(ONSFactoryProperty::SecretKey, mw.getString("SecretKey",DEFAULT_SECRET_KEY));
-        }
-
         void LogPusher::push(std::shared_ptr<adservice::types::string>& logstring){
             if(!modeLocal) {
+#if defined USE_KAFKA_LOG
+                //由于现在使用的kafka client api有自己的消息队列机制,所以不需要走logpusher内部消息队列
+                producer->send(Message(DEFAULT_KAFKA_TOPIC,*(logstring.get())));
+#else
                 executor.run(std::bind(LogPushClickTask(producer, logstring)));
+#endif
             }else{
                 executor.run(std::bind(LogPushClickLocalTask(logstring)));
             }
@@ -156,19 +170,23 @@ namespace adservice{
 
         void LogPusher::push(std::shared_ptr<adservice::types::string>&& logstring){
             if(!modeLocal) {
+#if defined USE_KAFKA_LOG
+                producer->send(Message(DEFAULT_KAFKA_TOPIC,*(logstring.get())));
+#else
                 executor.run(std::bind(LogPushClickTask(producer, logstring)));
+#endif
             }else{
                 executor.run(std::bind(LogPushClickLocalTask(logstring)));
             }
         }
 
         struct RemoteMonitorThreadParam{
-            Producer* producer;
-            Message msg;
+            LogProducer* producer;
+            log::Message msg;
             int started;
             RemoteMonitorThreadParam():started(0){}
-            RemoteMonitorThreadParam(Producer* p,const Message& m):producer(p),msg(m),started(0){}
-            void init(Producer* p,const Message& m){
+            RemoteMonitorThreadParam(LogProducer* p,const log::Message& m):producer(p),msg(m),started(0){}
+            void init(LogProducer* p,const log::Message& m){
                 producer = p;
                 msg = m;
             }
@@ -176,18 +194,25 @@ namespace adservice{
 
         void* monitorRemoteLog(void* param){
             RemoteMonitorThreadParam* _param = (RemoteMonitorThreadParam*)param;
-            Producer* producer = _param->producer;
+            LogProducer* producer = _param->producer;
             Message& msg = _param->msg;
             int retryTimes = 0;
             while(true) {
                 retryTimes++;
                 try {
-                    SendResultONS result = producer->send(msg);
+                    SendResult result = producer->send(msg);
+#if defined USE_ALIYUN_LOG
                     LogPusher::getLogger(CLICK_SERVICE_LOGGER)->setWorkMode(false);
                     break;
-                } catch (ONSClientException &e) {
+#elif defined USE_KAFKA_LOG
+                    sleep(30);
+                    if(!LogPusher::getLogger(CLICK_SERVICE_LOGGER)->getWorkMode()){
+                        break;
+                    }
+#endif
+                } catch (LogClientException &e) {
                     if(retryTimes%30==0)
-                        LOG_ERROR<<"aliyun ons error still exists,error:"<<e.GetError();
+                        LOG_ERROR<<"log client error still exists,error:"<<e.GetError();
                 }
                 sleep(2);
             }
@@ -195,7 +220,7 @@ namespace adservice{
             return NULL;
         }
 
-        void LogPusher::startRemoteMonitor(ons::Message& msg) {
+        void LogPusher::startRemoteMonitor(log::Message& msg) { //fixme:fix multi log problem by defining param as a class member
             static RemoteMonitorThreadParam param;
             if(param.started)
                 return;
@@ -209,6 +234,7 @@ namespace adservice{
             }
             pthread_detach(monitorThread);
         }
+
 
     }
 }

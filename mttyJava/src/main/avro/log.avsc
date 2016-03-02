@@ -1,0 +1,172 @@
+ [ {
+    "type" : "record",
+    "name" : "GeoInfo",
+    "namespace" : "com.mtty.protocol",
+    "fields" : [ {
+      "name" : "latitude",
+      "type" : "string"
+    }, {
+      "name" : "longitude",
+      "type" : "string"
+    }, {
+      "name" : "country",
+      "type" : "int"
+    }, {
+      "name" : "province",
+      "type" : "int"
+    }, {
+      "name" : "city",
+      "type" : "int"
+    }, {
+      "name" : "district",
+      "type" : "int"
+    }, {
+      "name" : "street",
+      "type" : "int"
+    } ]
+  }, {
+    "type" : "record",
+    "name" : "AdInfo",
+    "namespace" : "com.mtty.protocol",
+    "fields" : [ {
+      "name" : "areaId",
+      "type" : "string"
+    }, {
+      "name" : "advId",
+      "type" : "long"
+    }, {
+      "name" : "cpid",
+      "type" : "string"
+    }, {
+      "name" : "sid",
+      "type" : "long"
+    }, {
+      "name" : "creativeId",
+      "type" : "long"
+    }, {
+      "name" : "clickId",
+      "type" : "string"
+    }, {
+      "name" : "adxid",
+      "type" : "string"
+    }, {
+      "name" : "mid",
+      "type" : "string"
+    }, {
+      "name" : "cid",
+      "type" : "string"
+    }, {
+      "name" : "pid",
+      "type" : "long"
+    }, {
+      "name" : "unionId",
+      "type" : "long"
+    }, {
+      "name" : "imp_id",
+      "type" : "string"
+    }, {
+      "name" : "landingUrl",
+      "type" : "string"
+    }, {
+      "name" : "cost",
+      "type" : "int"
+    }, {
+      "name" : "bidPrice",
+      "type" : "int"
+    } ]
+  }, {
+    "type" : "enum",
+    "name" : "LogPhaseType",
+    "namespace" : "com.mtty.protocol",
+    "symbols" : [ "BID", "SHOW", "VIEW", "CLICK", "TRACK", "MAPPING" ]
+  }, {
+    "type" : "record",
+    "name" : "IPInfo",
+    "namespace" : "com.mtty.protocol",
+    "fields" : [ {
+      "name" : "ipv4",
+      "type" : "int"
+    }, {
+      "name" : "ipv6",
+      "type" : {
+        "type" : "array",
+        "items" : "int"
+      }
+    }, {
+      "name" : "proxy",
+      "type" : "string"
+    } ]
+  }, {
+    "type" : "record",
+    "name" : "UserInfo",
+    "namespace" : "com.mtty.protocol",
+    "fields" : [ {
+      "name" : "age",
+      "type" : "int"
+    }, {
+      "name" : "sex",
+      "type" : "int"
+    }, {
+      "name" : "interest",
+      "type" : "int"
+    } ]
+  }, {
+    "type" : "record",
+    "name" : "LogItem",
+    "namespace" : "com.mtty.protocol",
+    "fields" : [ {
+      "name" : "timeStamp",
+      "type" : "long",
+      "default" : 1
+    }, {
+      "name" : "logType",
+      "type" : "LogPhaseType"
+    }, {
+      "name" : "reqStatus",
+      "type" : "int",
+      "default" : 200
+    }, {
+      "name" : "reqMethod",
+      "type" : "boolean",
+      "default" : false
+    }, {
+      "name" : "ipInfo",
+      "type" : "IPInfo"
+    }, {
+      "name" : "referer",
+      "type" : "string"
+    }, {
+      "name" : "host",
+      "type" : "string"
+    }, {
+      "name" : "path",
+      "type" : "string"
+    }, {
+      "name" : "userId",
+      "type" : "string"
+    }, {
+      "name" : "userAgent",
+      "type" : "string"
+    }, {
+      "name" : "userInfo",
+      "type" : "UserInfo"
+    }, {
+      "name" : "geoInfo",
+      "type" : "GeoInfo"
+    }, {
+      "name" : "pageInfo",
+      "type" : "string"
+    }, {
+      "name" : "jsInfo",
+      "type" : "string"
+    }, {
+      "name" : "deviceInfo",
+      "type" : "string"
+    }, {
+      "name" : "traceId",
+      "type" : "int"
+    }, {
+      "name" : "adInfo",
+      "type" : "AdInfo"
+    } ]
+  } ]

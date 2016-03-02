@@ -37,7 +37,7 @@ namespace adservice {
             }
 
             std::string encode4ali(const std::string& input){
-                decode4ali(input.c_str(),input.length());
+                return encode4ali(input.c_str(),input.length());
             }
 
             std::string encode4ali(const char* buf,int len) {

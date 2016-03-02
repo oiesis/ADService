@@ -11,6 +11,7 @@
 #include "common/types.h"
 
 using namespace std;
+using namespace adservice::utility::hash;
 using namespace adservice::utility::time;
 using namespace adservice::utility::cypher;
 using namespace adservice::utility::json;
@@ -251,8 +252,24 @@ void ali_shit_test(){
 	cout<<"ali shit test end"<<endl;
 }
 
+void hash_test(){
+	cout<<"begin hash test"<<endl;
+	time_t beginTime;
+	time_t endTime;
+	const char* m = "mm_27818366_4246688_14420528";
+	int len = strlen(m);
+	cout<<"answer:"<<fnv_hash(m,len)<<endl;
+	time(&beginTime);
+	for(int i=0;i<1000000;i++){
+		long number = fnv_hash(m,len);
+	}
+	time(&endTime);
+	cout<<"time elapsed:"<<(endTime-beginTime)<<endl;
+	cout<<"end of hash test"<<endl;
+}
+
 int main(int argc,char** argv){
 	server_test();
-    //ali_shit_test();
+	//extract_number_test();
 	return 0;
 }

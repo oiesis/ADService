@@ -68,7 +68,8 @@ namespace adservice{
                 }
                 if (paramMap.find("s") != paramMap.end()) { //广告位Id
                     adservice::types::string &s = paramMap["s"];
-                    log.adInfo.pid = std::stol(s);
+                    const char* cstr = s.c_str();
+                    log.adInfo.pid = cstr[0]!='m'?std::stol(s):-std::abs(utility::hash::fnv_hash(cstr,s.length())); //如果为负数表示这是hash的结果
                 }
                 if (paramMap.find("r") != paramMap.end()) { //曝光Id
                     adservice::types::string &r = paramMap["r"];
@@ -80,7 +81,8 @@ namespace adservice{
                 }
                 if (paramMap.find("t") != paramMap.end()) { // 推广计划Id
                     adservice::types::string &t = paramMap["t"];
-                    log.adInfo.cpid = std::stol(t);
+                    const char* cstr = t.c_str();
+                    log.adInfo.cpid = cstr[0]!='m'?std::stol(t):-std::abs(utility::hash::fnv_hash(cstr,t.length()));
                 }
                 if (paramMap.find("e") != paramMap.end()) { // 推广单元Id
                     adservice::types::string &e = paramMap["e"];
@@ -234,7 +236,7 @@ namespace adservice{
                     }
                     std::shared_ptr<adservice::types::string> logString = std::make_shared<adservice::types::string>();
                     writeAvroObject(log, *(logString.get()));
-#ifdef UNIT_TEST
+#if defined(USE_ALIYUN_LOG) && defined(UNIT_TEST)
                     checkAliEscapeSafe(log,*(logString.get()));
 #endif
                     // 将日志对象推送到阿里云队列

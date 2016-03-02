@@ -15,6 +15,7 @@ then
 		;;
 	clean)
 		make clean
+		make clean_jni
 		;;
 	*)
 	esac

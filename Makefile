@@ -8,7 +8,9 @@ INCLUDE_PATH:=-I$(ROOT_PATH)/3rdparty/include/ -I$(ROOT_PATH)/common/ -I$(ROOT_P
 LOAD_LIB:= -lpthread -lavrocpp -lonsclient4cpp
 STRICT_CCFLAGS:=-Wall -Wextra -Werror -Wconversion -Wno-unused-parameter -Wold-style-cast -Woverloaded-virtual -Wpointer-arith -Wshadow -Wwrite-strings
 CCFlags:=--std=c++11 -g -march=native -O2 -finline-limit=1000 -DNDEBUG -DUNIT_TEST -DMUDUO_STD_STRING
-
+CCFlags+= -DUSE_KAFKA_LOG
+#CCFlags+= -DUSE_ALIYUN_LOG
+LOAD_LIB+= -lrdkafka++ -lz
 prerun:
 
 ifeq ($(OS),Linux)
@@ -79,7 +81,6 @@ core.o:
 
 clean:
 	rm -rf $(BUILD_PATH)
-	make clean_jni
 
 JNI_FOLDER= jni/
 

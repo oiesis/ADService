@@ -50,6 +50,11 @@ namespace adservice{
              * 从cookies串中提取目标参数
              */
             adservice::types::string extractCookiesParam(const adservice::types::string& key,const adservice::types::string& input);
+
+            /**
+             * 从字符串中提取数字
+             */
+            long extractNumber(const char* input);
         }
 
     }
