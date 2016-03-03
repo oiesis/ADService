@@ -14,7 +14,7 @@ namespace adservice{
         using namespace muduo;
 
         void LogDeliverReportCb::dr_cb(RdKafka::Message &message){
-            if(message.err()!=ERR_NO_ERROR){ //kafka 发送发生错误
+            if(message.err()!=ERR_NO_ERROR && !needRecover){ //kafka 发送发生错误
                 DebugMessage("error occured in kafka,err",message.errstr()," errCode:",message.err());
                 LogPusherPtr logPusher = LogPusher::getLogger(CLICK_SERVICE_LOGGER);
                 logPusher->setWorkMode(true);
@@ -26,7 +26,7 @@ namespace adservice{
 #endif
                 logPusher->startRemoteMonitor(msg);
                 needRecover = true;
-            }else if(needRecover){ //kafka 错误恢复
+            }else if(message.err()==ERR_NO_ERROR && needRecover){ //kafka 错误恢复
                 DebugMessage("kafka error recover,continue to work");
                 needRecover = false;
                 LogPusherPtr logPusher = LogPusher::getLogger(CLICK_SERVICE_LOGGER);
@@ -56,7 +56,10 @@ namespace adservice{
             RdKafka::Conf::ConfResult res;
             if((res=conf->set("metadata.broker.list", brokers, errstr))!=RdKafka::Conf::CONF_OK ||
                     (res = conf->set("event_cb", &eventCb, errstr))!= RdKafka::Conf::CONF_OK ||
-                    (res=conf->set("dr_cb", &drCb, errstr))!= RdKafka::Conf::CONF_OK){
+                    (res=conf->set("dr_cb", &drCb, errstr))!= RdKafka::Conf::CONF_OK ||
+                    (res=conf->set("queue.buffering.max.messages","100000",errstr))!=RdKafka::Conf::CONF_OK||
+                    (res=conf->set("message.send.max.retries","3",errstr))!= RdKafka::Conf::CONF_OK ||
+                    (res=conf->set("retry.backoff.ms","500",errstr))!=RdKafka::Conf::CONF_OK){
                 LOG_ERROR<<"error occured when configuring kafka log producer,"<<errstr;
                 throw LogClientException(errstr,-1);
             }
@@ -82,7 +85,7 @@ namespace adservice{
 #endif
             RdKafka::ErrorCode resp=producer->produce(topic, RdKafka::Topic::PARTITION_UA,
 			  RdKafka::Producer::RK_MSG_COPY, (void*)bytes,len,
-			  NULL, NULL);
+			  &DEFAULT_KAFKA_KEY, NULL);
             if(resp==RdKafka::ErrorCode::ERR_NO_ERROR){
                 return SendResult::SEND_OK;
             }else{
@@ -102,7 +105,7 @@ namespace adservice{
             RdKafka::ErrorCode resp=producer->produce(topic, RdKafka::Topic::PARTITION_UA,
                                                       RdKafka::Producer::RK_MSG_COPY,
                                                       (void*)bytes,len,
-                                                      NULL, NULL);
+                                                      &DEFAULT_KAFKA_KEY, NULL);
             if(resp==RdKafka::ErrorCode::ERR_NO_ERROR){
                 return SendResult::SEND_OK;
             }else{

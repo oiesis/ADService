@@ -17,6 +17,8 @@ namespace adservice{
         namespace json{
 
             class MessageWraper{
+            private:
+                typedef typename std::map<std::string,std::string>::const_iterator CIter;
             public:
                 MessageWraper(){
                 }
@@ -25,6 +27,15 @@ namespace adservice{
                         messages[s] = "";
                     }
                 }
+
+                bool isFieldEmpty(const std::string& key) const{
+                    CIter iter;
+                    if((iter = messages.find(key))!=messages.end()){
+                        return iter->second.empty();
+                    }
+                    return true;
+                }
+
                 bool isFieldEmpty(const std::string& key){
                     std::string& values = messages[key];
                     return values.empty();
@@ -34,6 +45,10 @@ namespace adservice{
                     return messages;
                 }
 
+                const std::map<std::string,std::string>& getMessages() const{
+                    return messages;
+                };
+
                 int32_t getInt(const std::string& key,int32_t defaultValue = 0){
                     std::string& values = messages[key];
                     if(values.empty()){
@@ -41,6 +56,14 @@ namespace adservice{
                     }
                     int32_t ret = std::stoi(values);
                     return ret;
+                }
+
+                int32_t getInt(const std::string& key,int32_t defaultValue = 0) const{
+                    CIter iter;
+                    if((iter = messages.find(key))!=messages.end() && !iter->second.empty()){
+                        return std::stoi(iter->second);
+                    }
+                    return defaultValue;
                 }
 
                 double getDouble(const std::string& key,double defaultValue = 0.0){
@@ -52,6 +75,14 @@ namespace adservice{
                     return ret;
                 }
 
+                double getDouble(const std::string& key,double defaultValue = 0.0) const{
+                    CIter iter;
+                    if((iter = messages.find(key))!=messages.end() && !iter->second.empty()){
+                        return std::stof(iter->second);
+                    }
+                    return defaultValue;
+                }
+
                 bool getBoolean(const std::string& key,bool defaultValue = false){
                     std::string& values = messages[key];
                     if(values.empty()){
@@ -60,9 +91,25 @@ namespace adservice{
                     return strcasecmp("true",values.c_str()) == 0;
                 }
 
+                bool getBoolean(const std::string& key,bool defaultValue = false) const{
+                    CIter iter;
+                    if((iter = messages.find(key))!=messages.end() && !iter->second.empty()){
+                        return strcasecmp("true",iter->second.c_str()) == 0;
+                    }
+                    return defaultValue;
+                }
+
                 const char* getRawString(const std::string& key){
                     std::string& values = messages[key];
                     return values.c_str();
+                }
+
+                const char* getRawString(const std::string& key) const{
+                    CIter iter;
+                    if((iter = messages.find(key))!=messages.end() && !iter->second.empty()){
+                        return iter->second.c_str();
+                    }
+                    return NULL;
                 }
 
                 const std::string& getString(const std::string& key,const std::string& defaultValue){
@@ -72,6 +119,15 @@ namespace adservice{
                     }
                     return values;
                 }
+
+                const std::string& getString(const std::string& key,const std::string& defaultValue) const{
+                    CIter iter;
+                    if((iter = messages.find(key))!=messages.end() && !iter->second.empty()){
+                        return iter->second;
+                    }
+                    return defaultValue;
+                }
+
             private:
                 std::map<std::string,std::string> messages;
             };

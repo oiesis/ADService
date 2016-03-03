@@ -16,8 +16,9 @@ namespace adservice{
         using namespace RdKafka;
 
 
-        static const std::string DEFAULT_KAFKA_BROKER = "192.168.2.51";
+        static const std::string DEFAULT_KAFKA_BROKER = "192.168.31.147";
         static const std::string DEFAULT_KAFKA_TOPIC = "mt-new-click";
+        static const std::string DEFAULT_KAFKA_KEY = "click";
 
         struct KafkaTimerParam{
             RdKafka::Producer* producer;

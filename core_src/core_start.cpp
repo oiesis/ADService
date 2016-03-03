@@ -140,6 +140,7 @@ namespace adservice {
                 default:
                     break;
             }
+            //ConfigManager::init();
         }
 
         /**
@@ -194,6 +195,7 @@ namespace adservice {
 				    kill(modules[i],SIGTERM);
 			    }
 		    }
+            //ConfigManager::exit();
 		    unlink(DEFAULT_DAEMON_FILE);
 	    }
 

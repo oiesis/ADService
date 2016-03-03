@@ -111,7 +111,7 @@ namespace adservice{
                     ::time(&currentTime);
                     tm* ltime = localtime(&currentTime);
                     char dirname[50];
-                    sprintf(dirname,"log/%d%02d%d",1900+ltime->tm_year,ltime->tm_mon+1,ltime->tm_mday);
+                    sprintf(dirname,"log/%d%02d%02d",1900+ltime->tm_year,ltime->tm_mon+1,ltime->tm_mday);
                     if(access(dirname,F_OK)==-1){
                         if(mkdir(dirname,S_IRWXU|S_IRWXG)<0){
                             LOG_ERROR << "dir "<<dirname<<" can not be created!";

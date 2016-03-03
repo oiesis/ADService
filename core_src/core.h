@@ -13,6 +13,7 @@
 #include "utility.h"
 #include "net/click_service.h"
 #include "functions.h"
+//#include "core_config_manager.h"
 
 #ifdef UNIT_TEST
 int launch_service();
@@ -47,7 +48,6 @@ namespace adservice{
             bool clickLogRemote;
             bool isDaemon;
             int loggingLevel;
-
         } *PServerConfig;
 
         static const char* DEFAULT_CONFIG_PATH="../conf/service.conf";
@@ -95,7 +95,7 @@ namespace adservice{
                 }
                 return instance;
             }
-	    explicit ADService(){
+	        explicit ADService(){
                 autoDetectEnv();
                 running = true;
                 if(instanceCnt>1){

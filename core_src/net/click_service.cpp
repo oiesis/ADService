@@ -82,7 +82,7 @@ namespace adservice{
                 if (paramMap.find("t") != paramMap.end()) { // 推广计划Id
                     adservice::types::string &t = paramMap["t"];
                     const char* cstr = t.c_str();
-                    log.adInfo.cpid = cstr[0]!='m'?std::stol(t):-std::abs(utility::hash::fnv_hash(cstr,t.length()));
+                    log.adInfo.cpid = t;//cstr[0]!='m'?std::stol(t):-std::abs(utility::hash::fnv_hash(cstr,t.length()));
                 }
                 if (paramMap.find("e") != paramMap.end()) { // 推广单元Id
                     adservice::types::string &e = paramMap["e"];
