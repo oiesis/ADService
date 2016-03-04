@@ -6,7 +6,7 @@
 #define ADCORE_LOG_PRODUCER_H
 
 #include <string>
-
+#include "functions.h"
 #if defined(USE_ALIYUN_LOG)
 #include "alibaba/SendResultONS.h"
 #include "alibaba/Message.h"

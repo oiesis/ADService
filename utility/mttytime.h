@@ -19,6 +19,7 @@ namespace adservice{
             static const int64_t MTTY_SERVICE_TIME_BEGIN = 1443669071L;//mttyTimeBegin();
             static const int32_t timeZone = 8;
             static constexpr int32_t UTC_TIME_DIFF_SEC = timeZone * 3600;
+            static constexpr int64_t UTC_TIME_DIFF_MS = UTC_TIME_DIFF_SEC * 1000;
 
             inline int64_t getMttyTimeBegin(){
                 return MTTY_SERVICE_TIME_BEGIN;
@@ -29,6 +30,10 @@ namespace adservice{
                 ::time(&currentTime);
                 return (int64_t)currentTime;
             }
+
+            std::string getCurrentTimeString();
+
+            std::string timeStringFromTimeStamp(int64_t timestamp);
 
             inline int32_t getCurrentTimeSinceMtty(){
                 long currentTime = getCurrentTimeStamp();
@@ -51,6 +56,10 @@ namespace adservice{
 
             inline int64_t getCurrentTimeStampUtc(){
                 return localTimeStamptoUtc(getCurrentTimeStamp());
+            }
+
+            inline std::string getCurrentTimeUtcString(){
+                return timeStringFromTimeStamp(getCurrentTimeStampUtc());
             }
 
             /**

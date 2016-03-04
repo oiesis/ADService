@@ -103,6 +103,8 @@ void cookies_hard_test(){
 void time_util_test(){
 	cout<<"time test"<<endl;
 	cout<<getMttyTimeBegin()<<endl;
+	cout<<getCurrentTimeUtcString()<<endl;
+	cout<<getCurrentTimeString()<<endl;
 	cout<<"time tets end"<<endl;
 }
 
@@ -268,8 +270,8 @@ void hash_test(){
 	cout<<"end of hash test"<<endl;
 }
 
+
 int main(int argc,char** argv){
 	server_test();
-	//extract_number_test();
 	return 0;
 }

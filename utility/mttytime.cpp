@@ -39,7 +39,7 @@ namespace adservice{
             int64_t getTodayStartTime(){
                 time_t currentTime;
                 ::time(&currentTime);
-                tm todayTime;
+                struct tm todayTime = {0};
                 localtime_r(&currentTime,&todayTime);
                 todayTime.tm_hour = 0;
                 todayTime.tm_min = 0;
@@ -47,6 +47,23 @@ namespace adservice{
                 return (int64_t)mktime(&todayTime);
             }
 
+            std::string getCurrentTimeString(){
+                time_t currentTime;
+                ::time(&currentTime);
+                struct tm t = {0};
+                localtime_r(&currentTime,&t);
+                char tstr[50];
+                int len = sprintf(tstr,"%04d%02d%02d %02d:%02d:%02d",1900+t.tm_year,t.tm_mon+1,t.tm_mday,t.tm_hour,t.tm_min,t.tm_sec);
+                return std::string(tstr,tstr+len);
+            }
+
+            std::string timeStringFromTimeStamp(int64_t timestamp){
+                struct tm t = {0};
+                localtime_r((const time_t*)&timestamp,&t);
+                char tstr[50];
+                int len = sprintf(tstr,"%04d%02d%02d %02d:%02d:%02d",1900+t.tm_year,t.tm_mon+1,t.tm_mday,t.tm_hour,t.tm_min,t.tm_sec);
+                return std::string(tstr,tstr+len);
+            }
         }
     }
 }

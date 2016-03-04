@@ -15,7 +15,7 @@ namespace adservice{
 
         void LogDeliverReportCb::dr_cb(RdKafka::Message &message){
             if(message.err()!=ERR_NO_ERROR && !needRecover){ //kafka 发送发生错误
-                DebugMessage("error occured in kafka,err",message.errstr()," errCode:",message.err());
+                DebugMessageWithTime("error occured in kafka,err",message.errstr()," errCode:",message.err());
                 LogPusherPtr logPusher = LogPusher::getLogger(CLICK_SERVICE_LOGGER);
                 logPusher->setWorkMode(true);
                 const char* payload = (const char*)message.payload();
@@ -24,10 +24,10 @@ namespace adservice{
 #else
                 log::Message msg(message.topic_name(),std::string(payload,payload+message.len()));
 #endif
-                logPusher->startRemoteMonitor(msg);
+                //logPusher->startRemoteMonitor(msg);
                 needRecover = true;
             }else if(message.err()==ERR_NO_ERROR && needRecover){ //kafka 错误恢复
-                DebugMessage("kafka error recover,continue to work");
+                DebugMessageWithTime("kafka error recover,continue to work");
                 needRecover = false;
                 LogPusherPtr logPusher = LogPusher::getLogger(CLICK_SERVICE_LOGGER);
                 logPusher->setWorkMode(false);

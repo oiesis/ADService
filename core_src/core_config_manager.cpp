@@ -11,7 +11,8 @@
 #include <unistd.h>
 
 #define MAKE_CONFIG_PARSER(CLASS) (std::bind(&CLASS::parse,std::placeholders::_1,std::placeholders::_2))
-#define MAKE_CONFIG(CONFIG_FILE,CLASS) ConfigValue(CONFIG_FILE,0,NULL,MAKE_CONFIG_PARSER(CLASS),NULL)
+#define MAKE_CONFIG_DELETER(CLASS) (std::bind(&CLASS::destruct,std::placeholders::_1))
+#define MAKE_CONFIG(CONFIG_FILE,CLASS) ConfigValue(CONFIG_FILE,0,NULL,MAKE_CONFIG_PARSER(CLASS),NULL,MAKE_CONFIG_DELETER(CLASS))
 
 namespace adservice{
     namespace server{
@@ -32,31 +33,31 @@ namespace adservice{
         void ConfigManager::load(){
             struct stat filestat;
             for(Iter iter = configMap.begin();iter!=configMap.end();iter++){
-                ConfigManage::ConfigValue& configValue = iter->second;
+                ConfigManager::ConfigValue& configValue = iter->second;
                 const std::string filePath = configValue.filePath;
                 long version = configValue.version;
                 void* data = configValue.data;
                 if(stat(filePath.c_str(),&filestat)==-1){
-                    LOG_ERR<<"ConfigManager:can not stat file,"<<filePath<<",errno:"<<errno;
+                    LOG_ERROR<<"ConfigManager:can not stat file,"<<filePath<<",errno:"<<errno;
                     continue;
                 }
                 time_t lastModified = filestat.st_mtime;
                 if(lastModified>version){ // 修改时间比当前版本更晚,更新
                     MessageWraper mw;
-                    bool bSuccess = parseJsonFile(path,mw);
+                    bool bSuccess = parseJsonFile(filePath.c_str(),mw);
                     if(!bSuccess){
-                        LOG_ERR<<"ConfigManager:parse config file error,"<<filePath;
+                        LOG_ERROR<<"ConfigManager:parse config file error,"<<filePath;
                         continue;
                     }
                     ConfigObjectParser& parser = configValue.parser;
-                    if(parser.empty()){
+                    if(!parser){
                         LOG_ERROR<<"ConfigManager:parser of "<<iter->first<<" not assigned";
                         continue;
                     }
                     configValue.data = data = parser(mw,data);
                     configValue.version = lastModified;
                     ConfigChangeCallback& onChange = configValue.onChange;
-                    if(!onChange.empty()){
+                    if(onChange){
                         onChange(configValue.data);
                     }
                 }
@@ -73,12 +74,12 @@ namespace adservice{
             load();
             // 开启配置检测线程
             run = true;
-            if(pthread_create(&monitorThread,NULL,&monitorThread,NULL)){
+            if(pthread_create(&monitorThread,NULL,&monitorConfigFiles,NULL)){
                 LOG_ERROR<<"create remote config monitor error";
                 return;
             }
             // 注册默认配置变更回调
-            registerOnChange(CONFIG_CLICK,[](void*){ DebugMessage("click config change")});
+            registerOnChange(CONFIG_CLICK,[](void*){ DebugMessage("click config change");});
         }
 
         void* ConfigManager::get(const std::string &configKey) {
@@ -90,12 +91,12 @@ namespace adservice{
             if(configValue.data==NULL){
                 const std::string& filePath = configValue.filePath;
                 MessageWraper mw;
-                bool bSuccess = parseJsonFile(path,mw);
+                bool bSuccess = parseJsonFile(filePath.c_str(),mw);
                 if(!bSuccess){
                     throw ConfigException(std::string("ConfigManager:parse config file ")+filePath);
                 }
                 ConfigObjectParser& parser = configValue.parser;
-                if(parser.empty()){
+                if(!parser){
                     throw ConfigException(std::string("ConfigManager:parser not assigned for key ")+iter->first);
                 }
                 configValue.data = parser(mw,configValue.data);
@@ -108,12 +109,7 @@ namespace adservice{
                 return;
             if(run){
                 run = false;
-                for(Iter iter = configMap.begin();iter!=configMap.end();iter++){
-                    ConfigValue& configValue = iter->second;
-                    if(configValue.data!=NULL){
-                        free(configValue.data);
-                    }
-                }
+                configMap.clear();
                 pthread_join(monitorThread,NULL);
             }
         }

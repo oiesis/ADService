@@ -18,12 +18,15 @@ namespace adservice{
             bool isDaemon;
             int loggingLevel;
             static void* parse(const MessageWraper& mw,void* data){
-                data = data==NULL?malloc(sizeof(ServerConfig)):data;
+                data = data==NULL? (new ServerConfig):data;
                 ServerConfig* c = (ServerConfig*)data;
                 c->runClick = mw.getBoolean("load_click", false);
                 c->isDaemon = mw.getBoolean("isDaemon",true);
                 c->loggingLevel = mw.getInt("logging_level",4);
                 return data;
+            }
+            static void destruct(void* data){
+                delete ((ServerConfig*)data);
             }
         };
 
@@ -33,13 +36,16 @@ namespace adservice{
             int clickLoggerThreads;
             bool clickLogRemote;
             static void* parse(const MessageWraper& mw,void* data){
-                data = data==NULL?malloc(sizeof(ClickConfig)):data;
+                data = data==NULL?(new ClickConfig):data;
                 ClickConfig* c = (ClickConfig*)data;
                 c->clickPort = mw.getInt("click_port",8808);
                 c->clickThreads = mw.getInt("click_threads",24);
                 c->clickLoggerThreads = mw.getInt("click_logger_threads",10);
                 c->clickLogRemote = mw.getBoolean("click_log_remote",false);
                 return data;
+            }
+            static void destruct(void* data){
+                delete ((ClickConfig*)data);
             }
         };
 

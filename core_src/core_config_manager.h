@@ -20,6 +20,7 @@ namespace adservice{
 
         typedef std::function<void* (const MessageWraper&,void*)> ConfigObjectParser;
         typedef std::function<void (void*)> ConfigChangeCallback;
+        typedef std::function<void (void*)> ConfigObjectDestructor;
 
         class ConfigManager{
         public:
@@ -29,11 +30,18 @@ namespace adservice{
                 void* data;
                 ConfigObjectParser parser;
                 ConfigChangeCallback onChange;
+                ConfigObjectDestructor dataDestructor;
                 ConfigValue(){}
-                ConfigValue(const std::string& f,long v,void* d,const ConfigObjectParser& p,const ConfigChangeCallback& c):
-                        filePath(f),version(v),data(d),parser(p),onChange(c){}
-                ConfigValue(const std::string&& f,long v,void* d,const ConfigObjectParser&& p,const ConfigChangeCallback&& c):
-                        filePath(f),version(v),data(d),parser(p),onChange(c){}
+                ConfigValue(const std::string& f,long v,void* d,const ConfigObjectParser& p,const ConfigChangeCallback& c,const ConfigObjectDestructor& deleter):
+                        filePath(f),version(v),data(d),parser(p),onChange(c),dataDestructor(deleter){}
+                ConfigValue(const std::string&& f,long v,void* d,const ConfigObjectParser&& p,const ConfigChangeCallback&& c,const ConfigObjectDestructor&& deleter):
+                        filePath(f),version(v),data(d),parser(p),onChange(c),dataDestructor(deleter){}
+                ~ConfigValue(){
+                    DebugMessage("ConfigValue destruct");
+                    if(data!=NULL){
+                        dataDestructor(data);
+                    }
+                }
             } ConfigValue;
 
             typedef std::map<std::string,ConfigValue> ConfigMap;
@@ -90,6 +98,7 @@ namespace adservice{
         };
 
         class ConfigException : public std::exception{
+        public:
         public:
             ConfigException() _GLIBCXX_USE_NOEXCEPT {}
             ConfigException(const std::string& str) _GLIBCXX_USE_NOEXCEPT :message(str){}
