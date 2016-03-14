@@ -59,15 +59,21 @@ enum LogPhaseType {
 
 @namespace("com.mtty.protocol")
 record IPInfo{
+    //非空字段
     int ipv4;
+    //可能为空
     array<int> ipv6;
+    //可能为空
     string proxy;
 }
 
 @namespace("com.mtty.protocol")
 record UserInfo{
+    // 可能为0,取决于客户端或第三方渠道获取到的信息
     int age;
+    // 可能为0,取决于客户端或第三方渠道获取到的信息
     int sex;
+    // 可能为0,取决于客户端或第三方渠道获取到的信息
     int interest;
 }
 
