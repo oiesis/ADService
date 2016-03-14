@@ -11,10 +11,7 @@ int launch_service(){
 #ifndef ADVANCED_SERVER_MODEL
     using namespace adservice::server;
     ADService::initClassVar();
-    ServerConfig  config;
-    loadServerConfig(config);
     ADServicePtr service = ADService::getInstance();
-    service->initWithConfig(config);
     service->start();
 #else
     // 使用erlang actor模式

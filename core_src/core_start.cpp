@@ -9,10 +9,9 @@
 #include <signal.h>
 #include <iostream>
 #include <sys/wait.h>
-#include "muduo/base/Logging.h"
 #include "core.h"
 
-adservice::click::ClickModule g_clickService = nullptr;
+adservice::corelogic::CoreModule g_coreService = nullptr;
 
 namespace adservice {
     namespace server {
@@ -30,11 +29,13 @@ namespace adservice {
             DebugMessageWithTime("in pid ",getpid()," handle sigchild");
 	        while (true) {
                 pid = wait3 (&wstat, WNOHANG, (struct rusage *)NULL );
-                if (pid == 0)
+                DebugMessage("pid ",pid," exit");
+                if (pid == 0) {
                     return;
-                else if (pid == -1)
+                }else if (pid == -1) {
+                    DebugMessage("errno:",errno);
                     return;
-                else {
+                }else {
                      if(WEXITSTATUS(wstat)!=MTTY_EXIT_SUCCESS) { //并非正常退出
                             service->reLaunchModule(pid);
                      }
@@ -50,9 +51,9 @@ namespace adservice {
 	        ADServicePtr service = ADService::getInstance();
             if(service.use_count()>0)
                 service->stop();
-            if(g_clickService.use_count()>0){
+            if(g_coreService.use_count() > 0){
 		        DebugMessage("in pid: ",getpid()," terminate submodule click");
-                g_clickService->stop();
+                g_coreService->stop();
             }
 	        DebugMessageWithTime("in pid: ",getpid()," end of handle signal ",sig);
         }
@@ -121,27 +122,8 @@ namespace adservice {
 	   	        DebugMessage("can not write pid file.exit");
 		        exit(0);
 	        }
-            switch(config.loggingLevel){
-                case 1:
-                    muduo::Logger::setLogLevel(muduo::Logger::LogLevel::DEBUG);
-                    break;
-                case 2:
-                    muduo::Logger::setLogLevel(muduo::Logger::LogLevel::INFO);
-                    break;
-                case 3:
-                    muduo::Logger::setLogLevel(muduo::Logger::LogLevel::WARN);
-                    break;
-                case 4:
-                    muduo::Logger::setLogLevel(muduo::Logger::LogLevel::ERROR);
-                    break;
-                case 5:
-                    muduo::Logger::setLogLevel(muduo::Logger::LogLevel::FATAL);
-                    break;
-                default:
-                    break;
-            }
-            //ConfigManager::init();
         }
+
 
         /**
          * 启动模块
@@ -152,17 +134,16 @@ namespace adservice {
                 std::cerr<<" error when create new module!"<<std::endl;
                 exit(1);
             }else if(pid == 0){ // submodule
+                int result = 0;
                 switch(mt) {
-                    case MODULE_TYPE::MODULE_CLICK:
-                        g_clickService = std::make_shared<click::ClickService>(int(config.clickPort),
-                                                                               int(config.clickThreads),
-                                                                               bool(config.clickLogRemote),
-                                                                               int(config.clickLoggerThreads));
-                        g_clickService->start();
-                        g_clickService.reset();
+                    case MODULE_TYPE::MODULE_LOGIC:
+                        g_coreService = std::make_shared<corelogic::CoreService>();
+                        g_coreService->start();
+                        result = g_coreService->isNeedRestart()?0:MTTY_EXIT_SUCCESS;
+                        g_coreService.reset();
                         break;
                 }
-                exit(MTTY_EXIT_SUCCESS);
+                exit(result);
             }else{
                 modules[mt] = pid;
             }
@@ -174,11 +155,7 @@ namespace adservice {
         void ADService::adservice_start() {
             //开始服务的独立会话
             setsid();
-            //检查各模块是否需要被加载
-            if(config.runClick) {
-                DebugMessage("start click module");
-		        launchModule(MODULE_TYPE::MODULE_CLICK);
-            }
+            launchModule(MODULE_TYPE::MODULE_LOGIC);
             while(running) {
                 sleep(60);
                 //do some monitor job
@@ -195,7 +172,6 @@ namespace adservice {
 				    kill(modules[i],SIGTERM);
 			    }
 		    }
-            //ConfigManager::exit();
 		    unlink(DEFAULT_DAEMON_FILE);
 	    }
 

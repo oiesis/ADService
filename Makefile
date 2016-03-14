@@ -45,7 +45,7 @@ init:
 	mkdir -p $(BUILD_PATH)
 final:
 	cd $(BUILD_PATH) && \
-	$(CC) $(CCFlags) $(MUDUO_CCFLAGS) $(ALL_OBJS) -o adservice $(MUDUO_LDFLAGS) $(LIB_FLAGS)
+	$(CC) $(CCFlags) $(MUDUO_CCFLAGS) $(ALL_OBJS) -o ../adservice $(MUDUO_LDFLAGS) $(LIB_FLAGS)
 all:prerun init unit_test.o
 	$(MAKE) final
 

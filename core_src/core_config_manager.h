@@ -19,7 +19,7 @@ namespace adservice{
         using namespace adservice::utility::json;
 
         typedef std::function<void* (const MessageWraper&,void*)> ConfigObjectParser;
-        typedef std::function<void (void*)> ConfigChangeCallback;
+        typedef std::function<void (void*,void*)> ConfigChangeCallback;
         typedef std::function<void (void*)> ConfigObjectDestructor;
 
         class ConfigManager{
@@ -37,8 +37,8 @@ namespace adservice{
                 ConfigValue(const std::string&& f,long v,void* d,const ConfigObjectParser&& p,const ConfigChangeCallback&& c,const ConfigObjectDestructor&& deleter):
                         filePath(f),version(v),data(d),parser(p),onChange(c),dataDestructor(deleter){}
                 ~ConfigValue(){
-                    DebugMessage("ConfigValue destruct");
                     if(data!=NULL){
+                        DebugMessage("ConfigValue destruct");
                         dataDestructor(data);
                     }
                 }

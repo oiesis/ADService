@@ -50,11 +50,11 @@ namespace adservice{
 
             void initProducer(){
 #if defined (USE_ALIYUN_LOG)
-                producer = LogProducerFactory::createProducer(LogProducerType::LOG_ALIYUN);
+                producer = LogProducerFactory::createProducer(LogProducerType::LOG_ALIYUN,loggerName);
 #elif defined (USE_KAFKA_LOG)
-                producer = LogProducerFactory::createProducer(LogProducerType::LOG_KAFKA);
+                producer = LogProducerFactory::createProducer(LogProducerType::LOG_KAFKA,loggerName);
 #else
-                producer = LogProducerFactory::createProducer(LogProducerType::LOG_DEFAULT);
+                producer = LogProducerFactory::createProducer(LogProducerType::LOG_DEFAULT,loggerName);
 #endif
             }
 

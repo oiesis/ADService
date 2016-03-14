@@ -83,7 +83,7 @@ namespace adservice{
 
         class LogProducerFactory{
         public:
-            static LogProducer* createProducer(LogProducerType type);
+            static LogProducer* createProducer(LogProducerType type,const std::string& loggerName);
         };
 
     }

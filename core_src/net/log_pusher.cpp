@@ -19,15 +19,15 @@ namespace adservice{
         struct spinlock LogPusher::lock={0};
         std::map<std::string,LogPusherPtr> LogPusher::logMap;
 
-        LogProducer* LogProducerFactory::createProducer(LogProducerType type) {
+        LogProducer* LogProducerFactory::createProducer(LogProducerType type,const std::string& loggerName) {
             switch(type){
                 case LOG_ALIYUN:
                     DebugMessage("using aliyun log");
-                    return new AliyunLogProducer();
+                    return new AliyunLogProducer(loggerName);
                     break;
                 case LOG_KAFKA:
                     DebugMessage("using kafka log");
-                    return new KafkaLogProducer();
+                    return new KafkaLogProducer(loggerName);
                     break;
                 default:
                     DebugMessage("using local log");

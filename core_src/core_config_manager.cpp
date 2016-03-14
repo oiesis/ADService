@@ -9,24 +9,32 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <exception>
+#include <functional>
 
 #define MAKE_CONFIG_PARSER(CLASS) (std::bind(&CLASS::parse,std::placeholders::_1,std::placeholders::_2))
 #define MAKE_CONFIG_DELETER(CLASS) (std::bind(&CLASS::destruct,std::placeholders::_1))
 #define MAKE_CONFIG(CONFIG_FILE,CLASS) ConfigValue(CONFIG_FILE,0,NULL,MAKE_CONFIG_PARSER(CLASS),NULL,MAKE_CONFIG_DELETER(CLASS))
+
 
 namespace adservice{
     namespace server{
 
         using namespace muduo;
         using namespace adservice::utility::json;
+        using namespace std::placeholders;
 
         typedef typename ConfigManager::ConfigMap::iterator Iter;
 
         void* monitorConfigFiles(void* param){
             ConfigManager& configManager = ConfigManager::getInstance();
             while(configManager.isRuning()){
-                sleep(5);
-                configManager.load();
+                sleep(1);
+                try {
+                    configManager.load();
+                }catch(std::exception& e){
+                    LOG_ERROR<<e.what();
+                }
             }
         }
 
@@ -54,12 +62,17 @@ namespace adservice{
                         LOG_ERROR<<"ConfigManager:parser of "<<iter->first<<" not assigned";
                         continue;
                     }
-                    configValue.data = data = parser(mw,data);
+                    data = parser(mw,data);
                     configValue.version = lastModified;
                     ConfigChangeCallback& onChange = configValue.onChange;
                     if(onChange){
-                        onChange(configValue.data);
+                        try {
+                            onChange(data,configValue.data);
+                        }catch(std::exception& e){
+                            LOG_ERROR<<"exception occur on config change,"<<filePath<<","<<e.what();
+                        }
                     }
+                    configValue.data = data;
                 }
             }
         }
@@ -70,16 +83,15 @@ namespace adservice{
             // 注册配置解析器
             configMap[CONFIG_SERVICE]   =   MAKE_CONFIG(CONFIG_SERVICE_PATH,ServerConfig);
             configMap[CONFIG_CLICK]     =   MAKE_CONFIG(CONFIG_CLICK_PATH,ClickConfig);
+            configMap[CONFIG_LOG]       =   MAKE_CONFIG(CONFIG_LOG_PATH,LogConfig);
             // 加载注册配置
             load();
             // 开启配置检测线程
             run = true;
-            if(pthread_create(&monitorThread,NULL,&monitorConfigFiles,NULL)){
-                LOG_ERROR<<"create remote config monitor error";
+            if(pthread_create(&monitorThread,NULL,&monitorConfigFiles,NULL)) {
+                LOG_ERROR << "create remote config monitor error";
                 return;
             }
-            // 注册默认配置变更回调
-            registerOnChange(CONFIG_CLICK,[](void*){ DebugMessage("click config change");});
         }
 
         void* ConfigManager::get(const std::string &configKey) {
@@ -109,8 +121,8 @@ namespace adservice{
                 return;
             if(run){
                 run = false;
-                configMap.clear();
                 pthread_join(monitorThread,NULL);
+                configMap.clear();
             }
         }
 

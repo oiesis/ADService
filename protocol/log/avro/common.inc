@@ -20,35 +20,35 @@ record GeoInfo{
 
 @namespace("com.mtty.protocol")
 record AdInfo{
-    // 地域Id
+    // 地域Id,可能为空,取决于接收到的链接
     string areaId;
-    // 广告主Id
+    // 广告主Id,可能为空,取决于接收到的链接
     long advId;
-    // 推广计划Id
+    // 推广计划Id,可能为空,取决于接收到的链接
     string cpid;
-    // 推广单元Id
+    // 推广单元Id,可能为空,取决于接收到的链接
     long sid;
-    // 创意Id
+    // 创意Id,可能为空,取决于接收到的链接
     long creativeId;
-    // 点击Id
+    // 点击Id,可能为空,取决于接收到的链接
     string clickId;
-    // 广告交换商Id
+    // 广告交换商Id,可能为空,取决于接收到的链接
     string adxid ;
-    // 网站Id
+    // 网站Id,可能为空,取决于接收到的链接
     string mid ;
-    // 频道Id
+    // 频道Id,可能为空,取决于接收到的链接
     string cid ;
-    // 广告位Id
+    // 广告位Id,可能为空,取决于接收到的链接
     long pid ;
-    // 平台Id
+    // 平台Id,可能为空,取决于接收到的链接
     long unionId;
-    // 曝光Id
+    // 曝光Id,可能为空,取决于接收到的链接
     string imp_id;
-    // 广告的落地页面,仅在click模块有用
+    // 广告的落地页面,click模块非空
     string landingUrl;
-    // 成本
+    // 成本,点击模块为空
     int cost;
-    // 投标价
+    // 投标价,点击模块为空
     int bidPrice;
 }
 

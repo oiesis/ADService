@@ -7,11 +7,13 @@
 #include "log_pusher.h"
 #include "constants.h"
 #include <exception>
+#include "core_config_manager.h"
 
 namespace adservice{
     namespace log{
 
         using namespace muduo;
+        using namespace adservice::server;
 
         void LogDeliverReportCb::dr_cb(RdKafka::Message &message){
             if(message.err()!=ERR_NO_ERROR && !needRecover){ //kafka 发送发生错误
@@ -49,7 +51,12 @@ namespace adservice{
         }
 
         void KafkaLogProducer::configure(){
-            std::string brokers = DEFAULT_KAFKA_BROKER;
+            //todo: modified with configmanager
+            ConfigManager& configManager = ConfigManager::getInstance();
+            LogConfig* logConfig = (LogConfig*)configManager.get(CONFIG_LOG);
+            topicName = logConfig->kafkaTopic;
+            logKey = logConfig->kafkaKey;
+            std::string brokers = logConfig->kafkaBroker;
             RdKafka::Conf *conf = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
             RdKafka::Conf *tconf = RdKafka::Conf::create(RdKafka::Conf::CONF_TOPIC);
             std::string errstr;
@@ -85,7 +92,7 @@ namespace adservice{
 #endif
             RdKafka::ErrorCode resp=producer->produce(topic, RdKafka::Topic::PARTITION_UA,
 			  RdKafka::Producer::RK_MSG_COPY, (void*)bytes,len,
-			  &DEFAULT_KAFKA_KEY, NULL);
+			  &logKey, NULL);
             if(resp==RdKafka::ErrorCode::ERR_NO_ERROR){
                 return SendResult::SEND_OK;
             }else{
@@ -105,7 +112,7 @@ namespace adservice{
             RdKafka::ErrorCode resp=producer->produce(topic, RdKafka::Topic::PARTITION_UA,
                                                       RdKafka::Producer::RK_MSG_COPY,
                                                       (void*)bytes,len,
-                                                      &DEFAULT_KAFKA_KEY, NULL);
+                                                      &logKey, NULL);
             if(resp==RdKafka::ErrorCode::ERR_NO_ERROR){
                 return SendResult::SEND_OK;
             }else{

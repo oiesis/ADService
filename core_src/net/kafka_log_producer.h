@@ -15,11 +15,6 @@ namespace adservice{
 
         using namespace RdKafka;
 
-
-        static const std::string DEFAULT_KAFKA_BROKER = "192.168.31.147";
-        static const std::string DEFAULT_KAFKA_TOPIC = "mt-new-click";
-        static const std::string DEFAULT_KAFKA_KEY = "click";
-
         struct KafkaTimerParam{
             RdKafka::Producer* producer;
             volatile bool run;
@@ -43,8 +38,7 @@ namespace adservice{
 
         class KafkaLogProducer : public LogProducer{
         public:
-            KafkaLogProducer(){
-              topicName = DEFAULT_KAFKA_TOPIC;
+            KafkaLogProducer(const std::string& name):myName(name){
               configure();
             }
             ~KafkaLogProducer(){
@@ -59,9 +53,11 @@ namespace adservice{
             void setDeliverReportCallback(const LogDeliverReportCb&& cb){drCb = cb;}
             void setErrorCallback(const LogEventCb&& cb){eventCb = cb;}
         private:
+            std::string myName;
             RdKafka::Producer* producer;
             Topic* topic;
             std::string topicName;
+            std::string logKey;
             LogEventCb eventCb;
             LogDeliverReportCb drCb;
             pthread_t kafkaTimerThread;
