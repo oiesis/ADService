@@ -7,7 +7,6 @@ then
 	if [ $1 = 'clean' ];
 	then
 		rm -rf */*.pb.*
-		rm -rf */*.h
 		exit 0
 	elif [ $1 = '--verbose' ];
 	then

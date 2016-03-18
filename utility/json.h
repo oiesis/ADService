@@ -8,6 +8,7 @@
 #include "common/types.h"
 #include "functions.h"
 #include "rapidjson/reader.h"
+#include "rapidjson/writer.h"
 #include "rapidjson/document.h"
 #include "rapidjson/error/en.h"
 
@@ -16,9 +17,40 @@ namespace adservice{
 
         namespace json{
 
+            class JSONException : public std::exception{
+            public:
+                JSONException() _GLIBCXX_USE_NOEXCEPT {}
+                JSONException(const std::string& str,int error) _GLIBCXX_USE_NOEXCEPT :message(str),errorCode(error){}
+                const char* GetMsg() const { return message.c_str();}
+                const char* what() const _GLIBCXX_USE_NOEXCEPT {return message.c_str();}
+                int GetError() const {return errorCode;}
+            private:
+                int errorCode;
+                std::string message;
+            };
+
+            std::string toString(double value);
+
+            inline std::string toString(const std::string& str){
+                return std::string(str);
+            }
+
+            enum JSONObjectType : char{
+                NUMBER,
+                STRING,
+                OBJECT,
+                ARRAY
+            };
+
+            /**
+             * 默认会将所有类型当成是字符串表示,所有类型提取都采用LazyLoad方式,
+             * 如果需要频繁的读取,应该写自己对象的parser,直接用MessageWraper转换为对象实例
+             */
             class MessageWraper{
             private:
                 typedef typename std::map<std::string,std::string>::const_iterator CIter;
+                typedef typename std::map<std::string,MessageWraper*>::const_iterator CObjIter;
+                typedef typename std::map<std::string,JSONObjectType>::const_iterator CTypeIter;
             public:
                 MessageWraper(){
                 }
@@ -26,6 +58,33 @@ namespace adservice{
                     for(auto& s : keys){
                         messages[s] = "";
                     }
+                }
+                ~MessageWraper(){
+                    if(!messages.empty()){
+                        messages.clear();
+                    }
+                    if(!innerObjects.empty()){
+                        for(CObjIter iter = innerObjects.cbegin();iter!=innerObjects.cend();iter++){
+                           delete iter->second;
+                        }
+                        innerObjects.clear();
+                    }
+                    if(!typeMap.empty()){
+                        typeMap.clear();
+                    }
+                }
+
+                void addField(const std::string& key,const std::string& value,JSONObjectType type = JSONObjectType::STRING){
+                    messages[key] = value;
+                    typeMap[key] = type;
+                }
+
+                void bindFieldType(const std::string& key,JSONObjectType type){
+                    typeMap[key] = type;
+                }
+
+                void bindFieldTypes(const std::map<std::string,JSONObjectType>& tMap){
+                    typeMap.insert(tMap.begin(),tMap.end());
                 }
 
                 bool isFieldEmpty(const std::string& key) const{
@@ -112,7 +171,7 @@ namespace adservice{
                     return NULL;
                 }
 
-                const std::string& getString(const std::string& key,const std::string& defaultValue){
+                const std::string& getString(const std::string& key,const std::string& defaultValue = ""){
                     std::string& values = messages[key];
                     if(values.empty()){
                         return defaultValue;
@@ -120,7 +179,7 @@ namespace adservice{
                     return values;
                 }
 
-                const std::string& getString(const std::string& key,const std::string& defaultValue) const{
+                const std::string& getString(const std::string& key,const std::string& defaultValue = "") const{
                     CIter iter;
                     if((iter = messages.find(key))!=messages.end() && !iter->second.empty()){
                         return iter->second;
@@ -128,9 +187,23 @@ namespace adservice{
                     return defaultValue;
                 }
 
+                bool isEmpty() const{
+                    return messages.empty();
+                }
+
+                //lazy load,non-threadsafe
+                const MessageWraper& getObject(const std::string& key) const;
+
+                MessageWraper& getObject(const std::string& key);
+
+                friend std::string toJson(MessageWraper&);
+
             private:
                 std::map<std::string,std::string> messages;
+                std::map<std::string,MessageWraper*> innerObjects;
+                std::map<std::string,JSONObjectType> typeMap;
             };
+
 
             class JsonParseHandler
                     : public rapidjson::BaseReaderHandler<rapidjson::UTF8<>, JsonParseHandler> {
@@ -181,7 +254,9 @@ namespace adservice{
                 std::string name_;
             };
 
+            std::string toJson(MessageWraper& obj);
 
+            std::string toJson(rapidjson::Document& doc);
 
             bool parseJson(const char* json,MessageWraper& mw);
 
@@ -190,6 +265,36 @@ namespace adservice{
             bool parseJsonFile(const char* filePath, MessageWraper& mw);
 
             bool parseJsonFile(const char* filePath, rapidjson::Document & doc);
+
+
+
+            inline int getClassValue(rapidjson::Value& value,int def){
+                return value.GetInt();
+            }
+
+
+            inline const std::string& getClassValue(rapidjson::Value& value,const std::string& def){
+                return value.GetString();
+            }
+
+
+            inline double getClassValue(rapidjson::Value& value,double def){
+                return value.GetDouble();
+            }
+
+            inline bool getClassValue(rapidjson::Value& value,bool def){
+                return value.GetBool();
+            }
+
+            inline std::string getField(rapidjson::Value& document,const std::string& key,const char* def){
+                std::string defStr(def);
+                return document.HasMember(key.c_str())?getClassValue(document[key.c_str()],defStr):defStr;
+            }
+
+            template<typename T>
+            inline const T& getField(rapidjson::Value& document,const std::string& key,const T& def){
+                return document.HasMember(key.c_str())?getClassValue(document[key.c_str()],def):def;
+            }
 
         }
 

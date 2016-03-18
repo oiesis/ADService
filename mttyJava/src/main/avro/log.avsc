@@ -48,7 +48,7 @@
       "type" : "string"
     }, {
       "name" : "adxid",
-      "type" : "string"
+      "type" : "int"
     }, {
       "name" : "mid",
       "type" : "string"
@@ -57,9 +57,6 @@
       "type" : "string"
     }, {
       "name" : "pid",
-      "type" : "long"
-    }, {
-      "name" : "unionId",
       "type" : "long"
     }, {
       "name" : "imp_id",
@@ -127,8 +124,8 @@
       "default" : 200
     }, {
       "name" : "reqMethod",
-      "type" : "boolean",
-      "default" : false
+      "type" : "int",
+      "default" : 1
     }, {
       "name" : "ipInfo",
       "type" : "IPInfo"
@@ -168,5 +165,11 @@
     }, {
       "name" : "adInfo",
       "type" : "AdInfo"
+    }, {
+      "name" : "clickx",
+      "type" : "int"
+    }, {
+      "name" : "clicky",
+      "type" : "int"
     } ]
   } ]

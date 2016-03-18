@@ -84,6 +84,7 @@ namespace adservice{
             configMap[CONFIG_SERVICE]   =   MAKE_CONFIG(CONFIG_SERVICE_PATH,ServerConfig);
             configMap[CONFIG_CLICK]     =   MAKE_CONFIG(CONFIG_CLICK_PATH,ClickConfig);
             configMap[CONFIG_LOG]       =   MAKE_CONFIG(CONFIG_LOG_PATH,LogConfig);
+            configMap[CONFIG_ADSELECT]  =   MAKE_CONFIG(CONFIG_ADSELECT_PATH,ADSelectConfig);
             // 加载注册配置
             load();
             // 开启配置检测线程

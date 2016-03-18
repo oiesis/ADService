@@ -87,7 +87,7 @@ void cookies_hard_test(){
 	cout<<"test cookies pressure"<<endl;
 	int times=1000000;
 	time_t beginTime;
-	time(&beginTime);
+	::time(&beginTime);
 	for(int i=0;i<times;i++){
 		CypherResult128 cypherCookies;
 		DecodeResult64 decodeResult64;
@@ -95,7 +95,7 @@ void cookies_hard_test(){
 		cookiesDecode(cypherCookies,decodeResult64);
 	}
 	time_t endTime;
-	time(&endTime);
+	::time(&endTime);
 	cout<<"time cost:"<<(endTime-beginTime)<<endl;
 	cout<<"test cookies pressure end"<<endl;
 }
@@ -147,22 +147,7 @@ void server_test(){
 	launch_service();
 }
 
-#include "protocol/click/click.h"
 
-void avro_test(){
-	cout<<"avro test"<<endl;
-	protocol::click::ClickRequest clickRequest;
-	CypherResult128 cypherCookies;
-	makeCookies(cypherCookies);
-	clickRequest.cookiesId = (const char*)cypherCookies.char_bytes;
-	cout<<clickRequest.cookiesId<<endl;
-	adservice::types::string avroString;
-	writeAvroObject(clickRequest,avroString);
-	protocol::click::ClickRequest clickRequestDecoded;
-	getAvroObject(clickRequestDecoded,(const uint8_t*)avroString.c_str(),avroString.length());
-	cout<<clickRequestDecoded.cookiesId<<endl;
-	cout<<"avro test end"<<endl;
-}
 
 void url_test(){
 	cout<<"url test"<<endl;
@@ -175,18 +160,18 @@ void url_test(){
 	time_t beginTime;
 	time_t endTime;
 	cout<<"origin version:"<<endl;
-	time(&beginTime);
+	::time(&beginTime);
 	for(int i=0;i<1000000;i++){
 		std::string decodedUrl=urlDecode(url);
 	}
-	time(&endTime);
+	::time(&endTime);
 	cout<<"time cost:"<<(endTime-beginTime)<<endl;
 	cout<<"modified version:"<<endl;
-	time(&beginTime);
+	::time(&beginTime);
 	for(int i=0;i<1000000;i++){
 		urlDecode_f(url2,output,buffer);
 	}
-	time(&endTime);
+	::time(&endTime);
 	cout<<"time cost:"<<(endTime-beginTime)<<endl; //modified version is 5 times faster than old version
 	cout<<"url test end"<<endl;
 }
@@ -203,12 +188,12 @@ void url_param_test(){
 	time_t beginTime;
 	time_t endTime;
 	cout<<"getparam pressure test:"<<endl;
-	time(&beginTime);
+	::time(&beginTime);
 	for(int i=0;i<1000000;i++){
 		paramMap.erase(paramMap.cbegin(),paramMap.cend());
 		getParam(paramMap,url.c_str());
 	}
-	time(&endTime);
+	::time(&endTime);
 	cout<<"getparam pressure test,cost time:"<<(endTime-beginTime)<<endl;
 	cout<<"url param test end"<<endl;
 }
@@ -261,15 +246,42 @@ void hash_test(){
 	const char* m = "mm_27818366_4246688_14420528";
 	int len = strlen(m);
 	cout<<"answer:"<<fnv_hash(m,len)<<endl;
-	time(&beginTime);
+	::time(&beginTime);
 	for(int i=0;i<1000000;i++){
 		long number = fnv_hash(m,len);
 	}
-	time(&endTime);
+	::time(&endTime);
 	cout<<"time elapsed:"<<(endTime-beginTime)<<endl;
 	cout<<"end of hash test"<<endl;
 }
 
+#include "protocol/baidu/baidu_price.h"
+#include "protocol/tanx/tanx_price.h"
+
+void price_decode_test(){
+	cout<<"begin price decode test"<<endl;
+	const char* baiduPriceStr = "VpM2NwAB_RB7jEpgW5IA8hCvJAhKYEz1mEmAng";
+	int baiduPrice=baidu_price_decode(baiduPriceStr);
+	cout<<"baiduPrice:"<<baiduPrice<<endl;
+	const char* tanxPriceStr = "AQq3QJYAAFbqK%2Bt0WgSWwml5gL4Ziv1M8g%3D%3D";
+	int tanxPrice = tanx_price_decode(tanxPriceStr);
+	cout<<"tanxPrice:"<<tanxPrice<<endl;
+	cout<<"end of price decode test"<<endl;
+}
+
+void adselect_test(){
+	using namespace adservice::adselect;
+	using namespace adservice::server;
+	cout<<"adselect test"<<endl;
+	ConfigManager::init();
+	AdSelectManager& manager = AdSelectManager::getInstance();
+	rapidjson::Document result;
+	rapidjson::Value& v=manager.queryCreativeById("7",result);
+	cout<<v["bgid"].GetInt()<<" "<<v["ctr"].GetDouble()<<endl;
+	AdSelectManager::release();
+	ConfigManager::exit();
+	cout<<"end of adselect test"<<endl;
+}
 
 int main(int argc,char** argv){
 	server_test();

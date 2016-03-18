@@ -29,19 +29,17 @@ record AdInfo{
     // 推广单元Id,可能为空,取决于接收到的链接
     long sid;
     // 创意Id,可能为空,取决于接收到的链接
-    long creativeId;
+    long bannerId;
     // 点击Id,可能为空,取决于接收到的链接
     string clickId;
     // 广告交换商Id,可能为空,取决于接收到的链接
-    string adxid ;
+    int adxid ;
     // 网站Id,可能为空,取决于接收到的链接
     string mid ;
     // 频道Id,可能为空,取决于接收到的链接
     string cid ;
     // 广告位Id,可能为空,取决于接收到的链接
     long pid ;
-    // 平台Id,可能为空,取决于接收到的链接
-    long unionId;
     // 曝光Id,可能为空,取决于接收到的链接
     string imp_id;
     // 广告的落地页面,click模块非空

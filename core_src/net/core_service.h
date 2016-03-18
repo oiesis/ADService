@@ -16,6 +16,7 @@
 #include "core_http_server.h"
 #include "constants.h"
 #include "core_threadlocal_manager.h"
+#include "core_adselect_manager.h"
 
 namespace adservice{
 
@@ -23,6 +24,7 @@ namespace adservice{
 
         using namespace muduo::net;
         using namespace adservice::server;
+        using namespace adservice::adselect;
 
         class CoreService;
 
@@ -49,6 +51,7 @@ namespace adservice{
             virtual ~CoreService(){
                 DebugMessage("in pid ",getpid()," coreservice module gone");
                 adservice::server::ThreadLocalManager::getInstance().destroy();
+                AdSelectManager::release();
                 ConfigManager::exit();
             }
 
@@ -76,6 +79,10 @@ namespace adservice{
 
             void setNeedRestart(){
                 needRestart = true;
+            }
+
+            adservice::server::Executor& getExecutor(){
+                return executor;
             }
 
         private:

@@ -19,29 +19,6 @@ namespace adservice {
         volatile int ADService::instanceCnt = 0;
         ADServicePtr ADService::instance = nullptr;
 
-        /**
-         * 处理子进程结束信号
-         */
-        void handle_sigchild(int sig){
-            int wstat;
-            pid_t	pid;
-            ADServicePtr service = ADService::getInstance();
-            DebugMessageWithTime("in pid ",getpid()," handle sigchild");
-	        while (true) {
-                pid = wait3 (&wstat, WNOHANG, (struct rusage *)NULL );
-                DebugMessage("pid ",pid," exit");
-                if (pid == 0) {
-                    return;
-                }else if (pid == -1) {
-                    DebugMessage("errno:",errno);
-                    return;
-                }else {
-                     if(WEXITSTATUS(wstat)!=MTTY_EXIT_SUCCESS) { //并非正常退出
-                            service->reLaunchModule(pid);
-                     }
-                }
-            }
-        }
 
         /**
          * 当外部kill进程时,进行处理
@@ -67,12 +44,6 @@ namespace adservice {
             sigaction(SIGPIPE, &sa, 0);
         }
 
-        void signal_child(){
-            struct sigaction sa;
-            sa.sa_handler = handle_sigchild;
-            sigaction(SIGCHLD,&sa,0);
-        }
-
         void signal_kill(){
             struct sigaction sa;
             sa.sa_handler = handle_sigterm;
@@ -85,7 +56,6 @@ namespace adservice {
          */
         void ADService::dosignals() {
             signal_ignore();
-            signal_child();
             signal_kill();
         }
 
@@ -156,9 +126,19 @@ namespace adservice {
             //开始服务的独立会话
             setsid();
             launchModule(MODULE_TYPE::MODULE_LOGIC);
+            //todo: open a thread do monitor job
+            //wait for child
             while(running) {
-                sleep(60);
-                //do some monitor job
+                int childStatus;
+                int childPid = wait(&childStatus);
+                if(childPid==-1){
+                    return;
+                }else if(childPid>0){
+                    if(WEXITSTATUS(childStatus)!=MTTY_EXIT_SUCCESS){
+                        reLaunchModule(childPid);
+                    }
+                }
+                sleep(2);
             }
         }
 

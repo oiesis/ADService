@@ -16,6 +16,7 @@
 #include <cstring>
 #include <sstream>
 #include <tuple>
+#include <fstream>
 #include "types.h"
 #include "functions.h"
 #include "hash.h"
@@ -26,7 +27,6 @@
 #include "escape.h"
 
 #include "google/protobuf/message.h"
-#include "protocol/click/click.h"
 
 namespace adservice{
    namespace utility{
@@ -112,6 +112,28 @@ void adservice_free(void* ptr);
                memcpy(ret,str,size+1);
                return ret;
            }
+       }
+
+       namespace file{
+
+           inline void loadFile(char* buffer,const char* filePath){
+               std::fstream fs(filePath,std::ios_base::in);
+               if(!fs.good()){
+                   std::cerr<<" can't open json file:"<<filePath<<std::endl;
+                   return;
+               }
+               std::stringstream ss;
+               do{
+                   std::string str;
+                   std::getline(fs,str,'\n');
+                   ss << str;
+               }while(!fs.eof());
+               fs.close();
+               std::string str = ss.str();
+               memcpy(buffer,str.c_str(),str.length());
+               buffer[str.length()]='\0';
+           }
+
        }
 
        namespace serialize{

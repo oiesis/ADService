@@ -17,8 +17,8 @@
  */
 
 
-#ifndef LOG_AVRO_LOG_H_1526951321__H_
-#define LOG_AVRO_LOG_H_1526951321__H_
+#ifndef LOG_AVRO_LOG_H_3670806083__H_
+#define LOG_AVRO_LOG_H_3670806083__H_
 
 
 #include <sstream>
@@ -55,11 +55,10 @@ struct AdInfo {
     int64_t sid;
     int64_t creativeId;
     std::string clickId;
-    std::string adxid;
+    int32_t adxid;
     std::string mid;
     std::string cid;
     int64_t pid;
-    int64_t unionId;
     std::string imp_id;
     std::string landingUrl;
     int32_t cost;
@@ -71,11 +70,10 @@ struct AdInfo {
         sid(int64_t()),
         creativeId(int64_t()),
         clickId(std::string()),
-        adxid(std::string()),
+        adxid(int32_t()),
         mid(std::string()),
         cid(std::string()),
         pid(int64_t()),
-        unionId(int64_t()),
         imp_id(std::string()),
         landingUrl(std::string()),
         cost(int32_t()),
@@ -118,7 +116,7 @@ struct LogItem {
     int64_t timeStamp;
     LogPhaseType logType;
     int32_t reqStatus;
-    bool reqMethod;
+    int32_t reqMethod;
     IPInfo ipInfo;
     std::string referer;
     std::string host;
@@ -132,11 +130,13 @@ struct LogItem {
     std::string deviceInfo;
     int32_t traceId;
     AdInfo adInfo;
+    int32_t clickx;
+    int32_t clicky;
     LogItem() :
         timeStamp(int64_t()),
         logType(LogPhaseType()),
         reqStatus(int32_t()),
-        reqMethod(bool()),
+        reqMethod(int32_t()),
         ipInfo(IPInfo()),
         referer(std::string()),
         host(std::string()),
@@ -149,7 +149,9 @@ struct LogItem {
         jsInfo(std::string()),
         deviceInfo(std::string()),
         traceId(int32_t()),
-        adInfo(AdInfo())
+        adInfo(AdInfo()),
+        clickx(int32_t()),
+        clicky(int32_t())
         { }
 };
 
@@ -328,7 +330,6 @@ template<> struct codec_traits<protocol::log::AdInfo> {
         avro::encode(e, v.mid);
         avro::encode(e, v.cid);
         avro::encode(e, v.pid);
-        avro::encode(e, v.unionId);
         avro::encode(e, v.imp_id);
         avro::encode(e, v.landingUrl);
         avro::encode(e, v.cost);
@@ -372,18 +373,15 @@ template<> struct codec_traits<protocol::log::AdInfo> {
                     avro::decode(d, v.pid);
                     break;
                 case 10:
-                    avro::decode(d, v.unionId);
-                    break;
-                case 11:
                     avro::decode(d, v.imp_id);
                     break;
-                case 12:
+                case 11:
                     avro::decode(d, v.landingUrl);
                     break;
-                case 13:
+                case 12:
                     avro::decode(d, v.cost);
                     break;
-                case 14:
+                case 13:
                     avro::decode(d, v.bidPrice);
                     break;
                 default:
@@ -401,7 +399,6 @@ template<> struct codec_traits<protocol::log::AdInfo> {
             avro::decode(d, v.mid);
             avro::decode(d, v.cid);
             avro::decode(d, v.pid);
-            avro::decode(d, v.unionId);
             avro::decode(d, v.imp_id);
             avro::decode(d, v.landingUrl);
             avro::decode(d, v.cost);
@@ -519,6 +516,8 @@ template<> struct codec_traits<protocol::log::LogItem> {
         avro::encode(e, v.deviceInfo);
         avro::encode(e, v.traceId);
         avro::encode(e, v.adInfo);
+        avro::encode(e, v.clickx);
+        avro::encode(e, v.clicky);
     }
     static void decode(Decoder& d, protocol::log::LogItem& v) {
         if (avro::ResolvingDecoder *rd =
@@ -578,6 +577,12 @@ template<> struct codec_traits<protocol::log::LogItem> {
                 case 16:
                     avro::decode(d, v.adInfo);
                     break;
+                case 17:
+                    avro::decode(d, v.clickx);
+                    break;
+                case 18:
+                    avro::decode(d, v.clicky);
+                    break;
                 default:
                     break;
                 }
@@ -600,6 +605,8 @@ template<> struct codec_traits<protocol::log::LogItem> {
             avro::decode(d, v.deviceInfo);
             avro::decode(d, v.traceId);
             avro::decode(d, v.adInfo);
+            avro::decode(d, v.clickx);
+            avro::decode(d, v.clicky);
         }
     }
 };

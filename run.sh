@@ -26,9 +26,9 @@ then
 else
    	 echo "$LOGROTATE_CONFIG" > ./conf/logrotate.conf
 	./adservice 2>&1 1>./service_log/service.log &
-	if [[ $? == 0 ]];
-	then
-    		sudo logrotate -s ./service_log/adservice.log ./conf/logrotate.conf
-    		sudo cp ./conf/logrotate.conf /etc/logrotate.d/adservice
-    	fi
+	#if [[ $? == 0 ]];
+	#then
+    		#sudo logrotate -s ./service_log/adservice.log ./conf/logrotate.conf
+    		#sudo cp ./conf/logrotate.conf /etc/logrotate.d/adservice
+    #	fi
 fi

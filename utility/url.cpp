@@ -148,6 +148,18 @@ namespace adservice{
                 return result;
             }
 
+            void extractAreaInfo(const char* input,int& country,int& province,int& city){
+                const char* p1 = input,*p2 = input;
+                while(*p2!='\0'&& *p2!='-')p2++;
+                country = atoi(p1);
+                p1 = ++p2;
+                while(*p2!='\0'&& *p2!='-')p2++;
+                province = atoi(p1);
+                p1 = ++p2;
+                while(*p2!='\0'&& *p2!='-')p2++;
+                city = atoi(p1);
+            }
+
         }
     }
 }

@@ -52,9 +52,14 @@ namespace adservice{
             adservice::types::string extractCookiesParam(const adservice::types::string& key,const adservice::types::string& input);
 
             /**
-             * 从字符串中提取数字
+             * 从字符串中提取数字,input end with \0
              */
             long extractNumber(const char* input);
+
+            /**
+             * 从xxx-xxx-xxx形式的字符串提取国家,省,市
+             */
+            void extractAreaInfo(const char* input,int& country,int& province,int& city);
         }
 
     }

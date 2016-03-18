@@ -5,7 +5,7 @@ OS:=$(shell uname -s)
 ROOT_PATH:=$(shell pwd)
 THIRD_LIB_PATH=$(ROOT_PATH)/3rdparty/lib
 INCLUDE_PATH:=-I$(ROOT_PATH)/3rdparty/include/ -I$(ROOT_PATH)/common/ -I$(ROOT_PATH)/utility/ -I$(ROOT_PATH)/core_src -I$(ROOT_PATH)/
-LOAD_LIB:= -lpthread -lavrocpp -lonsclient4cpp
+LOAD_LIB:= -lpthread -lavrocpp -lonsclient4cpp -lssl -lcrypto
 STRICT_CCFLAGS:=-Wall -Wextra -Werror -Wconversion -Wno-unused-parameter -Wold-style-cast -Woverloaded-virtual -Wpointer-arith -Wshadow -Wwrite-strings
 CCFlags:=--std=c++11 -g -march=native -O2 -finline-limit=1000 -DNDEBUG -DUNIT_TEST -DMUDUO_STD_STRING
 CCFlags+= -DUSE_KAFKA_LOG
@@ -17,7 +17,7 @@ ifeq ($(OS),Linux)
 CCFlags+= -Dlinux
 LOAD_LIB += -lrt -ldl
 LINK_DYNAMIC ?= -rdynamic
-LD_LIBRARY_PATH?= /usr/lib/:/usr/lib64/:/usr/local/lib/:/usr/local/lib64/:/usr/lib/x86_64-linux-gnu/
+LD_LIBRARY_PATH?= /usr/lib/:/usr/lib64/:/usr/local/lib/:/usr/local/lib64/:/usr/lib/x86_64-linux-gnu/:/usr/local/ssl/lib/
 else ifeq ($(OS),Darwin)
 CCFlags+= -D__MACH__
 else
@@ -40,6 +40,8 @@ ALL_OBJS:= unit_test.o \
 	url.o \
 	escape.o \
 	core.o \
+	elasticsearch.o \
+	platform.o \
 
 init:
 	mkdir -p $(BUILD_PATH)
@@ -73,12 +75,28 @@ utility.o:
 CORE_FOLDER:=$(SRC_FOLDER)/core_src
 CORE_BUILD_SOURCE:= $(wildcard $(CORE_FOLDER)/*.cpp)
 CORE_BUILD_SOURCE+= $(wildcard $(CORE_FOLDER)/net/*.cpp)
-core.o:
+core.o:elasticsearch.o platform.o
 	cd $(CORE_FOLDER) && \
 	$(CC) -c $(CCFlags) $(INCLUDE_PATH) $(CORE_BUILD_SOURCE) && \
 	$(LD) -r *.o -o $(BUILD_PATH)/core.o && \
 	rm *.o
 
+ES_FOLDER:=$(SRC_FOLDER)/elasticsearch
+ES_SOURCE:= $(wildcard $(ES_FOLDER)/*.cpp)
+elasticsearch.o:
+	cd $(ES_FOLDER) && \
+	$(CC) -c $(CCFlags) $(INCLUDE_PATH) $(ES_SOURCE) && \
+	$(LD) -r *.o -o $(BUILD_PATH)/elasticsearch.o && \
+	rm *.o
+
+PLATFORM_FOLDER:=$(SRC_FOLDER)/protocol
+PLATFORM_SOURCE:= $(wildcard $(PLATFORM_FOLDER)/baidu/*.cpp)
+PLATFORM_SOURCE+= $(wildcard $(PLATFORM_FOLDER)/tanx/*.cpp)
+platform.o:
+	cd $(PLATFORM_FOLDER) && \
+	$(CC) -c $(CCFlags) -Wno-narrowing  $(INCLUDE_PATH) $(PLATFORM_SOURCE) && \
+	$(LD) -r *.o -o $(BUILD_PATH)/platform.o && \
+	rm *.o
 clean:
 	rm -rf $(BUILD_PATH)
 
