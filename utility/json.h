@@ -273,8 +273,8 @@ namespace adservice{
             }
 
 
-            inline const std::string& getClassValue(rapidjson::Value& value,const std::string& def){
-                return value.GetString();
+            inline const std::string getClassValue(rapidjson::Value& value,const std::string& def){
+                return std::string(value.GetString());
             }
 
 
@@ -292,7 +292,7 @@ namespace adservice{
             }
 
             template<typename T>
-            inline const T& getField(rapidjson::Value& document,const std::string& key,const T& def){
+            inline T getField(rapidjson::Value& document,const std::string& key,const T& def){
                 return document.HasMember(key.c_str())?getClassValue(document[key.c_str()],def):def;
             }
 

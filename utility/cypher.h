@@ -168,16 +168,16 @@ namespace adservice{
              * @param output : 输出结果
              * @param size: 存放结果大小
              */
-            void cookiesDecode(const CypherResult128 &input, INOUT uchar_t *output, INOUT int32_t &size);
+            bool cookiesDecode(const CypherResult128 &input, INOUT uchar_t *output, INOUT int32_t &size);
 
             /**
              * 将给定加密字符串进行解密
              * @param input
              * @param output : 输出结果
              */
-            inline void cookiesDecode(const CypherResult128 &input, INOUT DecodeResult64 &output) {
+            inline bool cookiesDecode(const CypherResult128 &input, INOUT DecodeResult64 &output) {
                 int size = 8;
-                cookiesDecode(input, output.bytes, size);
+                return cookiesDecode(input, output.bytes, size);
             }
 
             /**

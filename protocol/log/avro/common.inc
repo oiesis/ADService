@@ -39,7 +39,7 @@ record AdInfo{
     // 频道Id,可能为空,取决于接收到的链接
     string cid ;
     // 广告位Id,可能为空,取决于接收到的链接
-    long pid ;
+    string pid ;
     // 曝光Id,可能为空,取决于接收到的链接
     string imp_id;
     // 广告的落地页面,click模块非空

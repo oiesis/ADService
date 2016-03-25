@@ -263,7 +263,7 @@ void price_decode_test(){
 	const char* baiduPriceStr = "VpM2NwAB_RB7jEpgW5IA8hCvJAhKYEz1mEmAng";
 	int baiduPrice=baidu_price_decode(baiduPriceStr);
 	cout<<"baiduPrice:"<<baiduPrice<<endl;
-	const char* tanxPriceStr = "AQq3QJYAAFbqK%2Bt0WgSWwml5gL4Ziv1M8g%3D%3D";
+	const char* tanxPriceStr = "AQpnIAgAAlbw10bNJgdnB3dTFDSxPXxTxg%3D%3D";
 	int tanxPrice = tanx_price_decode(tanxPriceStr);
 	cout<<"tanxPrice:"<<tanxPrice<<endl;
 	cout<<"end of price decode test"<<endl;
@@ -276,12 +276,14 @@ void adselect_test(){
 	ConfigManager::init();
 	AdSelectManager& manager = AdSelectManager::getInstance();
 	rapidjson::Document result;
-	rapidjson::Value& v=manager.queryCreativeById("7",result);
+	rapidjson::Value& v=manager.queryCreativeById(0,"7",result);
 	cout<<v["bgid"].GetInt()<<" "<<v["ctr"].GetDouble()<<endl;
 	AdSelectManager::release();
 	ConfigManager::exit();
 	cout<<"end of adselect test"<<endl;
 }
+
+
 
 int main(int argc,char** argv){
 	server_test();

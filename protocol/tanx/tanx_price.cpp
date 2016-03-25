@@ -263,8 +263,38 @@ static bool decodePrice(uchar* src, int32_t& realPrice, time_t& time)
 
 using namespace adservice::utility::url;
 
-int64_t tanx_price_decode(const std::string& input){
+std::string noescape(const std::string& input){
+    char buf[256];
+    const char* p = input.c_str();
+    char* dest=buf;
+    while(*p!='\0'){
+        if(*p=='-'){
+            *dest='%';
+        }else{
+            *dest=*p;
+        }
+        p++;
+        dest++;
+    }
+    *dest='\0';
+    return std::string(buf);
+}
+
+void noescape(char* buf){
+    char* p = buf;
+    while(*p!='\0'){
+        if(*p=='-'){
+            *p='%';
+        }
+        p++;
+    }
+    *p='\0';
+}
+
+
+int64_t tanx_price_decode(const std::string& ori_input){
     char buffer[256];
+    std::string input = noescape(ori_input);
     std::string output;
     urlDecode_f(input,output,buffer);
     int originLen = base64DecodedLength(output.length());
@@ -272,13 +302,13 @@ int64_t tanx_price_decode(const std::string& input){
     buffer[originLen]='\0';
     if(originLen != VERSION_LENGTH + BIDID_LENGTH
                     + ENCODEPRICE_LENGTH + CRC_LENGTH){
-        DebugMessageWithTime("error occured in tanx_price_decode");
+        DebugMessageWithTime("error occured in tanx_price_decode,detail:length,input:",ori_input);
         return -1;
     }
     int32_t price;
     time_t time;
     if(!decodePrice((uchar*)buffer,price,time)){
-        DebugMessageWithTime("error occured in tanx_price_decode");
+        DebugMessageWithTime("error occured in tanx_price_decode,input:",ori_input);
         return 0;
     }
     return price;

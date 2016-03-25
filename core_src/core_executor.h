@@ -14,7 +14,7 @@ namespace adservice{
 
         using namespace muduo;
 
-        static const int EXECUTOR_MAX_TASK = 2000;
+        static const int EXECUTOR_MAX_TASK = 5000;
         static const int DEFAULT_CORE_NUM = 1;
         /**
          * Executor 用于维护线程池和任务队列
@@ -41,11 +41,13 @@ namespace adservice{
             void run(std::function<void()>&& todo){
                 threadpool.run(todo);
             }
-
             void run(std::function<void()>& todo){
                 threadpool.run(todo);
             }
-
+            int pendingTasks(){
+                return threadpool.queueSize();
+            }
+            int  getThreadSeqId();
         private:
             void configureForCompute();
 
@@ -53,6 +55,7 @@ namespace adservice{
             int threadNum;
             bool pureCompute;
             ThreadPool threadpool;
+            long threadMappingTable[128];
         };
 
     }

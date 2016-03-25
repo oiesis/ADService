@@ -263,6 +263,40 @@ void adservice_free(void* ptr);
 
        }
 
+       namespace ip{
+           inline int ipStringToInt(const std::string& ipString){
+               union{
+                   uchar_t c[4];
+                   int d;
+               } what;
+               const char* p = ipString.c_str(),*p2=p;
+               int i=3;
+               while(i>=0){
+                   if(*p!='.'&&*p!='\0'){
+                       p++;
+                   }else{
+                       what.c[i] = atoi(p2);
+                       p2=++p;
+                       i--;
+                       if(*p=='\0')
+                           break;
+                   }
+               }
+               return what.d;
+           }
+
+           inline std::string ipIntToString(int ip){
+               union{
+                   uchar_t c[4];
+                   int d;
+               } what;
+               what.d = ip;
+               char buf[16];
+               sprintf(buf,"%d.%d.%d.%d",0xff&what.c[3],0xff&what.c[2],0xff&what.c[1],0xff&what.c[0]);
+               return std::string(buf);
+           }
+       }
+
    }
 }
  

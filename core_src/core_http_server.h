@@ -16,6 +16,8 @@ namespace adservice{
 
         using namespace muduo::net;
 
+        static const int MAX_CONNECTION = 5000;
+
         class CoreHttpServer : public HttpServer{
         public:
             typedef std::function<void(const TcpConnectionPtr&,const HttpRequest&,
@@ -24,6 +26,7 @@ namespace adservice{
                            const InetAddress& listenAddr,
                            const muduo::string& name,
                            TcpServer::Option option = TcpServer::kNoReusePort):HttpServer(loop,listenAddr,name,option){
+                             connectionCnt = 0;
                              server_.setConnectionCallback(std::bind(&CoreHttpServer::onConnection, this, std::placeholders::_1));
                            };
             ~CoreHttpServer(){}
@@ -36,6 +39,7 @@ namespace adservice{
             virtual void onConnection(const TcpConnectionPtr& conn);
             virtual void onRequest(const TcpConnectionPtr&, const HttpRequest&);
             HttpCallback httpCallback_;
+            int connectionCnt;
 
         };
 

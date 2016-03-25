@@ -49,12 +49,10 @@ namespace adservice{
                 destroy();
             }
             void destroy(){
-                if(!agents.empty()){
-                    typedef std::vector<ElasticSearch*>::iterator Iter;
-                    for(Iter iter = agents.begin();iter!=agents.end();iter++){
-                        delete (*iter);
-                    }
-                    agents.clear();
+                for(int i=0;i<ADSELECT_MAX_CONNECTION;i++){
+                    if(agents[i]!=NULL)
+                        delete agents[i];
+                    agents[i]=NULL;
                 }
             }
 
@@ -62,35 +60,25 @@ namespace adservice{
             /**
              * 根据创意ID查询创意内容
              */
-            rapidjson::Value& queryCreativeById(const std::string& bannerId,rapidjson::Document& result);
+            rapidjson::Value& queryCreativeById(int seqId,const std::string& bannerId,rapidjson::Document& result);
 
         private:
             AdSelectManager(const std::string& node){
-                agents.reserve(ADSELECT_MAX_CONNECTION);
                 for(int i=0;i<ADSELECT_MAX_CONNECTION;i++) {
-                    agents.push_back(new ElasticSearch(node, true));
-                    roundTable[i] = 0;
+                    agents[i]=new ElasticSearch(node, true);
                 }
-                cursor = 0;
                 //todo
                 loadFile(dsl_query_banner,ES_QUERY_CREATIVE);
             }
 
-            int getAvailableConnection(){
-                int cur = cursor;
-                while(true) {
-                    if (ATOM_CAS(&roundTable[cur], 0, 1)) {
-                        return cur;
-                    }else{
-                        cur = ATOM_INC(&cursor)%ADSELECT_MAX_CONNECTION;
-                    }
-                }
+            ElasticSearch& getAvailableConnection(int seqId){
+                if(seqId<0||seqId>=ADSELECT_MAX_CONNECTION)
+                    throw AdSelectException("in getAvailableConnection,seqId invalid",seqId);
+                return *(agents[seqId]);
             }
 
         private:
-            int roundTable[ADSELECT_MAX_CONNECTION];
-            std::vector<ElasticSearch*> agents;
-            int cursor;
+            ElasticSearch* agents[ADSELECT_MAX_CONNECTION];
             // 查询创意的DSL
             char dsl_query_banner[128];
         };

@@ -116,6 +116,7 @@ HTTP::HTTP(std::string uri, bool keepAlive)
 HTTP::~HTTP() {
     // Set the socket free.
     disconnect();
+    DebugMessageWithTime("http connection to elasticsearch gone");
 }
 
 

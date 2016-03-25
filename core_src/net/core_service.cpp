@@ -15,6 +15,8 @@
 
 extern adservice::corelogic::CoreModule g_coreService;
 
+long handleShowRequests = 0;
+long updateShowRequestsTime = 0;
 
 namespace adservice{
 
@@ -69,8 +71,7 @@ namespace adservice{
                 }
                 if ((iter=paramMap.find(URL_ADPLACE_ID)) != paramMap.end()) { //广告位Id
                     adservice::types::string &s = iter->second;//paramMap[URL_ADPLACE_ID];
-                    const char* cstr = s.c_str();
-                    log.adInfo.pid = cstr[0]!='m'?std::stol(s):-std::abs(utility::hash::fnv_hash(cstr,s.length())); //如果为负数表示这是hash的结果
+                    log.adInfo.pid = s;
                 }
                 if ((iter=paramMap.find(URL_EXPOSE_ID)) != paramMap.end()) { //曝光Id
                     adservice::types::string &r = iter->second;//paramMap[URL_EXPOSE_ID];
@@ -83,7 +84,7 @@ namespace adservice{
                 if ((iter=paramMap.find(URL_ADPLAN_ID)) != paramMap.end()) { // 推广计划Id
                     adservice::types::string &t = iter->second;//paramMap[URL_ADPLAN_ID];
                     const char* cstr = t.c_str();
-                    log.adInfo.cpid = t;//cstr[0]!='m'?std::stol(t):-std::abs(utility::hash::fnv_hash(cstr,t.length()));
+                    log.adInfo.cpid = t;
                 }
                 if ((iter=paramMap.find(URL_EXEC_ID)) != paramMap.end()) { // 投放单元Id
                     adservice::types::string &e = iter->second;//paramMap[URL_EXEC_ID];
@@ -91,7 +92,7 @@ namespace adservice{
                 }
                 if ((iter=paramMap.find(URL_CREATIVE_ID)) != paramMap.end()) { // 创意Id
                     adservice::types::string &c = iter->second;//paramMap[URL_CREATIVE_ID];
-                    log.adInfo.creativeId = std::stol(c);
+                    log.adInfo.bannerId = std::stol(c);
                 }
                 if ((iter=paramMap.find(URL_ADX_ID)) != paramMap.end()) { // 平台Id,adxId
                     adservice::types::string &x = iter->second;//paramMap[URL_ADX_ID];
@@ -149,7 +150,7 @@ namespace adservice{
             size+=sizeof(log.userInfo.age);
             size+=sizeof(log.userInfo.interest);
             size+=sizeof(log.userInfo.sex);
-            size+=sizeof(log.adInfo.creativeId);
+            size+=sizeof(log.adInfo.bannerId);
             size+=sizeof(log.adInfo.sid);
             size+=sizeof(log.adInfo.advId);
             size+=sizeof(log.adInfo.bidPrice);
@@ -180,7 +181,7 @@ namespace adservice{
         bool operator==(const protocol::log::AdInfo& a,const protocol::log::AdInfo& b){
             return a.advId==b.advId && a.adxid == b.adxid && a.areaId == b.areaId && a.bidPrice == b.bidPrice
                     && a.cid == b.cid && a.cost == b.cost && a.clickId == b.clickId && a.cpid == b.cpid
-                   && a.creativeId == b.creativeId && a.imp_id == b.imp_id && a.landingUrl == b.landingUrl;
+                   && a.bannerId == b.bannerId && a.imp_id == b.imp_id && a.landingUrl == b.landingUrl;
 
         }
 
@@ -235,14 +236,29 @@ namespace adservice{
             }
         }
 
+        bool checkUserCookies(const adservice::types::string& oldCookies){
+            CypherResult128 cypherResult;
+            memcpy((void*)cypherResult.bytes,(void*)oldCookies.c_str(),oldCookies.length());
+            DecodeResult64 decodeResult64;
+            if(!cookiesDecode(cypherResult,decodeResult64)
+               || decodeResult64.words[0]<=0
+               || decodeResult64.words[0]>time::getCurrentTimeSinceMtty()){
+                return false;
+            }
+            return true;
+        }
 
         /**
          * 处理请求的抽象逻辑
          */
         class AbstractQueryTask{
         public:
-            explicit AbstractQueryTask(const TcpConnectionPtr& _conn,const adservice::types::string& query,
-                                       const adservice::types::string& cookies):conn(_conn),data(query),userCookies(cookies){}
+            explicit AbstractQueryTask(const TcpConnectionPtr& _conn,const HttpRequest& request):conn(_conn){
+                data = request.query();
+                userCookies = request.getHeader("Cookie");
+                userAgent = request.getHeader("User-Agent");
+                userIp = request.getHeader("X-Forwarded-For");
+            }
             /**
              * 处理请求的通用逻辑
              * 1.装填log 对象并序列化
@@ -251,34 +267,31 @@ namespace adservice{
              */
             void commonLogic(ParamMap& paramMap,protocol::log::LogItem& log,HttpResponse& resp){
                 getParam(paramMap,data.c_str()+1);
+                log.userAgent = userAgent;
                 log.logType = currentPhase();
                 log.reqMethod = reqMethod();
                 log.reqStatus = expectedReqStatus();
                 log.timeStamp = utility::time::getCurrentTimeStampUtc();
                 parseObjectToLogItem(paramMap,log);
-                const muduo::net::InetAddress& peerAddr = conn->peerAddress();
-                log.ipInfo.ipv4=peerAddr.ipNetEndian(); //因为现在的服务器是基于ipv4的,所以只需设置ipv4
+//                const muduo::net::InetAddress& peerAddr = conn->peerAddress();
+//                log.ipInfo.ipv4=peerAddr.ipNetEndian(); //因为现在的服务器是基于ipv4的,所以只需设置ipv4
+                lot.ipInfo.proxy=userIp;
                 adservice::types::string userId = extractCookiesParam(COOKIES_MTTY_ID,userCookies);
-                if(userId.empty()){
+                bool needNewCookies = false;
+                if(userId.empty()||!checkUserCookies(userId)){
                     CypherResult128 cookiesResult;
                     makeCookies(cookiesResult);
                     log.userId = (char*)cookiesResult.char_bytes;
+                    needNewCookies = true;
                 }else{
                     log.userId = userId;
                 }
-                std::shared_ptr<adservice::types::string> logString = std::make_shared<adservice::types::string>();
-                writeAvroObject(log, *(logString.get()));
-#if defined(USE_ALIYUN_LOG) && defined(UNIT_TEST)
-                checkAliEscapeSafe(log,*(logString.get()));
-#endif
-                // 将日志对象推送到阿里云队列
-                CoreModule coreModule = CoreService::getInstance();
-                if (coreModule.use_count() > 0)
-                    coreModule->getLogger()->push(logString);
-
                 resp.setContentType("text/html");
-                resp.addHeader("Server", "Mtty");
-                if(userId.empty()) { //传入的cookies中没有userId,cookies 传出
+#ifdef USE_ENCODING_GZIP
+                resp.addHeader("Content-Encoding","gzip");
+#endif
+                //resp.addHeader("Server", "Nginx 1.8.0");
+                if(needNewCookies) { //传入的cookies中没有userId,cookies 传出
                     char cookiesString[64];
                     sprintf(cookiesString, "%s=%s;Domain=.%s;Max-Age=2617488000;", COOKIES_MTTY_ID,log.userId.c_str(),COOKIES_MTTY_DOMAIN);//必要时加入Domain
                     resp.addHeader("Set-Cookie", cookiesString);
@@ -293,8 +306,8 @@ namespace adservice{
             }
 
             // 期望http 请求状态
-            virtual int expectedReqStatus(){
-                return 200;
+            virtual HttpResponse::HttpStatusCode expectedReqStatus(){
+                return HttpResponse::k200Ok;
             }
 
             // deal with custom bussiness
@@ -303,32 +316,52 @@ namespace adservice{
             // set error detail to response body
             virtual void onError(std::exception& e,HttpResponse& response) = 0;
 
+            void doLog(protocol::log::LogItem& log){
+                std::shared_ptr<adservice::types::string> logString = std::make_shared<adservice::types::string>();
+                writeAvroObject(log, *(logString.get()));
+#if defined(USE_ALIYUN_LOG) && defined(UNIT_TEST)
+                checkAliEscapeSafe(log,*(logString.get()));
+#endif
+                // 将日志对象推送到阿里云队列
+                CoreModule coreModule = CoreService::getInstance();
+                if (coreModule.use_count() > 0)
+                    coreModule->getLogger()->push(logString);
+            }
+
             void operator()(){
                 try{
                     ParamMap paramMap;
                     protocol::log::LogItem log;
-                    HttpResponse resp(true);
+                    HttpResponse resp(false);
+                    resp.setStatusCode(expectedReqStatus());
                     commonLogic(paramMap,log,resp);
                     customLogic(paramMap,log,resp);
+                    doLog(log);
                     Buffer buf;
                     resp.appendToBuffer(&buf);
                     conn->send(&buf); //这里将异步调用IO线程,进行数据回写
+#ifdef USE_SHORT_CONN
                     conn->shutdown(); //假定都是短链接
+#endif
                 }catch(std::exception& e){
-                    HttpResponse resp(true);
+                    HttpResponse resp(false);
                     resp.setStatusCode(HttpResponse::k500ServerError);
                     resp.setStatusMessage("error");
                     resp.setContentType("text/html");
-                    resp.addHeader("Server", "Mtty");
+                    //resp.addHeader("Server", "nginx/1.8.0");
                     onError(e,resp);
                     Buffer buf;
                     resp.appendToBuffer(&buf);
                     conn->send(&buf);
+#ifdef USE_SHORT_CONN
                     conn->shutdown();
+#endif
                 }
             }
         protected:
             adservice::types::string userCookies;
+            adservice::types::string userAgent;
+            adservice::types::string userIp;
             adservice::types::string data;
             const TcpConnectionPtr& conn;
         };
@@ -338,8 +371,7 @@ namespace adservice{
          */
         class HandleClickQueryTask:public AbstractQueryTask{
         public:
-            explicit HandleClickQueryTask(const TcpConnectionPtr& _conn,const adservice::types::string& query,
-                const adservice::types::string& cookies):AbstractQueryTask(_conn,query,cookies){
+            explicit HandleClickQueryTask(const TcpConnectionPtr& _conn,const HttpRequest& request):AbstractQueryTask(_conn,request){
             }
 
             protocol::log::LogPhaseType currentPhase(){
@@ -347,8 +379,8 @@ namespace adservice{
             }
 
             // 期望http 请求状态
-            int expectedReqStatus(){
-                return 302;
+            HttpResponse::HttpStatusCode expectedReqStatus(){
+                return HttpResponse::k302Redirect;
             }
 
             void customLogic(ParamMap& paramMap,protocol::log::LogItem& log,HttpResponse& resp){
@@ -364,7 +396,7 @@ namespace adservice{
 
             void onError(std::exception& e,HttpResponse& resp){
                 LOG_ERROR<<"error occured in HandleClickQueryTask:"<<e.what();
-                resp.setBody("error occured in click query");
+                //resp.setBody("error occured in click query");
             }
         };
 
@@ -383,8 +415,7 @@ namespace adservice{
                 loadFile(showSspTemplate,TEMPLATE_SHOW_SSP_PATH);
             }
         public:
-            explicit HandleShowQueryTask(const TcpConnectionPtr& _conn,const adservice::types::string& _query,
-                                        const adservice::types::string& _cookies):AbstractQueryTask(_conn,_query,_cookies){
+            explicit HandleShowQueryTask(const TcpConnectionPtr& _conn,const HttpRequest& request):AbstractQueryTask(_conn,request){
                 loadTemplates();
             }
 
@@ -393,8 +424,8 @@ namespace adservice{
             }
 
             // 期望http 请求状态
-            int expectedReqStatus(){
-                return 200;
+            HttpResponse::HttpStatusCode expectedReqStatus(){
+                return HttpResponse::k200Ok;
             }
 
             bool isShowForSSP(ParamMap& paramMap){
@@ -406,20 +437,108 @@ namespace adservice{
                 }
             }
 
-            inline rapidjson::Value& MakeStringValue(const std::string& s){
-                return Value(kStringType).SetString(StringRef(s.c_str(),s.length()));
+#define MakeStringValue(s) rapidjson::Value().SetString(s.c_str(),s.length())
+
+#define MakeStringConstValue(s) rapidjson::Value().SetString(s)
+
+#define MakeIntValue(s) rapidjson::Value().SetInt(s)
+
+#define MakeDoubleValue(d) rapidjson::Value().SetDouble(d)
+
+#define MakeBooleanValue(b) rapidjson::Value().SetBool(b)
+
+
+            void prepareMtAdInfoForDSP(rapidjson::Document& mtAdInfo,ParamMap& paramMap,rapidjson::Value& result){
+                rapidjson::Document::AllocatorType& allocator = mtAdInfo.GetAllocator();
+                mtAdInfo.SetObject();
+                mtAdInfo.AddMember("mt_ad_pid",MakeStringValue(paramMap[URL_ADPLAN_ID]),allocator);
+                mtAdInfo.AddMember("mt_ad_width",MakeIntValue(json::getField(result,"width",250)),allocator);
+                mtAdInfo.AddMember("mt_ad_height",MakeIntValue(json::getField(result,"height",300)),allocator);
+                mtAdInfo.AddMember("mt_ad_impid",MakeStringValue(paramMap[URL_EXPOSE_ID]),allocator);
+                mtAdInfo.AddMember("mt_ad_advid",MakeStringValue(paramMap[URL_ADOWNER_ID]),allocator);
+                mtAdInfo.AddMember("mt_ad_unid",MakeStringValue(paramMap[URL_ADX_ID]),allocator);
+                mtAdInfo.AddMember("mt_ad_plid",MakeStringValue(paramMap[URL_ADPLACE_ID]),allocator);
+                mtAdInfo.AddMember("mt_ad_gpid",MakeStringValue(paramMap[URL_ADPLACE_ID]),allocator);
+                mtAdInfo.AddMember("mt_ad_cid",MakeStringValue(paramMap[URL_CREATIVE_ID]),allocator);
+                mtAdInfo.AddMember("mt_ad_arid",MakeStringValue(paramMap[URL_AREA_ID]),allocator);
+                mtAdInfo.AddMember("mt_ad_ctype",MakeIntValue(json::getField(result,"banner_type",1)),allocator);
+                mtAdInfo.AddMember("mt_ad_xcurl",MakeStringValue(paramMap[URL_ADX_MACRO]),allocator);
+                mtAdInfo.AddMember("mt_ad_tview",MakeStringConstValue(""),allocator);
+                rapidjson::Value mtls(kArrayType);
+                rapidjson::Value mtlsObj(kObjectType);
+                mtlsObj.AddMember("p0",MakeStringValue(json::getField(result,"material_url","")),allocator);
+                mtlsObj.AddMember("p1",MakeStringValue(json::getField(result,"click_url","")),allocator);
+                mtlsObj.AddMember("p2",MakeStringConstValue("000"),allocator);
+                mtlsObj.AddMember("p3",MakeIntValue(json::getField(result,"width",250)),allocator);
+                mtlsObj.AddMember("P4",MakeIntValue(json::getField(result,"height",300)),allocator);
+                mtlsObj.AddMember("p5",MakeStringConstValue(""),allocator);
+                mtlsObj.AddMember("p6",MakeStringConstValue(""),allocator);
+                mtlsObj.AddMember("p7",MakeStringConstValue(""),allocator);
+                mtlsObj.AddMember("p8",MakeStringConstValue(""),allocator);
+                mtls.PushBack(mtlsObj.Move(),allocator);
+                mtAdInfo.AddMember("mt_ad_mtls",mtls.Move(),mtAdInfo.GetAllocator());
             }
 
-            inline rapidjson::Value& MakeIntValue(int s){
-                return Value(kNumberType).SetInt(s);
+            int fillHtmlFixedParam(ParamMap& paramMap,const char* html,const char* templateFmt,char* buffer){
+                char mtAdInfo[1024];
+                int len=sprintf(mtAdInfo,html,paramMap[URL_ADPLAN_ID].c_str(),paramMap[URL_EXPOSE_ID].c_str(),paramMap[URL_ADX_ID].c_str(),
+                                paramMap[URL_ADPLACE_ID].c_str(),paramMap[URL_ADPLACE_ID].c_str(),paramMap[URL_AREA_ID].c_str(),paramMap[URL_ADX_MACRO].c_str());
+                tripslash(mtAdInfo);
+                len = sprintf(buffer,templateFmt,mtAdInfo);
+                return len;
+            }
+            void fillHtmlUnFixedParam(rapidjson::Document& mtAdInfo,ParamMap& paramMap,rapidjson::Value& result){
+                const std::string binder="%s";
+                if(binder == mtAdInfo["mt_ad_pid"].GetString()){
+                    mtAdInfo["mt_ad_pid"] = MakeStringValue(paramMap[URL_ADPLAN_ID]);
+                }
+                if(binder == mtAdInfo["mt_ad_width"].GetString()){
+                    mtAdInfo["mt_ad_width"] = MakeIntValue(json::getField(result,"width",0));
+                }
+                if(binder == mtAdInfo["mt_ad_height"].GetString()){
+                    mtAdInfo["mt_ad_height"] = MakeIntValue(json::getField(result,"height",0));
+                }
+                if(binder == mtAdInfo["mt_ad_impid"].GetString()) {
+                    mtAdInfo["mt_ad_impid"] = MakeStringValue(paramMap[URL_EXPOSE_ID]);
+                }
+                if(binder == mtAdInfo["mt_ad_advid"].GetString()) {
+                    mtAdInfo["mt_ad_advid"] = MakeStringValue(paramMap[URL_ADOWNER_ID]);
+                }
+                if(binder == mtAdInfo["mt_ad_unid"].GetString()) {
+                    mtAdInfo["mt_ad_unid"]  = MakeStringValue(paramMap[URL_ADX_ID]);
+                }
+                if(binder == mtAdInfo["mt_ad_plid"].GetString()) {
+                    mtAdInfo["mt_ad_plid"] =  MakeStringValue(paramMap[URL_ADPLACE_ID]);
+                }
+                if(binder == mtAdInfo["mt_ad_gpid"].GetString()) {
+                    mtAdInfo["mt_ad_gpid"] = MakeStringValue(paramMap[URL_ADPLACE_ID]);
+                }
+                if(binder == mtAdInfo["mt_ad_cid"].GetString()) {
+                    mtAdInfo["mt_ad_cid"] = MakeStringValue(paramMap[URL_CREATIVE_ID]);
+                }
+                if(binder == mtAdInfo["mt_ad_arid"].GetString()) {
+                    mtAdInfo["mt_ad_arid"] = MakeStringValue(paramMap[URL_AREA_ID]);
+                }
+                if(binder == mtAdInfo["mt_ad_ctype"].GetString()) {
+                    mtAdInfo["mt_ad_ctype"] = MakeIntValue(json::getField(result, "banner_type", 1));
+                }
+                if(binder == mtAdInfo["mt_ad_xcurl"].GetString()) {
+                    mtAdInfo["mt_ad_xcurl"] = MakeStringValue(paramMap[URL_ADX_MACRO]);
+                }
+                if(binder == mtAdInfo["mt_ad_tview"].GetString()){
+                    mtAdInfo["mt_ad_tview"] = MakeStringConstValue("");
+                }
             }
 
-            inline rapidjson::Value& MakeDoubleValue(double d){
-                return Value(kNumberType).SetDouble(d);
-            }
-
-            inline rapidjson::Value& MakeBooleanValue(bool b){
-                return Value(b?kTrueType:kFalseType).SetBool(b);
+            void tripslash(char* str){
+                char* p1 = str,*p2=p1;
+                while(*p2!='\0'){
+                    if(*p2=='\\'&&p2[1]=='\''){
+                        p2++;
+                    }
+                    *p1++ = *p2++;
+                }
+                *p1='\0';
             }
 
             void customLogic(ParamMap& paramMap,protocol::log::LogItem& log,HttpResponse& response){
@@ -427,45 +546,44 @@ namespace adservice{
                 const char* templateFmt = isSSP?showSspTemplate:showAdxTemplate;
                 //连接ADSelect
                 AdSelectManager& adselect = AdSelectManager::getInstance();
+                int seqId = 0;
+                CoreModule coreModule = CoreService::getInstance();
+                if(coreModule.use_count()>0){
+                    seqId = coreModule->getExecutor().getThreadSeqId();
+                }
                 rapidjson::Document esResp;
-                rapidjson::Value& result=adselect.queryCreativeById(paramMap[URL_CREATIVE_ID],esResp);
-                rapidjson::Document mtAdInfo;
-                rapidjson::Document::AllocatorType& allocator = mtAdInfo.GetAllocator();
-                mtAdInfo.SetObject();
-                mtAdInfo.AddMember("mt_ad_pid",MakeStringValue(paramMap[URL_ADPLAN_ID]).Move(),allocator);
-                mtAdInfo.AddMember("mt_ad_width",MakeIntValue(json::getField(result,"width",250)).Move(),allocator);
-                mtAdInfo.AddMember("mt_ad_height",MakeIntValue(json::getField(result,"height",300)).Move(),allocator);
-                mtAdInfo.AddMember("mt_ad_impid",MakeStringValue(paramMap[URL_EXPOSE_ID]).Move(),allocator);
-                mtAdInfo.AddMember("mt_ad_advid",MakeStringValue(paramMap[URL_ADOWNER_ID]).Move(),allocator);
-                mtAdInfo.AddMember("mt_ad_unid",MakeStringValue(paramMap[URL_ADX_ID]).Move(),allocator);
-                mtAdInfo.AddMember("mt_ad_plid",MakeStringValue(paramMap[URL_ADPLACE_ID]).Move(),allocator);
-                mtAdInfo.AddMember("mt_ad_gpid",MakeStringValue(paramMap[URL_ADPLACE_ID]).Move(),allocator);
-                mtAdInfo.AddMember("mt_ad_cid",MakeStringValue(paramMap[URL_CREATIVE_ID]).Move(),allocator);
-                mtAdInfo.AddMember("mt_ad_arid",MakeStringValue(paramMap[URL_AREA_ID]).Move(),allocator);
-                mtAdInfo.AddMember("mt_ad_ctype",MakeIntValue(json::getField(result,"banner_type",1)).Move(),allocator);
-                mtAdInfo.AddMember("mt_ad_xcurl",MakeStringValue(paramMap[URL_ADX_MACRO]).Move(),allocator);
-                mtAdInfo.AddMember("mt_ad_tview",MakeStringValue("").Move(),allocator);
-                rapidjson::Value mtls(kArrayType);
-                rapidjson::Value mtlsObj(kObjectType);
-                mtlsObj.AddMember("p0",MakeStringValue(json::getField(result,"material_url","")).Move(),allocator);
-                mtlsObj.AddMember("p1",MakeStringValue(json::getField(result,"click_url","")).Move(),allocator);
-                mtlsObj.AddMember("p2",MakeStringValue("000").Move(),allocator);
-                mtlsObj.AddMember("p3",MakeIntValue(json::getField(result,"width",250)).Move(),allocator);
-                mtlsObj.AddMember("P4",MakeIntValue(json::getField(result,"height",300)).Move(),allocator);
-                mtlsObj.AddMember("p5",MakeStringValue("").Move(),allocator);
-                mtlsObj.AddMember("p6",MakeStringValue("").Move(),allocator);
-                mtlsObj.AddMember("p7",MakeStringValue("").Move(),allocator);
-                mtlsObj.AddMember("p8",MakeStringValue("").Move(),allocator);
-                mtls.PushBack(mtlsObj.Move(),allocator);
-                mtAdInfo.AddMember("mt_ad_mtls",mtls.Move(),mtAdInfo.GetAllocator());
+                rapidjson::Value& result=adselect.queryCreativeById(seqId,paramMap[URL_CREATIVE_ID],esResp);
+                if(!result.HasMember("html")){
+                    log.adInfo.bannerId = 0;
+                    return;
+                }
+                const char* tmp = result["html"].GetString();
                 char buffer[2048];
-                int len = sprintf(buffer,templateFmt,toJson(mtAdInfo).c_str());
-                response.setBody(std::string(buffer,buffer+len));
+                int len = fillHtmlFixedParam(paramMap,tmp,templateFmt,buffer);
+                std::string respBody = std::string(buffer,buffer+len);
+//                rapidjson::Document mtAdInfo;
+//                json::parseJson(tmp,mtAdInfo);
+//                fillHtmlUnFixedParam(mtAdInfo,paramMap,result);
+//                std::string respBody = toJson(mtAdInfo);
+                response.addHeader("Pragma", "no-cache");
+                response.addHeader("Cache-Control","no-cache,no-store;must-revalidate");
+                response.addHeader("P3p","CP=\"CURa ADMa DEVa PSAo PSDo OUR BUS UNI PUR INT DEM STA PRE COM NAV OTC NOI DSP COR\"");
+                response.setBody(respBody);
+                handleShowRequests++;
+                if(handleShowRequests%10000==1){
+                    int64_t todayStartTime = time::getTodayStartTime();
+                    if(updateShowRequestsTime<todayStartTime) {
+                        handleShowRequests = 1;
+                        updateShowRequestsTime = todayStartTime;
+                    }else{
+                        DebugMessageWithTime("handleShowRequests:",handleShowRequests);
+                    }
+                }
             }
 
             void onError(std::exception& e,HttpResponse& resp){
-                LOG_ERROR<<"error occured in HandleShowQueryTask:"<<e.what();
-                resp.setBody("error occured in show query");
+                LOG_ERROR<<"error occured in HandleShowQueryTask:"<<e.what()<<",query:"<<data;
+                //resp.setBody("error occured in show query");
             }
         };
 
@@ -536,15 +654,22 @@ namespace adservice{
             server->setHttpCallback(std::bind(&CoreService::onRequest,this,_1,_2,_3));
             server->setThreadNum(httpThreads);
             configManager.registerOnChange(CONFIG_SERVICE,std::bind(&onConfigChange,CONFIG_SERVICE,_1,_2));
+            configManager.registerOnChange(CONFIG_LOG,std::bind(&onConfigChange,CONFIG_LOG,_1,_2));
         }
+
+        struct ParamPack{
+                const TcpConnectionPtr conn;
+                const adservice::types::string data;
+                const adservice::types::string cookies;
+                ParamPack(const TcpConnectionPtr& con,const adservice::types::string& d,const adservice::types::string& c):
+                        conn(con),data(d),cookies(c){}
+        };
 
 
         void doClick(CoreService* service,const TcpConnectionPtr& conn,const HttpRequest& req,bool isClose){
             try {
-                DebugMessage("in request c,query=", req.query());
-                adservice::types::string data = req.query();
-                adservice::types::string cookies = req.getHeader("Cookie");
-                service->getExecutor().run(std::bind(HandleClickQueryTask(conn, data,cookies)));
+                //DebugMessage("in request c,query=", req.query());
+                service->getExecutor().run(std::bind(HandleClickQueryTask(conn,req)));
             }catch(std::exception &e){
                 LOG_ERROR<<"error occured in ClickService::onRequest"<<e.what();
             }
@@ -552,10 +677,8 @@ namespace adservice{
 
         void doShow(CoreService* service,const TcpConnectionPtr& conn,const HttpRequest& req,bool isClose){
             try{
-                DebugMessage("in request v,query=",req.query());
-                adservice::types::string data = req.query();
-                adservice::types::string cookies = req.getHeader("Cookie");
-                service->getExecutor().run(std::bind(HandleShowQueryTask(conn,data,cookies)));
+                //DebugMessage("in request v,query=",req.query());
+                service->getExecutor().run(std::bind(HandleShowQueryTask(conn,req)));
             }catch(std::exception &e){
                 LOG_ERROR<<"error occured in ClickService::onRequest"<<e.what();
             }
@@ -563,22 +686,32 @@ namespace adservice{
 
         void CoreService::onRequest(const TcpConnectionPtr& conn,const HttpRequest& req, bool isClose) {
             //todo:改成table dispatcher
-            if (req.path() == "/test") { //click
-                doClick(this,conn,req,isClose);
-            } else if(req.path() == "/p"){ //show
+            if (req.path() == "/v") { //show
                 doShow(this,conn,req,isClose);
-            }
-            else
-            {
-                DebugMessage("req.path() not math target!",req.path());
-                HttpResponse resp(isClose);
-                resp.setStatusCode(HttpResponse::k404NotFound);
-                resp.setStatusMessage("Not Found");
-                resp.setCloseConnection(true);
+            } else if(req.path() == "/c"){ //click
+                doClick(this,conn,req,isClose);
+            } else if(req.path() == "/jt.html"){
+                HttpResponse resp(false);
+                resp.setStatusCode(HttpResponse::k200Ok);
                 Buffer buf;
                 resp.appendToBuffer(&buf);
                 conn->send(&buf);
+#ifdef USE_SHORT_CONN
                 conn->shutdown();
+#endif
+            }
+            else
+            {
+                DebugMessage("req.path() not match target!",req.path());
+                HttpResponse resp(isClose);
+                resp.setStatusCode(HttpResponse::k404NotFound);
+                resp.setStatusMessage("Not Found");
+                Buffer buf;
+                resp.appendToBuffer(&buf);
+                conn->send(&buf);
+#ifdef USE_SHORT_CONN
+                conn->shutdown();
+#endif
             }
 
         }

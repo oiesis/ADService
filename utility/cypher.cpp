@@ -262,7 +262,7 @@ namespace adservice {
             * @param output : 输出结果
             * @param size: 存放结果大小
             */
-            void cookiesDecode(const CypherResult128 & input,INOUT uchar_t*  output,INOUT int32_t & size){
+            bool cookiesDecode(const CypherResult128 & input,INOUT uchar_t*  output,INOUT int32_t & size){
                 assert(size >= 8);
                 static uchar_t mask[2] = {0x0F,0xF0};
                 const uchar_t* bytes = input.bytes;
@@ -270,10 +270,12 @@ namespace adservice {
                 for(int i=0;i<16;i++){
                     int j=i>>1;
                     int idx = bSearch<const char>(cypherSortMap[i&0x03],16,bytes[i]);
+                    if(idx<0||idx>15)
+                        return false;
                     output[j]|=(cypherPosMap[i&0x03][idx]<<((i&0x01)?4:0))&mask[i&0x01];
                 }
                 size = 8;
-                return;
+                return true;
             }
 
 

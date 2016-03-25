@@ -41,7 +41,7 @@
       "name" : "sid",
       "type" : "long"
     }, {
-      "name" : "creativeId",
+      "name" : "bannerId",
       "type" : "long"
     }, {
       "name" : "clickId",
@@ -57,7 +57,7 @@
       "type" : "string"
     }, {
       "name" : "pid",
-      "type" : "long"
+      "type" : "string"
     }, {
       "name" : "imp_id",
       "type" : "string"

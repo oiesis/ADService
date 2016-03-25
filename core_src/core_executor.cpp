@@ -3,6 +3,7 @@
 //
 
 #include <sched.h>
+#include <algorithm>
 #include "core_executor.h"
 #include "common/spinlock.h"
 
@@ -10,8 +11,16 @@ namespace adservice{
     namespace server{
 
         struct RunInCore{
-            RunInCore(){
+            /**
+             * tc: 所有核心数
+             * threadTable:需要填充的线程表
+             * threadNum:所有线程数
+             */
+            RunInCore(int tc,long* threadTable,int threadNum){
                 runCore = 0;
+                totalCore = tc;
+                totalThread = threadNum;
+                threadMappingTable = threadTable;
                 SPIN_INIT(this);
             }
             void operator()(){
@@ -19,16 +28,25 @@ namespace adservice{
                 SPIN_LOCK(this);
                 myCore = runCore++;
                 SPIN_UNLOCK(this);
+                pthread_t me = pthread_self();
+                threadMappingTable[myCore] = me;
+                myCore%=totalCore;
                 cpu_set_t cpuset;
                 CPU_ZERO(&cpuset);
                 CPU_SET(myCore,&cpuset);
                 pthread_setaffinity_np(pthread_self(),sizeof(cpu_set_t),&cpuset);
+                if(runCore==totalThread){
+                    std::sort<long*>(threadMappingTable,threadMappingTable+totalThread);
+                }
             }
             ~RunInCore(){
                 SPIN_DESTROY(this);
             }
             volatile int runCore;
+            int totalCore;
+            int totalThread;
             spinlock lock;
+            long* threadMappingTable;
         };
 
         struct DefaultThreadInitializer{
@@ -39,7 +57,7 @@ namespace adservice{
         void Executor::start(){
             if(pureCompute){
                 configureForCompute();
-                threadpool.setThreadInitCallback(std::bind(RunInCore()));
+                threadpool.setThreadInitCallback(std::bind(RunInCore(threadNum,threadMappingTable,threadNum)));
             }else{
                 threadpool.setThreadInitCallback(std::bind(DefaultThreadInitializer()));
             }
@@ -53,6 +71,21 @@ namespace adservice{
             }else{
                 threadNum = nprocessors;
             }
+            DebugMessage("core executor core num:",threadNum);
+        }
+
+        int Executor::getThreadSeqId(){
+            long key = (long)pthread_self();
+            int l=0,h=threadNum-1;
+            while(l<=h){
+                int mid = l+((h-l)>>1);
+                if(key<=threadMappingTable[mid])
+                    h = mid-1;
+                else
+                    l = mid+1;
+            }
+            assert(l>=0&&l<threadNum&&threadMappingTable[l]==key);
+            return l;
         }
 
     }

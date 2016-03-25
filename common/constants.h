@@ -27,7 +27,7 @@
 
 /**Http 参数相关常量**/
 // cookies userId key
-#define COOKIES_MTTY_ID         "m1"
+#define COOKIES_MTTY_ID         "m"
 // 服务根域名
 #define COOKIES_MTTY_DOMAIN     "mtty.com"
 // HTTP GET请求

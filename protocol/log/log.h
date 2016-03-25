@@ -17,8 +17,8 @@
  */
 
 
-#ifndef LOG_AVRO_LOG_H_3670806083__H_
-#define LOG_AVRO_LOG_H_3670806083__H_
+#ifndef LOG_AVRO_LOG_H_345578963__H_
+#define LOG_AVRO_LOG_H_345578963__H_
 
 
 #include <sstream>
@@ -53,12 +53,12 @@ struct AdInfo {
     int64_t advId;
     std::string cpid;
     int64_t sid;
-    int64_t creativeId;
+    int64_t bannerId;
     std::string clickId;
     int32_t adxid;
     std::string mid;
     std::string cid;
-    int64_t pid;
+    std::string pid;
     std::string imp_id;
     std::string landingUrl;
     int32_t cost;
@@ -68,12 +68,12 @@ struct AdInfo {
         advId(int64_t()),
         cpid(std::string()),
         sid(int64_t()),
-        creativeId(int64_t()),
+        bannerId(int64_t()),
         clickId(std::string()),
         adxid(int32_t()),
         mid(std::string()),
         cid(std::string()),
-        pid(int64_t()),
+        pid(std::string()),
         imp_id(std::string()),
         landingUrl(std::string()),
         cost(int32_t()),
@@ -324,7 +324,7 @@ template<> struct codec_traits<protocol::log::AdInfo> {
         avro::encode(e, v.advId);
         avro::encode(e, v.cpid);
         avro::encode(e, v.sid);
-        avro::encode(e, v.creativeId);
+        avro::encode(e, v.bannerId);
         avro::encode(e, v.clickId);
         avro::encode(e, v.adxid);
         avro::encode(e, v.mid);
@@ -355,7 +355,7 @@ template<> struct codec_traits<protocol::log::AdInfo> {
                     avro::decode(d, v.sid);
                     break;
                 case 4:
-                    avro::decode(d, v.creativeId);
+                    avro::decode(d, v.bannerId);
                     break;
                 case 5:
                     avro::decode(d, v.clickId);
@@ -393,7 +393,7 @@ template<> struct codec_traits<protocol::log::AdInfo> {
             avro::decode(d, v.advId);
             avro::decode(d, v.cpid);
             avro::decode(d, v.sid);
-            avro::decode(d, v.creativeId);
+            avro::decode(d, v.bannerId);
             avro::decode(d, v.clickId);
             avro::decode(d, v.adxid);
             avro::decode(d, v.mid);

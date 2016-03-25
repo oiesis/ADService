@@ -9,6 +9,8 @@ LOAD_LIB:= -lpthread -lavrocpp -lonsclient4cpp -lssl -lcrypto
 STRICT_CCFLAGS:=-Wall -Wextra -Werror -Wconversion -Wno-unused-parameter -Wold-style-cast -Woverloaded-virtual -Wpointer-arith -Wshadow -Wwrite-strings
 CCFlags:=--std=c++11 -g -march=native -O2 -finline-limit=1000 -DNDEBUG -DUNIT_TEST -DMUDUO_STD_STRING
 CCFlags+= -DUSE_KAFKA_LOG
+CCFlags+= -DUSE_SHORT_CONN
+#CCFlags+= -DUSE_ENCODING_GZIP
 #CCFlags+= -DUSE_ALIYUN_LOG
 LOAD_LIB+= -lrdkafka++ -lz
 prerun:

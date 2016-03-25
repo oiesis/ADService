@@ -36,9 +36,9 @@ namespace adservice{
         }
 
 
-        struct LogPushClickTask{
-            LogPushClickTask(LogProducer* p,std::shared_ptr<adservice::types::string>& l):producer(p),log(l){}
-            LogPushClickTask(LogProducer* p,std::shared_ptr<adservice::types::string>&& l):producer(p),log(l){}
+        struct LogPushTask{
+            LogPushTask(LogProducer* p,std::shared_ptr<adservice::types::string>& l):producer(p),log(l){}
+            LogPushTask(LogProducer* p,std::shared_ptr<adservice::types::string>&& l):producer(p),log(l){}
             void operator()(){
 #if defined(USE_ALIYUN_LOG)
                 std::string ali_escapeString = encode4ali(*(log.get()));
@@ -66,32 +66,32 @@ namespace adservice{
             std::shared_ptr<adservice::types::string> log;
         };
 
-        struct LogPushClickLocalThreadData{
+        struct LogPushLocalThreadData{
             FILE* fp;
             long lastTime;
-            LogPushClickLocalThreadData():fp(NULL),lastTime(0){}
-            ~LogPushClickLocalThreadData(){
+            LogPushLocalThreadData():fp(NULL),lastTime(0){}
+            ~LogPushLocalThreadData(){
                 if(fp!=NULL){
                     fclose(fp);
                 }
             }
             static void destructor(void* ptr){
                 if(ptr){
-                    delete ((LogPushClickLocalThreadData*)ptr);
+                    delete ((LogPushLocalThreadData*)ptr);
                 }
             }
         };
 
 
-        struct LogPushClickLocalTask{
-            LogPushClickLocalTask(std::shared_ptr<adservice::types::string>& l):log(l){}
-            LogPushClickLocalTask(std::shared_ptr<adservice::types::string>&& l):log(l){}
+        struct LogPushLocalTask{
+            LogPushLocalTask(std::shared_ptr<adservice::types::string>& l):log(l){}
+            LogPushLocalTask(std::shared_ptr<adservice::types::string>&& l):log(l){}
             void operator()(){
                 pthread_t thread = pthread_self();
-                LogPushClickLocalThreadData* data = (LogPushClickLocalThreadData*)ThreadLocalManager::getInstance().get(thread);
+                LogPushLocalThreadData* data = (LogPushLocalThreadData*)ThreadLocalManager::getInstance().get(thread);
                 if(data==NULL){
-                    data = new LogPushClickLocalThreadData;
-                    ThreadLocalManager::getInstance().put(thread,data,&LogPushClickLocalThreadData::destructor);
+                    data = new LogPushLocalThreadData;
+                    ThreadLocalManager::getInstance().put(thread,data,&LogPushLocalThreadData::destructor);
                 }
                 FILE* fp = data->fp;
                 long curTime = utility::time::getCurrentTimeStamp();
@@ -161,10 +161,10 @@ namespace adservice{
                 //由于现在使用的kafka client api有自己的消息队列机制,所以不需要走logpusher内部消息队列
                 producer->send(Message(DEFAULT_KAFKA_TOPIC,*(logstring.get())));
 #else
-                executor.run(std::bind(LogPushClickTask(producer, logstring)));
+                executor.run(std::bind(LogPushTask(producer, logstring)));
 #endif
             }else{
-                executor.run(std::bind(LogPushClickLocalTask(logstring)));
+                executor.run(std::bind(LogPushLocalTask(logstring)));
             }
         }
 
@@ -173,10 +173,10 @@ namespace adservice{
 #if defined USE_KAFKA_LOG
                 producer->send(Message(DEFAULT_KAFKA_TOPIC,*(logstring.get())));
 #else
-                executor.run(std::bind(LogPushClickTask(producer, logstring)));
+                executor.run(std::bind(LogPushTask(producer, logstring)));
 #endif
             }else{
-                executor.run(std::bind(LogPushClickLocalTask(logstring)));
+                executor.run(std::bind(LogPushLocalTask(logstring)));
             }
         }
 
