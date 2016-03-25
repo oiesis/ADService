@@ -80,7 +80,6 @@ namespace adservice{
                 if ((iter=paramMap.find(URL_ADOWNER_ID)) != paramMap.end()) { //广告主Id
                     adservice::types::string &d = iter->second;//paramMap[URL_ADOWNER_ID];
                     log.adInfo.advId = std::stol(d);
-                    log.adInfo.cpid = d; //如果广告推广计划Id为空,默认为广告主Id
                 }
                 if ((iter=paramMap.find(URL_ADPLAN_ID)) != paramMap.end()) { // 推广计划Id
                     adservice::types::string &t = iter->second;//paramMap[URL_ADPLAN_ID];
