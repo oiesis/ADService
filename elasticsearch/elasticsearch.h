@@ -17,7 +17,7 @@ class ElasticSearch {
         ~ElasticSearch();
 
          /// Test connection with node.
-        bool isActive();
+        bool isActive() ;
 
         /// Request document number of type T in index I.
         long unsigned int getDocumentCount(const char* index, const char* type);

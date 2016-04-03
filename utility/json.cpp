@@ -155,7 +155,8 @@ namespace adservice{
                     rapidjson::ParseErrorCode e = reader.GetParseErrorCode();
                     size_t o = reader.GetErrorOffset();
                     std::cerr << "Error: " << rapidjson::GetParseError_En(e) << std::endl;;
-                    std::cerr << " at offset " << o << " near '" << std::string(json).substr(o, 10) << "...'" << std::endl;
+                    std::string slice = (strlen(json)>o+10)?std::string(json).substr(o,10):std::string(json);
+                    std::cerr << " at offset " << o << " near '" << slice << "...'" << std::endl;
                     return false;
                 }
             }
@@ -166,7 +167,8 @@ namespace adservice{
                     rapidjson::ParseErrorCode e = doc.GetParseError();
                     size_t o = doc.GetErrorOffset();
                     std::cerr << "Error: " << rapidjson::GetParseError_En(e) << std::endl;;
-                    std::cerr << " at offset " << o << " near '" << std::string(json).substr(o, 10) << "...'" << std::endl;
+                    std::string slice = (strlen(json)>o+10)?std::string(json).substr(o,10):std::string(json);
+                    std::cerr << " at offset " << o << " near '" << slice << "...'" << std::endl;
                     return false;
                 }
                 return true;

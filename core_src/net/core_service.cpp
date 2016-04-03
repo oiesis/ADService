@@ -275,7 +275,7 @@ namespace adservice{
                 parseObjectToLogItem(paramMap,log);
 //                const muduo::net::InetAddress& peerAddr = conn->peerAddress();
 //                log.ipInfo.ipv4=peerAddr.ipNetEndian(); //因为现在的服务器是基于ipv4的,所以只需设置ipv4
-                lot.ipInfo.proxy=userIp;
+                log.ipInfo.proxy=userIp;
                 adservice::types::string userId = extractCookiesParam(COOKIES_MTTY_ID,userCookies);
                 bool needNewCookies = false;
                 if(userId.empty()||!checkUserCookies(userId)){
@@ -487,6 +487,17 @@ namespace adservice{
                 len = sprintf(buffer,templateFmt,mtAdInfo);
                 return len;
             }
+
+            int fillHtmlFixedParamSSP(rapidjson::Document& mtAdInfo,const char* templateFmt,char* buffer){
+
+            }
+
+            int fillHtmlFixedParam(rapidjson::Value& result,const char* html,const char* templateFmt,char* buffer){
+                char mtAdInfo[1024];
+                int len = 0;
+                return len;
+            }
+
             void fillHtmlUnFixedParam(rapidjson::Document& mtAdInfo,ParamMap& paramMap,rapidjson::Value& result){
                 const std::string binder="%s";
                 if(binder == mtAdInfo["mt_ad_pid"].GetString()){
@@ -541,6 +552,65 @@ namespace adservice{
                 *p1='\0';
             }
 
+            rapidjson::Value& selectBannerFromBannerGroup(std::map<int,std::vector<rapidjson::Value*>>& bannerMap,int bgid){
+                std::vector<rapidjson::Value*>& banners = bannerMap[bgid];
+                int r = rng::randomInt()%banners.size();
+                return *(banners[r]);
+            }
+
+            rapidjson::Value& bestBannerFromBannerGroup(std::map<int,std::vector<rapidjson::Value*>>& bannerMap,int bgid){
+                std::vector<rapidjson::Value*>& banners = bannerMap[bgid];
+                int idx[50];
+                int idxCnt=0,i=0;
+                double maxScore = -1.0;
+                typedef std::vector<rapidjson::Value*>::iterator Iter;
+                for(Iter iter = banners.begin(),i=0;iter!=banners.end();iter++,i++){
+                    rapidjson::Value& banner = *(*iter);
+                    double ecpm = banner["offerprice"].GetDouble();
+                    if(ecpm>maxScore){
+                        idxCnt = 0;
+                        idx[idxCnt] = i;
+                        maxScore = ecpm;
+                    }else if(ecpm==maxScore){
+                        idx[idxCnt++] = i;
+                    }
+                }
+                int r = rng::randomInt()%idxCnt;
+                return *(banners[r]);
+            }
+
+            double calcSolutionScore(int priceType,double ecpm){
+                return (10-priceType)*10000+ecpm;
+            }
+
+            double getECPMFromSolutionScore(double score,int priceType){
+                return score - (10 - priceType)*10000;
+            }
+
+            void sortSolutionScore(int* idx,double* scores,int size){
+                std::sort<int*>(idx,idx+size,[scores](const int& a,const int&b)->bool{
+                        return scores[a] > scores[b];
+                });
+            }
+
+            int randomSolution(double totalWeight,double* accWeights,int size){
+                double r = rng::randomDouble() * totalWeight;
+                int l=0,h=size-1;
+                while(l<=h){
+                    int mid = l+((h-l)>>1);
+                    if(r<=accWeights[mid])
+                        h = mid-1;
+                    else
+                        l = mid+1;
+                }
+                assert(l>=0&&l<size);
+                return l;
+            }
+
+            double calcBidPrice(int priceType,double ecpm){
+                return 0;
+            }
+
             void customLogic(ParamMap& paramMap,protocol::log::LogItem& log,HttpResponse& response){
                 bool isSSP = isShowForSSP(paramMap);
                 const char* templateFmt = isSSP?showSspTemplate:showAdxTemplate;
@@ -551,32 +621,134 @@ namespace adservice{
                 if(coreModule.use_count()>0){
                     seqId = coreModule->getExecutor().getThreadSeqId();
                 }
-                rapidjson::Document esResp;
-                rapidjson::Value& result=adselect.queryCreativeById(seqId,paramMap[URL_CREATIVE_ID],esResp);
-                if(!result.HasMember("html")){
-                    log.adInfo.bannerId = 0;
-                    return;
+                if(isSSP){//SSP
+                    std::string& queryPid = paramMap[URL_SSP_PID];
+                    bool isAdxPid = false;
+                    if(queryPid.empty()){
+                        queryPid = paramMap[URL_SSP_ADX_PID];
+                        if(queryPid.empty()){ //URL 参数有问题
+                            DebugMessageWithTime("in show module,ssp url pid is empty");
+                            return;
+                        }
+                        isAdxPid = true;
+                    }
+                    rapidjson::Document esResp;
+                    rapidjson::Value& result = adselect.queryAdInfoByPid(seqId,queryPid,esResp,isAdxPid);
+                    if(result.Empty()||!result.IsArray()){ //正常情况下应该刷出solution和banner以及相应的高级出价器列表
+                        log.adInfo.pid = "0";
+                        return ;
+                    }
+                    //从返回结果中整理数据
+                    rapidjson::Value& adplace = esResp["adplace"];
+                    rapidjson::Value* solutions[100];
+                    int solCnt = 0;
+                    std::map<int,std::vector<rapidjson::Value*>> bannerMap;
+                    rapidjson::Value* superPricer;
+                    for(int i=0;i<result.Size();i++){
+                        const char* type = result[i]["_type"].GetString();
+                        if(!strcmp(type,ES_DOCUMENT_SOLUTION)){ //投放单
+                            solutions[solCnt++]=&(result[i]["_source"]);
+                        }else if(!strcmp(type,ES_DOCUMENT_BANNER)){ // 创意
+                            rapidjson::Value& banner = result[i]["_source"];
+                            int bgid = banner["bgid"].GetInt();
+                            if(bannerMap.find(bgid)==bannerMap.end()){
+                                bannerMap.insert(std::make_pair(bgid,std::vector<rapidjson::Value*>()));
+                            }
+                            std::vector<rapidjson::Value*>& bannerVec = bannerMap[bgid];
+                            bannerVec.push_back(&banner);
+                        }else if(!strcmp(type,ES_DOCUMENT_ES_ADPLACE)){ //高级出价器,一个广告位的高级出价器有且只能有一个
+                            superPricer = &(result[i]["_source"]);
+                        }
+                    }
+                    //计算投放单ecpm,并计算score进行排序
+                    int solIdx[100];
+                    double solScore[100];
+                    for(int i=0;i<solCnt;i++){
+                        solIdx[i] = i;
+                        rapidjson::Value& solution = *(solutions[i]);
+                        double ecpm = solution["offerprice"].GetDouble();
+                        if((*superPricer)["sid"].GetInt()==solution["sid"].GetInt()){
+                            ecpm+=(*superPricer)["offerprice"].GetDouble();
+                        }
+                        int bgid = solution["bgid"].GetInt();
+                        rapidjson::Value& banner = bestBannerFromBannerGroup(bannerMap,bgid);
+                        ecpm += banner["offerprice"].GetDouble();
+                        int priceType = solution["pricetype"].GetInt();
+                        solScore[i] = calcSolutionScore(priceType,ecpm);
+                    }
+                    sortSolutionScore(solIdx,solScore,solCnt);
+                    //按排序概率展示
+                    double totalRate = 0;
+                    double cpdRate = 0;
+                    double accRate[100];
+                    for(int i=0;i<solCnt;i++){
+                        rapidjson::Value& solution = *(solutions[solIdx[i]]);
+                        int priceType = solution["pricetype"].GetInt();
+                        double rate = solution["rate"].GetDouble();
+                        totalRate+=rate;
+                        accRate[i] = totalRate;
+                        if(priceType == PRICETYPE_CPD){
+                            cpdRate+=rate;
+                        }
+                    }
+                    if(cpdRate>100){
+                        totalRate = cpdRate;
+                    }else if(cpdRate>0){
+                        totalRate = 100;
+                    }
+                    int finalSolutionIdx = randomSolution(totalRate,accRate,solCnt);
+                    rapidjson::Value& finalSolution = *(solutions[solIdx[finalSolutionIdx]]);
+                    rapidjson::Value& banner = bestBannerFromBannerGroup(bannerMap,finalSolution["bgid"].GetInt());
+                    //筛选出最后结果
+                    if(!banner.HasMember("html")){ //SSP没刷出广告,属于错误的情况
+                        log.adInfo.bannerId = 0;
+                        return ;
+                    }
+                    log.adInfo.bannerId = banner["bid"].GetInt();
+                    log.adInfo.advId = banner["advid"].GetInt();
+                    log.adInfo.pid = adplace["pid"].GetInt();
+                    log.adInfo.sid = finalSolution["sid"].GetInt();
+                    int finalPriceType = finalSolution["pricetype"].GetInt();
+                    log.adInfo.bidPrice = calcBidPrice(finalPriceType,getECPMFromSolutionScore(solScore[finalSolutionIdx],finalPriceType));
+                    const char* tmp = banner["html"].GetString();
+                    //返回结果
+                    char buffer[2048];
+                    rapidjson::Document mtAdInfo;
+                    json::parseJson(tmp,mtAdInfo);
+
+                    int len = fillHtmlFixedParam(result,tmp,templateFmt,buffer);
+                    std::string respBody = std::string(buffer,buffer+len);
+                    response.setBody(respBody);
+                }else {//DSP
+                    rapidjson::Document esResp;
+                    rapidjson::Value &result = adselect.queryCreativeById(seqId, paramMap[URL_CREATIVE_ID], esResp);
+                    if (!result.HasMember("html")) {
+                        log.adInfo.bannerId = 0;
+                        log.reqStatus = HttpResponse::k500ServerError;
+                        return;
+                    }
+                    const char *tmp = result["html"].GetString();
+                    char buffer[2048];
+                    int len = fillHtmlFixedParam(paramMap, tmp, templateFmt, buffer);
+                    std::string respBody = std::string(buffer, buffer + len);
+                    //rapidjson::Document mtAdInfo;
+                    //json::parseJson(tmp,mtAdInfo);
+                    //fillHtmlUnFixedParam(mtAdInfo,paramMap,result);
+                    //std::string respBody = toJson(mtAdInfo);
+                    response.setBody(respBody);
                 }
-                const char* tmp = result["html"].GetString();
-                char buffer[2048];
-                int len = fillHtmlFixedParam(paramMap,tmp,templateFmt,buffer);
-                std::string respBody = std::string(buffer,buffer+len);
-//                rapidjson::Document mtAdInfo;
-//                json::parseJson(tmp,mtAdInfo);
-//                fillHtmlUnFixedParam(mtAdInfo,paramMap,result);
-//                std::string respBody = toJson(mtAdInfo);
                 response.addHeader("Pragma", "no-cache");
-                response.addHeader("Cache-Control","no-cache,no-store;must-revalidate");
-                response.addHeader("P3p","CP=\"CURa ADMa DEVa PSAo PSDo OUR BUS UNI PUR INT DEM STA PRE COM NAV OTC NOI DSP COR\"");
-                response.setBody(respBody);
+                response.addHeader("Cache-Control", "no-cache,no-store;must-revalidate");
+                response.addHeader("P3p",
+                                   "CP=\"CURa ADMa DEVa PSAo PSDo OUR BUS UNI PUR INT DEM STA PRE COM NAV OTC NOI DSP COR\"");
                 handleShowRequests++;
-                if(handleShowRequests%10000==1){
+                if (handleShowRequests % 10000 == 1) {
                     int64_t todayStartTime = time::getTodayStartTime();
-                    if(updateShowRequestsTime<todayStartTime) {
+                    if (updateShowRequestsTime < todayStartTime) {
                         handleShowRequests = 1;
                         updateShowRequestsTime = todayStartTime;
-                    }else{
-                        DebugMessageWithTime("handleShowRequests:",handleShowRequests);
+                    } else {
+                        DebugMessageWithTime("handleShowRequests:", handleShowRequests);
                     }
                 }
             }

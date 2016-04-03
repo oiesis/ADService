@@ -40,11 +40,12 @@ ALL_OBJS:= unit_test.o \
 	mttytime.o \
 	json.o \
 	url.o \
+	file.o \
 	escape.o \
 	core.o \
 	elasticsearch.o \
 	platform.o \
-
+	
 init:
 	mkdir -p $(BUILD_PATH)
 final:
@@ -68,7 +69,9 @@ UTILITY_BUILD_SOURCE:= cypher.cpp \
 			mttytime.cpp \
 			json.cpp \
 			url.cpp \
-			escape.cpp
+			escape.cpp \
+			file.cpp \
+			random.cpp
 utility.o:
 	cd $(UTILITY_FOLDER) && \
 	$(CC) $(CCFlags) $(INCLUDE_PATH) -c $(UTILITY_BUILD_SOURCE) && \

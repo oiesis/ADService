@@ -269,23 +269,45 @@ void price_decode_test(){
 	cout<<"end of price decode test"<<endl;
 }
 
+#include <unistd.h>
+#include <sys/types.h>
+
+void* adselect_thread(void*){
+	using namespace adservice::adselect;
+	using namespace adservice::server;
+	AdSelectManager& manager = AdSelectManager::getInstance();
+	time_t beginTime;
+	time_t endTime;
+	::time(&beginTime);
+	int i = 0;
+	do {
+		rapidjson::Document result;
+		rapidjson::Value &v = manager.queryAdInfoByPid(0, "mm_10001328_6180146_22934009", result, true);
+		i++;
+		::time(&endTime);
+	}while(endTime-beginTime<180);
+	cout<<(long)pthread_self()<<" done count:"<<i<<endl;
+	return NULL;
+}
+
 void adselect_test(){
 	using namespace adservice::adselect;
 	using namespace adservice::server;
 	cout<<"adselect test"<<endl;
 	ConfigManager::init();
-	AdSelectManager& manager = AdSelectManager::getInstance();
-	rapidjson::Document result;
-	rapidjson::Value& v=manager.queryCreativeById(0,"7",result);
-	cout<<v["bgid"].GetInt()<<" "<<v["ctr"].GetDouble()<<endl;
+	pthread_t threads[100];
+	for(int i=0;i<100;i++){
+		pthread_create(&threads[i],NULL,&adselect_thread,NULL);
+	}
+	for(int i=0;i<100;i++){
+		pthread_join(threads[i],NULL);
+	}
 	AdSelectManager::release();
 	ConfigManager::exit();
 	cout<<"end of adselect test"<<endl;
 }
 
-
-
 int main(int argc,char** argv){
-	server_test();
+	adselect_test();
 	return 0;
 }

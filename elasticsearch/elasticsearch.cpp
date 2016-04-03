@@ -50,7 +50,7 @@ bool ElasticSearch::isActive() {
 }
 
 // Request the document by index/type/id.
-bool ElasticSearch::getDocument(const char* index, const char* type, const char* id, rapidjson::Document& msg){
+bool ElasticSearch::getDocument(const char* index, const char* type, const char* id, rapidjson::Document& msg) {
     std::ostringstream oss;
     oss << index << "/" << type << "/" << id;
     _http.get(oss.str().c_str(), 0, msg);
@@ -60,7 +60,7 @@ bool ElasticSearch::getDocument(const char* index, const char* type, const char*
 
 
 // Request the document by index/type/ query key:value.
-void ElasticSearch::getDocument(const std::string& index, const std::string& type, const std::string& key, const std::string& value, rapidjson::Document& msg){
+void ElasticSearch::getDocument(const std::string& index, const std::string& type, const std::string& key, const std::string& value, rapidjson::Document& msg) {
     std::ostringstream oss;
     oss << index << "/" << type << "/_search";
     std::stringstream query;
@@ -70,7 +70,7 @@ void ElasticSearch::getDocument(const std::string& index, const std::string& typ
 
 
 // Request the document number of type T in index I.
-long unsigned int ElasticSearch::getDocumentCount(const char* index, const char* type){
+long unsigned int ElasticSearch::getDocumentCount(const char* index, const char* type) {
     std::ostringstream oss;
     oss << index << "/" << type << "/_count";
     rapidjson::Document msg;
@@ -86,7 +86,7 @@ long unsigned int ElasticSearch::getDocumentCount(const char* index, const char*
 }
 
 // Test if document exists
-bool ElasticSearch::exist(const std::string& index, const std::string& type, const std::string& id){
+bool ElasticSearch::exist(const std::string& index, const std::string& type, const std::string& id) {
     std::stringstream url;
     url << index << "/" << type << "/" << id;
 
@@ -103,7 +103,7 @@ bool ElasticSearch::exist(const std::string& index, const std::string& type, con
 
 
 /// Search API of ES.
-long ElasticSearch::search(const std::string& index, const std::string& type, const std::string& query, rapidjson::Document& result){
+long ElasticSearch::search(const std::string& index, const std::string& type, const std::string& query, rapidjson::Document& result) {
 
     std::stringstream url;
     url << index << "/" << type << "/_search";
@@ -125,10 +125,10 @@ long ElasticSearch::search(const std::string& index, const std::string& type, co
     return result["hits"]["total"].GetInt();
 }
 
-long ElasticSearch::search(const std::string& index, const std::string& type, const std::string& searchParam,const std::string& query, rapidjson::Document& result){
+long ElasticSearch::search(const std::string& index, const std::string& type, const std::string& searchParam,const std::string& query, rapidjson::Document& result) {
     std::stringstream url;
     url << index << "/" << type << "/_search"<<searchParam;
-    //DebugMessage("query string:",query);
+//    DebugMessage("query string:",query.c_str());
     _http.post(url.str().c_str(), query.c_str(), result);
     return result["hits"]["total"].GetInt();
 }
@@ -136,7 +136,7 @@ long ElasticSearch::search(const std::string& index, const std::string& type, co
 
 
 // Test if index exists
-bool ElasticSearch::exist(const std::string& index){
+bool ElasticSearch::exist(const std::string& index) {
     rapidjson::Document doc;
     return (200 == _http.head(index.c_str(), 0, doc));
 }

@@ -241,7 +241,7 @@ bool HTTP::request(const char* method, const char* endUrl, const char* data, rap
 }
 
 // Get Json Object on web server.
-unsigned int HTTP::request(const char* method, const char* endUrl, const char* data, rapidjson::Document& root, Result& result, const char* content_type){
+unsigned int HTTP::request(const char* method, const char* endUrl, const char* data, rapidjson::Document& root, Result& result, const char* content_type) {
 
     unsigned int statusCode = 0;
 
@@ -256,7 +256,6 @@ unsigned int HTTP::request(const char* method, const char* endUrl, const char* d
         if(result != OK)
             return statusCode;
     }
-
     try {
         if (output.size()) {
             if(!json::parseJson(output.c_str(),root))
@@ -276,7 +275,6 @@ unsigned int HTTP::request(const char* method, const char* endUrl, const char* d
         printf("parser() failed in Getter.\n");
         EXCEPTION("Unknown exception.");
     }
-
     root.AddMember("status",Value().SetInt(statusCode),root.GetAllocator());
 
     result = OK;
@@ -421,13 +419,13 @@ bool HTTP::write(const std::string& outgoing) {
 }
 
 
-bool HTTP::request(const char* method, const char* endUrl, const char* data, std::string& output, const char* content_type){
+bool HTTP::request(const char* method, const char* endUrl, const char* data, std::string& output, const char* content_type) {
     Result result;
     request(method, endUrl, data, output, result, content_type);
     return (result == OK);
 }
 
-unsigned int HTTP::request(const char* method, const char* endUrl, const char* data, std::string& output, Result& result, const char* content_type){
+unsigned int HTTP::request(const char* method, const char* endUrl, const char* data, std::string& output, Result& result, const char* content_type) {
 
     /// Example of request.
     /// "POST /test.php HTTP/1.0\r\n"

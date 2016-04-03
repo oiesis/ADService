@@ -25,6 +25,7 @@
 #include "url.h"
 #include "mttytime.h"
 #include "escape.h"
+#include "file.h"
 
 #include "google/protobuf/message.h"
 
@@ -32,17 +33,10 @@ namespace adservice{
    namespace utility{
 
        namespace rng{
-           class MTTYRandom{
-           private:
-               static std::mt19937 generator;
-           public:
-               MTTYRandom(){
-                   generator.seed(std::random_device()());
-               }
-               int32_t get(){
-                   return generator();
-               }
-           };
+
+           extern int32_t randomInt();
+
+           extern double randomDouble();
        }
 
        namespace memory{
@@ -114,27 +108,6 @@ void adservice_free(void* ptr);
            }
        }
 
-       namespace file{
-
-           inline void loadFile(char* buffer,const char* filePath){
-               std::fstream fs(filePath,std::ios_base::in);
-               if(!fs.good()){
-                   std::cerr<<" can't open json file:"<<filePath<<std::endl;
-                   return;
-               }
-               std::stringstream ss;
-               do{
-                   std::string str;
-                   std::getline(fs,str,'\n');
-                   ss << str;
-               }while(!fs.eof());
-               fs.close();
-               std::string str = ss.str();
-               memcpy(buffer,str.c_str(),str.length());
-               buffer[str.length()]='\0';
-           }
-
-       }
 
        namespace serialize{
            //support of protobuf object

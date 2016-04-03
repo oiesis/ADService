@@ -83,37 +83,37 @@ class HTTP {
         unsigned int request(const char* method, const char* endUrl, const char* data, std::string& output, Result& result, const char* content_type = _APPLICATION_JSON);
 
         /// Generic get request to node.
-        inline unsigned int get(const char* endUrl, const char* data, rapidjson::Document& root){
+        inline unsigned int get(const char* endUrl, const char* data, rapidjson::Document& root) {
             Result result;
             return request("GET", endUrl, data, root, result);
         }
 
         /// Generic head request to node.
-        inline unsigned int head(const char* endUrl, const char* data, rapidjson::Document& root){
+        inline unsigned int head(const char* endUrl, const char* data, rapidjson::Document& root) {
             Result result;
             return request("HEAD", endUrl, data, root, result);
         }
 
         /// Generic put request to node.
-        inline unsigned int put(const char* endUrl, const char* data, rapidjson::Document& root){
+        inline unsigned int put(const char* endUrl, const char* data, rapidjson::Document& root) {
             Result result;
             return request("PUT", endUrl, data, root, result);
         }
 
         /// Generic post request to node.
-        inline unsigned int post(const char* endUrl, const char* data, rapidjson::Document& root){
+        inline unsigned int post(const char* endUrl, const char* data, rapidjson::Document& root) {
             Result result;
             return request("POST", endUrl, data, root, result);
         }
 
         /// Generic delete request to node.
-        inline unsigned int remove(const char* endUrl, const char* data, rapidjson::Document& root){
+        inline unsigned int remove(const char* endUrl, const char* data, rapidjson::Document& root) {
             Result result;
             return request("DELETE", endUrl, data, root, result);
         }
 
         /// Generic post request to node.
-        inline unsigned int rawpost(const char* endUrl, const char* data, rapidjson::Document& root){
+        inline unsigned int rawpost(const char* endUrl, const char* data, rapidjson::Document& root) {
             Result result;
             return request("POST", endUrl, data, root, result, _APPLICATION_URLENCODED);
         }

@@ -13,6 +13,7 @@ using namespace protocol::log;
 using namespace adservice::utility::time;
 using namespace adservice::utility::cypher;
 using namespace adservice::utility::ip;
+using namespace adservice::utility::url;
 
 std::string ipv6ToString(const std::vector<int>& v){
     if(v.size()<4){
@@ -50,12 +51,12 @@ void printLogAdInfo(std::stringstream& ss,protocol::log::AdInfo& adInfo){
     ss<<"\tadvId:"<<adInfo.advId<<endl;
     ss<<"\tadxId:"<<adInfo.adxid<<endl;
     ss<<"\tcid:"<<adInfo.cid<<endl;
-    ss<<"\tcpid"<<adInfo.cpid<<endl;
+    ss<<"\tcpid:"<<(adInfo.cpid.empty()?to_string(adInfo.advId):adInfo.cpid)<<endl;
     ss<<"\timpId:"<<adInfo.imp_id<<endl;
     ss<<"\tmid:"<<adInfo.mid<<endl;
     ss<<"\tpid:"<<adInfo.pid<<endl;
     ss<<"\tsid:"<<adInfo.sid<<endl;
-    ss<<"\tlanding url:"<<adInfo.landingUrl<<endl;
+    ss<<"\tlanding url:"<<urlDecode(adInfo.landingUrl)<<endl;
     ss<<"\tclickId:"<<adInfo.clickId<<endl;
     ss<<"\tbidPrice:"<<adInfo.areaId<<endl;
     ss<<"\tcost:"<<adInfo.cost<<endl;
@@ -102,7 +103,7 @@ std::string getLogItemString(protocol::log::LogItem& log){
     ss<<"userAgent:"<<log.userAgent<<endl;
     ss<<"host:"<<log.host<<endl;
     ss<<"path:"<<log.path<<endl;
-    ss<<"referer:"<<log.referer<<endl;
+    ss<<"referer:"<<urlDecode(log.referer)<<endl;
     ss<<"reqMethod:"<<(log.reqMethod==1?"GET":"POST")<<endl;
     ss<<"reqStatus:"<<log.reqStatus<<endl;
     ss<<"deviceInfo:"<<log.deviceInfo<<endl;

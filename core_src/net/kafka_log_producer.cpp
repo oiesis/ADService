@@ -1,17 +1,18 @@
 //
 // Created by guoze.lin on 16/2/26.
 //
-
+#include <exception>
+#include <cstdlib>
 #include "kafka_log_producer.h"
 #include "muduo/base/Logging.h"
 #include "log_pusher.h"
 #include "constants.h"
-#include <exception>
 #include "core_config_manager.h"
 
 namespace adservice{
     namespace log{
 
+        using namespace std;
         using namespace muduo;
         using namespace adservice::server;
 
@@ -82,6 +83,9 @@ namespace adservice{
             }
         }
 
+        static const std::string randomKey[26] = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v",
+        "w","x","y","z"};
+
         SendResult KafkaLogProducer::send(Message& msg){
 #if defined(USE_ALIYUN_LOG)
             const char* bytes = msg.getBody().c_str();
@@ -90,9 +94,10 @@ namespace adservice{
             const char* bytes = msg.bytes.c_str();
             int len = msg.bytes.length();
 #endif
+            int randIdx = random()%26;
             RdKafka::ErrorCode resp=producer->produce(topic, RdKafka::Topic::PARTITION_UA,
 			  RdKafka::Producer::RK_MSG_COPY, (void*)bytes,len,
-			  &logKey, NULL);
+			  &randomKey[randIdx], NULL);
             if(resp==RdKafka::ErrorCode::ERR_NO_ERROR){
                 return SendResult::SEND_OK;
             }else{
@@ -109,10 +114,11 @@ namespace adservice{
             const char* bytes = msg.bytes.c_str();
             int len = msg.bytes.length();
 #endif
+            int randIdx = random()%26;
             RdKafka::ErrorCode resp=producer->produce(topic, RdKafka::Topic::PARTITION_UA,
                                                       RdKafka::Producer::RK_MSG_COPY,
                                                       (void*)bytes,len,
-                                                      &logKey, NULL);
+                                                      &randomKey[randIdx], NULL);
             if(resp==RdKafka::ErrorCode::ERR_NO_ERROR){
                 return SendResult::SEND_OK;
             }else{

@@ -237,16 +237,21 @@ static void msg_consume (rd_kafka_message_t *rkmessage, void *opaque) {
                     //printf("not a LATENCY payload: %.*s\n",(int) rkmessage->len,(char *) rkmessage->payload);
                     if(cnt.msgs<=msgcnt) {
                         protocol::log::LogItem logItem;
-                        getAvroObject(logItem, (const uint8_t *) rkmessage->payload, rkmessage->len);
-                        std::string str = getLogItemString(logItem);
-                        if(!filterCond.empty()){
-                            if(std::string::npos!=str.find(filterCond)){
-                                printf("%s",str.c_str());
-                            }else{
-                                cnt.msgs --;
+                        try {
+                            getAvroObject(logItem, (const uint8_t *) rkmessage->payload, rkmessage->len);
+                            std::string str = getLogItemString(logItem);
+                            if (!filterCond.empty()) {
+                                if (std::string::npos != str.find(filterCond)) {
+                                    printf("%s", str.c_str());
+                                } else {
+                                    cnt.msgs--;
+                                }
+                            } else {
+                                printf("%s", str.c_str());
                             }
-                        }else{
-                            printf("%s",str.c_str());
+                        }catch(avro::Exception& e){
+                            printf("exception:%s",e.what());
+                            printf("received not avro log object,message:%s\n",(char*)rkmessage->payload);
                         }
                     }
                 }
