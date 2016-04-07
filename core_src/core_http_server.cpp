@@ -125,17 +125,9 @@ namespace adservice{
         {
             if (conn->connected())
             {
-                connectionCnt++;
-                if(connectionCnt>MAX_CONNECTION){
-                    conn->shutdown();
-                    conn->forceCloseWithDelay(3);
-                }else {
-                    conn->setContext(HttpContext());
-                    HttpContext *context = boost::any_cast<HttpContext>(conn->getMutableContext());
-                    context->setRequestParser(std::bind(&requestParser, context, _1, _2));
-                }
-            }else{
-                connectionCnt--;
+                conn->setContext(HttpContext());
+//                HttpContext *context = boost::any_cast<HttpContext>(conn->getMutableContext());
+//                context->setRequestParser(std::bind(&requestParser, context, _1, _2));
             }
         }
 

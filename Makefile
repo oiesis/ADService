@@ -45,6 +45,7 @@ ALL_OBJS:= unit_test.o \
 	core.o \
 	elasticsearch.o \
 	platform.o \
+	random.o \
 	
 init:
 	mkdir -p $(BUILD_PATH)

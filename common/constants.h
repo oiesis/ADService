@@ -111,6 +111,9 @@
 // adxpid,ssp曝光url中的adx广告位Id
 #define URL_SSP_ADX_PID                             "adxpid"
 
+// 广告主花费系数
+#define AD_OWNER_COST_FACTOR                        1.54
+
 
 /** 曝光类型 */
 // 广告代理曝光

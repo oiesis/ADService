@@ -87,7 +87,7 @@ namespace adservice{
                         cnt = agent.search(ES_INDEX_SOLUTIONS,ES_DOCUMENT_SOLBANADPLACE,ES_FILTER_FORMAT2,buffer,result);
                         if(cnt<2)
                             return false;
-                        result.AddMember("adplace",adplaceInfo);
+                        result.AddMember("adplace",adplaceInfo,result.GetAllocator());
                         std::string jsonResult = toJson(result);
                         if(jsonResult.length()>=newCache.size) {
                             DebugMessage("in queryAdInfoByPid result too large,pid:", mttyPid,",result size:",jsonResult.length());
@@ -152,7 +152,7 @@ namespace adservice{
                        cnt = agent.search(ES_INDEX_SOLUTIONS,ES_DOCUMENT_SOLBANADPLACE,ES_FILTER_FORMAT2,buffer,result);
                        if(cnt<2)
                            return false;
-                       result.AddMember("adplace",adplaceInfo);
+                       result.AddMember("adplace",adplaceInfo,result.GetAllocator());
                        std::string jsonResult = toJson(result);
                        if(jsonResult.length()>=newCache.size) {
                            DebugMessage("in queryAdInfoByAdxPid result too large,adxpid:", adxPid,",result size:",jsonResult.length());

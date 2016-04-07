@@ -57,7 +57,7 @@ namespace adservice{
         void Executor::start(){
             if(pureCompute){
                 configureForCompute();
-                threadpool.setThreadInitCallback(std::bind(RunInCore(threadNum,threadMappingTable,threadNum)));
+                threadpool.setThreadInitCallback(std::bind(RunInCore(coreNum,threadMappingTable,threadNum)));
             }else{
                 threadpool.setThreadInitCallback(std::bind(DefaultThreadInitializer()));
             }
@@ -67,9 +67,9 @@ namespace adservice{
         void Executor::configureForCompute() {
             long nprocessors = sysconf(_SC_NPROCESSORS_ONLN);
             if(nprocessors<=0){
-                threadNum = DEFAULT_CORE_NUM;
+                coreNum = DEFAULT_CORE_NUM;
             }else{
-                threadNum = nprocessors;
+                coreNum = nprocessors;
             }
             DebugMessage("core executor core num:",threadNum);
         }

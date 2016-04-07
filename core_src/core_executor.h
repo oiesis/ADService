@@ -28,6 +28,7 @@ namespace adservice{
              * threads: 如果forcompute=true,那么线程数等于机器核心数,否则线程池线程数为threads指定
              */
             Executor(const char* name,bool forCompute = true,int threads = 0,int taskQueueSize = 0):threadpool(name){
+                coreNum = DEFAULT_CORE_NUM;
                 threadNum = threads == 0 ? 1 : threads;
                 pureCompute = forCompute;
                 threadpool.setMaxQueueSize(taskQueueSize==0?EXECUTOR_MAX_TASK:taskQueueSize);
@@ -52,6 +53,7 @@ namespace adservice{
             void configureForCompute();
 
         private:
+            int coreNum;
             int threadNum;
             bool pureCompute;
             ThreadPool threadpool;

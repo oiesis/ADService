@@ -55,6 +55,7 @@ void printLogAdInfo(std::stringstream& ss,protocol::log::AdInfo& adInfo){
     ss<<"\timpId:"<<adInfo.imp_id<<endl;
     ss<<"\tmid:"<<adInfo.mid<<endl;
     ss<<"\tpid:"<<adInfo.pid<<endl;
+    ss<<"\tadxpid:"<<adInfo.adxpid<<endl;
     ss<<"\tsid:"<<adInfo.sid<<endl;
     ss<<"\tlanding url:"<<urlDecode(adInfo.landingUrl)<<endl;
     ss<<"\tclickId:"<<adInfo.clickId<<endl;

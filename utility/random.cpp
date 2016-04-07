@@ -2,6 +2,7 @@
 // Created by guoze.lin on 16/4/1.
 //
 
+#include <random>
 #include "atomic.h"
 
 namespace adservice{

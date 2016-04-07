@@ -46,8 +46,10 @@ record AdInfo{
     string landingUrl;
     // 成本,点击模块为空
     int cost;
-    // 投标价,点击模块为空
+    // 扣广告主的钱,点击模块为空
     int bidPrice;
+    // 广告交换商的pid,暂时和pid维持一样
+    string adxpid ;
 }
 
 @namespace("com.mtty.protocol")

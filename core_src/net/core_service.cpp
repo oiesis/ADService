@@ -11,6 +11,9 @@
 #include "atomic.h"
 #include "protocol/baidu/baidu_price.h"
 #include "protocol/tanx/tanx_price.h"
+#ifdef USE_ENCODING_GZIP
+#include "muduo/net/ZlibStream.h"
+#endif
 #include <exception>
 
 extern adservice::corelogic::CoreModule g_coreService;
@@ -54,7 +57,7 @@ namespace adservice{
          * 将请求参数按需求转换为Log对象
          * 鉴于不同的模块的参数有所差异,所以为了提高parse的速度,可以做parser分发,这是后续优化的点
          */
-        void parseObjectToLogItem(ParamMap &paramMap,protocol::log::LogItem &log){ //考虑将临时对象作为static const对象来处理
+        void parseObjectToLogItem(ParamMap &paramMap,protocol::log::LogItem &log,const char* allQuery = NULL){ //考虑将临时对象作为static const对象来处理
             char buf[1024];
             adservice::types::string output;
             ParamMap::iterator iter;
@@ -72,6 +75,7 @@ namespace adservice{
                 if ((iter=paramMap.find(URL_ADPLACE_ID)) != paramMap.end()) { //广告位Id
                     adservice::types::string &s = iter->second;//paramMap[URL_ADPLACE_ID];
                     log.adInfo.pid = s;
+                    log.adInfo.adxpid = s;
                 }
                 if ((iter=paramMap.find(URL_EXPOSE_ID)) != paramMap.end()) { //曝光Id
                     adservice::types::string &r = iter->second;//paramMap[URL_EXPOSE_ID];
@@ -123,14 +127,11 @@ namespace adservice{
                     adservice::types::string &price = iter->second;//paramMap[URL_EXCHANGE_PRICE];
                     //urlDecode_f(price,output,buffer);
                     log.adInfo.cost = decodeAdxExchangePrice(log.adInfo.adxid,price);
-                }
-                if ((iter=paramMap.find(URL_BID_PRICE)) != paramMap.end()) { // 出价价格
-                    adservice::types::string &price = iter->second;//paramMap[URL_BID_PRICE];
-                    log.adInfo.bidPrice = std::stoi(price);
+                    log.adInfo.bidPrice = (int)(log.adInfo.cost * AD_OWNER_COST_FACTOR);
                 }
             }catch(std::exception& e){
                 log.reqStatus = 500;
-                LOG_ERROR<<e.what();
+                LOG_ERROR<<"error:"<<e.what()<<",when processing query "<<allQuery;
             }
         }
 
@@ -258,6 +259,7 @@ namespace adservice{
                 userCookies = request.getHeader("Cookie");
                 userAgent = request.getHeader("User-Agent");
                 userIp = request.getHeader("X-Forwarded-For");
+                referer = request.getHeader("Referer");
             }
             /**
              * 处理请求的通用逻辑
@@ -272,7 +274,8 @@ namespace adservice{
                 log.reqMethod = reqMethod();
                 log.reqStatus = expectedReqStatus();
                 log.timeStamp = utility::time::getCurrentTimeStampUtc();
-                parseObjectToLogItem(paramMap,log);
+                log.referer = referer;
+                parseObjectToLogItem(paramMap,log,data.c_str()+1);
 //                const muduo::net::InetAddress& peerAddr = conn->peerAddress();
 //                log.ipInfo.ipv4=peerAddr.ipNetEndian(); //因为现在的服务器是基于ipv4的,所以只需设置ipv4
                 log.ipInfo.proxy=userIp;
@@ -288,7 +291,7 @@ namespace adservice{
                 }
                 resp.setContentType("text/html");
 #ifdef USE_ENCODING_GZIP
-                resp.addHeader("Content-Encoding","gzip");
+                resp.addHeader("Content-Encoding","deflate");
 #endif
                 //resp.addHeader("Server", "Nginx 1.8.0");
                 if(needNewCookies) { //传入的cookies中没有userId,cookies 传出
@@ -353,9 +356,7 @@ namespace adservice{
                     Buffer buf;
                     resp.appendToBuffer(&buf);
                     conn->send(&buf);
-#ifdef USE_SHORT_CONN
                     conn->shutdown();
-#endif
                 }
             }
         protected:
@@ -363,6 +364,7 @@ namespace adservice{
             adservice::types::string userAgent;
             adservice::types::string userIp;
             adservice::types::string data;
+            adservice::types::string referer;
             const TcpConnectionPtr& conn;
         };
 
@@ -451,14 +453,14 @@ namespace adservice{
             void prepareMtAdInfoForDSP(rapidjson::Document& mtAdInfo,ParamMap& paramMap,rapidjson::Value& result){
                 rapidjson::Document::AllocatorType& allocator = mtAdInfo.GetAllocator();
                 mtAdInfo.SetObject();
-                mtAdInfo.AddMember("mt_ad_pid",MakeStringValue(paramMap[URL_ADPLAN_ID]),allocator);
+                mtAdInfo.AddMember("mt_ad_pid",MakeStringValue(paramMap[URL_ADPLACE_ID]),allocator);
                 mtAdInfo.AddMember("mt_ad_width",MakeIntValue(json::getField(result,"width",250)),allocator);
                 mtAdInfo.AddMember("mt_ad_height",MakeIntValue(json::getField(result,"height",300)),allocator);
                 mtAdInfo.AddMember("mt_ad_impid",MakeStringValue(paramMap[URL_EXPOSE_ID]),allocator);
                 mtAdInfo.AddMember("mt_ad_advid",MakeStringValue(paramMap[URL_ADOWNER_ID]),allocator);
                 mtAdInfo.AddMember("mt_ad_unid",MakeStringValue(paramMap[URL_ADX_ID]),allocator);
-                mtAdInfo.AddMember("mt_ad_plid",MakeStringValue(paramMap[URL_ADPLACE_ID]),allocator);
-                mtAdInfo.AddMember("mt_ad_gpid",MakeStringValue(paramMap[URL_ADPLACE_ID]),allocator);
+                mtAdInfo.AddMember("mt_ad_plid",MakeStringConstValue(""),allocator);
+                mtAdInfo.AddMember("mt_ad_gpid",MakeStringValue(paramMap[URL_EXEC_ID]),allocator);
                 mtAdInfo.AddMember("mt_ad_cid",MakeStringValue(paramMap[URL_CREATIVE_ID]),allocator);
                 mtAdInfo.AddMember("mt_ad_arid",MakeStringValue(paramMap[URL_AREA_ID]),allocator);
                 mtAdInfo.AddMember("mt_ad_ctype",MakeIntValue(json::getField(result,"banner_type",1)),allocator);
@@ -481,8 +483,8 @@ namespace adservice{
 
             int fillHtmlFixedParam(ParamMap& paramMap,const char* html,const char* templateFmt,char* buffer){
                 char mtAdInfo[1024];
-                int len=sprintf(mtAdInfo,html,paramMap[URL_ADPLAN_ID].c_str(),paramMap[URL_EXPOSE_ID].c_str(),paramMap[URL_ADX_ID].c_str(),
-                                paramMap[URL_ADPLACE_ID].c_str(),paramMap[URL_ADPLACE_ID].c_str(),paramMap[URL_AREA_ID].c_str(),paramMap[URL_ADX_MACRO].c_str());
+                int len=sprintf(mtAdInfo,html,paramMap[URL_ADPLACE_ID].c_str(),paramMap[URL_EXPOSE_ID].c_str(),paramMap[URL_ADX_ID].c_str(),
+                                "",paramMap[URL_EXEC_ID].c_str(),paramMap[URL_AREA_ID].c_str(),paramMap[URL_ADX_MACRO].c_str());
                 tripslash(mtAdInfo);
                 len = sprintf(buffer,templateFmt,mtAdInfo);
                 return len;
@@ -501,7 +503,7 @@ namespace adservice{
             void fillHtmlUnFixedParam(rapidjson::Document& mtAdInfo,ParamMap& paramMap,rapidjson::Value& result){
                 const std::string binder="%s";
                 if(binder == mtAdInfo["mt_ad_pid"].GetString()){
-                    mtAdInfo["mt_ad_pid"] = MakeStringValue(paramMap[URL_ADPLAN_ID]);
+                    mtAdInfo["mt_ad_pid"] = MakeStringValue(paramMap[URL_ADPLACE_ID]);
                 }
                 if(binder == mtAdInfo["mt_ad_width"].GetString()){
                     mtAdInfo["mt_ad_width"] = MakeIntValue(json::getField(result,"width",0));
@@ -519,10 +521,10 @@ namespace adservice{
                     mtAdInfo["mt_ad_unid"]  = MakeStringValue(paramMap[URL_ADX_ID]);
                 }
                 if(binder == mtAdInfo["mt_ad_plid"].GetString()) {
-                    mtAdInfo["mt_ad_plid"] =  MakeStringValue(paramMap[URL_ADPLACE_ID]);
+                    mtAdInfo["mt_ad_plid"] =  MakeStringConstValue("");
                 }
                 if(binder == mtAdInfo["mt_ad_gpid"].GetString()) {
-                    mtAdInfo["mt_ad_gpid"] = MakeStringValue(paramMap[URL_ADPLACE_ID]);
+                    mtAdInfo["mt_ad_gpid"] = MakeStringValue(paramMap[URL_EXEC_ID]);
                 }
                 if(binder == mtAdInfo["mt_ad_cid"].GetString()) {
                     mtAdInfo["mt_ad_cid"] = MakeStringValue(paramMap[URL_CREATIVE_ID]);
@@ -564,7 +566,7 @@ namespace adservice{
                 int idxCnt=0,i=0;
                 double maxScore = -1.0;
                 typedef std::vector<rapidjson::Value*>::iterator Iter;
-                for(Iter iter = banners.begin(),i=0;iter!=banners.end();iter++,i++){
+                for(Iter iter = banners.begin();iter!=banners.end();iter++,i++){
                     rapidjson::Value& banner = *(*iter);
                     double ecpm = banner["offerprice"].GetDouble();
                     if(ecpm>maxScore){
@@ -621,6 +623,7 @@ namespace adservice{
                 if(coreModule.use_count()>0){
                     seqId = coreModule->getExecutor().getThreadSeqId();
                 }
+                std::string respBody;
                 if(isSSP){//SSP
                     std::string& queryPid = paramMap[URL_SSP_PID];
                     bool isAdxPid = false;
@@ -717,8 +720,7 @@ namespace adservice{
                     json::parseJson(tmp,mtAdInfo);
 
                     int len = fillHtmlFixedParam(result,tmp,templateFmt,buffer);
-                    std::string respBody = std::string(buffer,buffer+len);
-                    response.setBody(respBody);
+                    respBody = std::string(buffer,buffer+len);
                 }else {//DSP
                     rapidjson::Document esResp;
                     rapidjson::Value &result = adselect.queryCreativeById(seqId, paramMap[URL_CREATIVE_ID], esResp);
@@ -730,13 +732,17 @@ namespace adservice{
                     const char *tmp = result["html"].GetString();
                     char buffer[2048];
                     int len = fillHtmlFixedParam(paramMap, tmp, templateFmt, buffer);
-                    std::string respBody = std::string(buffer, buffer + len);
-                    //rapidjson::Document mtAdInfo;
-                    //json::parseJson(tmp,mtAdInfo);
-                    //fillHtmlUnFixedParam(mtAdInfo,paramMap,result);
-                    //std::string respBody = toJson(mtAdInfo);
-                    response.setBody(respBody);
+                    respBody = std::string(buffer, buffer + len);
                 }
+#ifdef USE_ENCODING_GZIP
+                Buffer body;
+                muduo::net::ZlibOutputStream zlibOutStream(&body);
+                zlibOutStream.write(respBody);
+                zlibOutStream.finish();
+                response.setBody(body.retrieveAllAsString());
+#else
+                response.setBody(respBody);
+#endif
                 response.addHeader("Pragma", "no-cache");
                 response.addHeader("Cache-Control", "no-cache,no-store;must-revalidate");
                 response.addHeader("P3p",

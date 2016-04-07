@@ -70,6 +70,9 @@
     }, {
       "name" : "bidPrice",
       "type" : "int"
+    }, {
+      "name" : "adxpid",
+      "type" : "string"
     } ]
   }, {
     "type" : "enum",
