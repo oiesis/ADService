@@ -291,7 +291,7 @@ namespace adservice{
                 }
                 resp.setContentType("text/html");
 #ifdef USE_ENCODING_GZIP
-                resp.addHeader("Content-Encoding","deflate");
+                resp.addHeader("Content-Encoding","gzip");
 #endif
                 //resp.addHeader("Server", "Nginx 1.8.0");
                 if(needNewCookies) { //传入的cookies中没有userId,cookies 传出
@@ -571,7 +571,7 @@ namespace adservice{
                     double ecpm = banner["offerprice"].GetDouble();
                     if(ecpm>maxScore){
                         idxCnt = 0;
-                        idx[idxCnt] = i;
+                        idx[idxCnt++] = i;
                         maxScore = ecpm;
                     }else if(ecpm==maxScore){
                         idx[idxCnt++] = i;
@@ -646,7 +646,7 @@ namespace adservice{
                     rapidjson::Value* solutions[100];
                     int solCnt = 0;
                     std::map<int,std::vector<rapidjson::Value*>> bannerMap;
-                    rapidjson::Value* superPricer;
+                    rapidjson::Value* superPricer =NULL;
                     for(int i=0;i<result.Size();i++){
                         const char* type = result[i]["_type"].GetString();
                         if(!strcmp(type,ES_DOCUMENT_SOLUTION)){ //投放单
@@ -670,7 +670,7 @@ namespace adservice{
                         solIdx[i] = i;
                         rapidjson::Value& solution = *(solutions[i]);
                         double ecpm = solution["offerprice"].GetDouble();
-                        if((*superPricer)["sid"].GetInt()==solution["sid"].GetInt()){
+                        if(superPricer && (*superPricer)["sid"].GetInt()==solution["sid"].GetInt()){
                             ecpm+=(*superPricer)["offerprice"].GetDouble();
                         }
                         int bgid = solution["bgid"].GetInt();
@@ -716,11 +716,11 @@ namespace adservice{
                     const char* tmp = banner["html"].GetString();
                     //返回结果
                     char buffer[2048];
-                    rapidjson::Document mtAdInfo;
-                    json::parseJson(tmp,mtAdInfo);
+                    //rapidjson::Document mtAdInfo;
+                    //json::parseJson(tmp,mtAdInfo);
 
-                    int len = fillHtmlFixedParam(result,tmp,templateFmt,buffer);
-                    respBody = std::string(buffer,buffer+len);
+                    //int len = fillHtmlFixedParam(result,tmp,templateFmt,buffer);
+                    //respBody = std::string(buffer,buffer+len);
                 }else {//DSP
                     rapidjson::Document esResp;
                     rapidjson::Value &result = adselect.queryCreativeById(seqId, paramMap[URL_CREATIVE_ID], esResp);

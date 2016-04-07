@@ -308,6 +308,6 @@ void adselect_test(){
 }
 
 int main(int argc,char** argv){
-	adselect_test();
+	server_test();
 	return 0;
 }

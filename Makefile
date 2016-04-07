@@ -105,6 +105,7 @@ platform.o:
 	rm *.o
 clean:
 	rm -rf $(BUILD_PATH)
+	rm adservice
 
 JNI_FOLDER= jni/
 
