@@ -7,7 +7,7 @@
 #include <locale>
 #include <vector>
 
-ElasticSearch::ElasticSearch(const std::string& node, bool readOnly): _http(node, true), _readOnly(readOnly) {
+ElasticSearch::ElasticSearch(const std::string& node, bool readOnly,const std::string& auth): _http(node, true,auth), _readOnly(readOnly) {
 
     // Test if instance is active.
     if(!isActive())

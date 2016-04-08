@@ -40,6 +40,48 @@ namespace adservice{
             return result["hits"]["hits"][0]["_source"];
         }
 
+        rapidjson::Value& AdSelectManager::queryCreativeByIdCache(int seqId,const std::string& bannerId,rapidjson::Document& result){
+            try{
+                ElasticSearch& agent = getAvailableConnection(seqId);
+                char key[DEFAULT_KEY_LENGTH];
+                sprintf(key,"creative_id_%s",bannerId.c_str());
+                CacheResult* cacheResult = cacheManager.get(key,CACHE_LEVEL_1_SIZE,[&bannerId,this,&agent,&result](CacheResult& newCache){
+                    int cnt = 0;
+                    try {
+                        char buffer[256];
+                        sprintf(buffer, this->dsl_query_banner, std::stoi(bannerId));
+                        cnt = agent.search(ES_INDEX_SOLUTIONS, ES_DOCUMENT_BANNER, ES_FILTER_FORMAT, buffer, result);
+                    }catch(std::exception& e){
+                        DebugMessageWithTime("exception in queryCreativeByIdCache,e:",e.what());
+                    }
+                    if(cnt != 1){
+                        DebugMessageWithTime("error occured in queryCreativeByIdCache,document id:",bannerId);
+                        return false;
+                    }
+                    std::string jsonResult = toJson(result);
+                    if(jsonResult.length()>=newCache.size) {
+                        DebugMessage("in queryCreativeByIdCache result too large,bannerId:",bannerId ,",result size:",jsonResult.length());
+                        return false;
+                    }
+                    memcpy(newCache.data, jsonResult.data(), jsonResult.length());
+                    newCache.data[jsonResult.length()] = '\0';
+                    newCache.size = jsonResult.length();
+                    newCache.expireTime = getCurrentTimeStamp() + ADSELECT_CACHE_EXPIRE_TIME;
+                    return true;
+                });
+                if(cacheResult!=NULL && result.Empty()){
+                    parseJson((const char*)cacheResult->data,result);
+                }else if(result.Empty()){
+                    DebugMessage("in queryCreativeByIdCache,failed to fetch valid creative for bannerId ",bannerId);
+                    return result;
+                }
+            }catch(std::exception& e){
+                DebugMessageWithTime("error occured in queryCreativeById,document id:",bannerId);
+                return result;
+            }
+            return result["hits"]["hits"][0]["_source"];
+        }
+
 
         rapidjson::Value& AdSelectManager::queryAdInfoByPid(int seqId,const std::string& pid,rapidjson::Document& result,bool isAdxPid){
             if(isAdxPid){
@@ -55,7 +97,7 @@ namespace adservice{
                 ElasticSearch& agent = getAvailableConnection(seqId);
                 char key[DEFAULT_KEY_LENGTH];
                 sprintf(key,"adinfo_pid_%s",mttyPid.c_str());
-                CacheResult* cacheResult = cacheManager.get(key,CACHE_LEVEL_2_SIZE,[&mttyPid,this,&agent,&result](CacheResult& newCache){
+                CacheResult* cacheResult = cacheManager.get(key,CACHE_LEVEL_3_SIZE,[&mttyPid,this,&agent,&result](CacheResult& newCache){
                     try {
                         char buffer[LARGE_BUFFER_SIZE];
                         sprintf(buffer,this->dsl_query_adplace_pid, mttyPid.c_str());
@@ -110,6 +152,7 @@ namespace adservice{
                 }
             }catch(std::exception& e){
                 DebugMessageWithTime("exception in queryAdInfoByMttyPid,e:",e.what());
+                return result;
             }
             return result["hits"]["hits"];
         }
@@ -119,7 +162,7 @@ namespace adservice{
                 ElasticSearch& agent = getAvailableConnection(seqId);
                 char key[DEFAULT_KEY_LENGTH];
                 sprintf(key,"adinfo_adxpid_%s",adxPid.c_str());
-                CacheResult* cacheResult = cacheManager.get(key,CACHE_LEVEL_2_SIZE,[&adxPid,this,&agent,&result](CacheResult& newCache){
+                CacheResult* cacheResult = cacheManager.get(key,CACHE_LEVEL_3_SIZE,[&adxPid,this,&agent,&result](CacheResult& newCache){
                    try {
                        char buffer[LARGE_BUFFER_SIZE];
                        sprintf(buffer,this->dsl_query_adplace_adxpid, adxPid.c_str());
@@ -175,6 +218,7 @@ namespace adservice{
                 }
             }catch(std::exception& e){
                 DebugMessageWithTime("exception in queryAdInfoByAdxPid,e:",e.what());
+                return result;
             }
             return result["hits"]["hits"];
         }

@@ -54,12 +54,13 @@ int to_int(const std::string& str){
     return numb;
 }
 
-HTTP::HTTP(std::string uri, bool keepAlive)
+HTTP::HTTP(std::string uri, bool keepAlive,const std::string& authorization)
 : _connection(0),
   _sockfd(-1),
   _keepAlive(keepAlive),
   _keepAliveTimeout(60),
-  _lastRequest(0)
+  _lastRequest(0),
+  _auth(authorization)
 {
     // Remove http protocol if set.
     size_t pos = uri.find("http://");
@@ -307,6 +308,11 @@ bool HTTP::sendMessage(const char* method, const char* endUrl, const char* data,
     requestString += std::string("Host: ");
     requestString += _url;
     requestString += std::string("\r\n");
+    if(!_auth.empty()){
+        requestString += std::string("Authorization: Basic ");
+        requestString += _auth;
+        requestString += std::string("\r\n");
+    }
     requestString += std::string("Accept: */*\r\n");
     if(_keepAlive)
         requestString += std::string("Connection: Keep-Alive\r\n");

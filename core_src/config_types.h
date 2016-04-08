@@ -93,11 +93,13 @@ namespace adservice{
         struct ADSelectConfig{
             std::string entryNode;
             int entryPort;
+            std::string authorization;
             static void* parse(const MessageWraper& mw,void* data){
                 data = data==NULL? (new ADSelectConfig):data;
                 ADSelectConfig* c = (ADSelectConfig*)data;
                 c->entryNode = mw.getString("entry_node",DEFAULT_ADSELECT_NODE);
                 c->entryPort = mw.getInt("entry_port",DEFAULT_ADSELECT_PORT);
+                c->authorization = mw.getString("auth",DEFAULT_AUTHORIZATION);
                 return data;
             }
             static void destruct(void* data){

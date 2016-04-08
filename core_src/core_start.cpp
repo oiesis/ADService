@@ -135,6 +135,7 @@ namespace adservice {
                     return;
                 }else if(childPid>0){
                     if(WEXITSTATUS(childStatus)!=MTTY_EXIT_SUCCESS){
+                        DebugMessage("child ",childPid," exited,exitstatus:",childStatus);
                         reLaunchModule(childPid);
                     }
                 }

@@ -65,7 +65,7 @@ using namespace rapidjson;
 
 class HTTP {
     public:
-        HTTP(std::string url, bool keepAlive);
+        HTTP(std::string url, bool keepAlive,const std::string& authorization = std::string());
         ~HTTP();
 
         /// DEPRECATED
@@ -155,6 +155,7 @@ class HTTP {
 
         std::string _url;
         std::string _urn;
+        std::string _auth;
         int _port;
         unsigned int _connection;
         int _sockfd;

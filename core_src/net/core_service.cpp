@@ -453,19 +453,19 @@ namespace adservice{
             void prepareMtAdInfoForDSP(rapidjson::Document& mtAdInfo,ParamMap& paramMap,rapidjson::Value& result){
                 rapidjson::Document::AllocatorType& allocator = mtAdInfo.GetAllocator();
                 mtAdInfo.SetObject();
-                mtAdInfo.AddMember("mt_ad_pid",MakeStringValue(paramMap[URL_ADPLACE_ID]),allocator);
-                mtAdInfo.AddMember("mt_ad_width",MakeIntValue(json::getField(result,"width",250)),allocator);
-                mtAdInfo.AddMember("mt_ad_height",MakeIntValue(json::getField(result,"height",300)),allocator);
-                mtAdInfo.AddMember("mt_ad_impid",MakeStringValue(paramMap[URL_EXPOSE_ID]),allocator);
-                mtAdInfo.AddMember("mt_ad_advid",MakeStringValue(paramMap[URL_ADOWNER_ID]),allocator);
-                mtAdInfo.AddMember("mt_ad_unid",MakeStringValue(paramMap[URL_ADX_ID]),allocator);
-                mtAdInfo.AddMember("mt_ad_plid",MakeStringConstValue(""),allocator);
-                mtAdInfo.AddMember("mt_ad_gpid",MakeStringValue(paramMap[URL_EXEC_ID]),allocator);
-                mtAdInfo.AddMember("mt_ad_cid",MakeStringValue(paramMap[URL_CREATIVE_ID]),allocator);
-                mtAdInfo.AddMember("mt_ad_arid",MakeStringValue(paramMap[URL_AREA_ID]),allocator);
-                mtAdInfo.AddMember("mt_ad_ctype",MakeIntValue(json::getField(result,"banner_type",1)),allocator);
-                mtAdInfo.AddMember("mt_ad_xcurl",MakeStringValue(paramMap[URL_ADX_MACRO]),allocator);
-                mtAdInfo.AddMember("mt_ad_tview",MakeStringConstValue(""),allocator);
+                mtAdInfo.AddMember("pid",MakeStringValue(paramMap[URL_ADPLACE_ID]),allocator);
+                mtAdInfo.AddMember("width",MakeIntValue(json::getField(result,"width",250)),allocator);
+                mtAdInfo.AddMember("height",MakeIntValue(json::getField(result,"height",300)),allocator);
+                mtAdInfo.AddMember("impid",MakeStringValue(paramMap[URL_EXPOSE_ID]),allocator);
+                mtAdInfo.AddMember("advid",MakeStringValue(paramMap[URL_ADOWNER_ID]),allocator);
+                mtAdInfo.AddMember("unid",MakeStringValue(paramMap[URL_ADX_ID]),allocator);
+                mtAdInfo.AddMember("plid",MakeStringConstValue(""),allocator);
+                mtAdInfo.AddMember("gpid",MakeStringValue(paramMap[URL_EXEC_ID]),allocator);
+                mtAdInfo.AddMember("cid",MakeStringValue(paramMap[URL_CREATIVE_ID]),allocator);
+                mtAdInfo.AddMember("arid",MakeStringValue(paramMap[URL_AREA_ID]),allocator);
+                mtAdInfo.AddMember("ctype",MakeIntValue(json::getField(result,"banner_type",1)),allocator);
+                mtAdInfo.AddMember("xcurl",MakeStringValue(paramMap[URL_ADX_MACRO]),allocator);
+                mtAdInfo.AddMember("tview",MakeStringConstValue(""),allocator);
                 rapidjson::Value mtls(kArrayType);
                 rapidjson::Value mtlsObj(kObjectType);
                 mtlsObj.AddMember("p0",MakeStringValue(json::getField(result,"material_url","")),allocator);
@@ -478,7 +478,7 @@ namespace adservice{
                 mtlsObj.AddMember("p7",MakeStringConstValue(""),allocator);
                 mtlsObj.AddMember("p8",MakeStringConstValue(""),allocator);
                 mtls.PushBack(mtlsObj.Move(),allocator);
-                mtAdInfo.AddMember("mt_ad_mtls",mtls.Move(),mtAdInfo.GetAllocator());
+                mtAdInfo.AddMember("mtls",mtls.Move(),mtAdInfo.GetAllocator());
             }
 
             int fillHtmlFixedParam(ParamMap& paramMap,const char* html,const char* templateFmt,char* buffer){
@@ -502,44 +502,44 @@ namespace adservice{
 
             void fillHtmlUnFixedParam(rapidjson::Document& mtAdInfo,ParamMap& paramMap,rapidjson::Value& result){
                 const std::string binder="%s";
-                if(binder == mtAdInfo["mt_ad_pid"].GetString()){
-                    mtAdInfo["mt_ad_pid"] = MakeStringValue(paramMap[URL_ADPLACE_ID]);
+                if(binder == mtAdInfo["pid"].GetString()){
+                    mtAdInfo["pid"] = MakeStringValue(paramMap[URL_ADPLACE_ID]);
                 }
-                if(binder == mtAdInfo["mt_ad_width"].GetString()){
-                    mtAdInfo["mt_ad_width"] = MakeIntValue(json::getField(result,"width",0));
+                if(binder == mtAdInfo["width"].GetString()){
+                    mtAdInfo["width"] = MakeIntValue(json::getField(result,"width",0));
                 }
-                if(binder == mtAdInfo["mt_ad_height"].GetString()){
-                    mtAdInfo["mt_ad_height"] = MakeIntValue(json::getField(result,"height",0));
+                if(binder == mtAdInfo["height"].GetString()){
+                    mtAdInfo["height"] = MakeIntValue(json::getField(result,"height",0));
                 }
-                if(binder == mtAdInfo["mt_ad_impid"].GetString()) {
-                    mtAdInfo["mt_ad_impid"] = MakeStringValue(paramMap[URL_EXPOSE_ID]);
+                if(binder == mtAdInfo["impid"].GetString()) {
+                    mtAdInfo["impid"] = MakeStringValue(paramMap[URL_EXPOSE_ID]);
                 }
-                if(binder == mtAdInfo["mt_ad_advid"].GetString()) {
-                    mtAdInfo["mt_ad_advid"] = MakeStringValue(paramMap[URL_ADOWNER_ID]);
+                if(binder == mtAdInfo["advid"].GetString()) {
+                    mtAdInfo["advid"] = MakeStringValue(paramMap[URL_ADOWNER_ID]);
                 }
-                if(binder == mtAdInfo["mt_ad_unid"].GetString()) {
-                    mtAdInfo["mt_ad_unid"]  = MakeStringValue(paramMap[URL_ADX_ID]);
+                if(binder == mtAdInfo["unid"].GetString()) {
+                    mtAdInfo["unid"]  = MakeStringValue(paramMap[URL_ADX_ID]);
                 }
-                if(binder == mtAdInfo["mt_ad_plid"].GetString()) {
-                    mtAdInfo["mt_ad_plid"] =  MakeStringConstValue("");
+                if(binder == mtAdInfo["plid"].GetString()) {
+                    mtAdInfo["plid"] =  MakeStringConstValue("");
                 }
-                if(binder == mtAdInfo["mt_ad_gpid"].GetString()) {
-                    mtAdInfo["mt_ad_gpid"] = MakeStringValue(paramMap[URL_EXEC_ID]);
+                if(binder == mtAdInfo["gpid"].GetString()) {
+                    mtAdInfo["gpid"] = MakeStringValue(paramMap[URL_EXEC_ID]);
                 }
-                if(binder == mtAdInfo["mt_ad_cid"].GetString()) {
-                    mtAdInfo["mt_ad_cid"] = MakeStringValue(paramMap[URL_CREATIVE_ID]);
+                if(binder == mtAdInfo["cid"].GetString()) {
+                    mtAdInfo["cid"] = MakeStringValue(paramMap[URL_CREATIVE_ID]);
                 }
-                if(binder == mtAdInfo["mt_ad_arid"].GetString()) {
-                    mtAdInfo["mt_ad_arid"] = MakeStringValue(paramMap[URL_AREA_ID]);
+                if(binder == mtAdInfo["arid"].GetString()) {
+                    mtAdInfo["arid"] = MakeStringValue(paramMap[URL_AREA_ID]);
                 }
-                if(binder == mtAdInfo["mt_ad_ctype"].GetString()) {
-                    mtAdInfo["mt_ad_ctype"] = MakeIntValue(json::getField(result, "banner_type", 1));
+                if(binder == mtAdInfo["ctype"].GetString()) {
+                    mtAdInfo["ctype"] = MakeIntValue(json::getField(result, "banner_type", 1));
                 }
-                if(binder == mtAdInfo["mt_ad_xcurl"].GetString()) {
-                    mtAdInfo["mt_ad_xcurl"] = MakeStringValue(paramMap[URL_ADX_MACRO]);
+                if(binder == mtAdInfo["xcurl"].GetString()) {
+                    mtAdInfo["xcurl"] = MakeStringValue(paramMap[URL_ADX_MACRO]);
                 }
-                if(binder == mtAdInfo["mt_ad_tview"].GetString()){
-                    mtAdInfo["mt_ad_tview"] = MakeStringConstValue("");
+                if(binder == mtAdInfo["tview"].GetString()){
+                    mtAdInfo["tview"] = MakeStringConstValue("");
                 }
             }
 
@@ -723,7 +723,7 @@ namespace adservice{
                     //respBody = std::string(buffer,buffer+len);
                 }else {//DSP
                     rapidjson::Document esResp;
-                    rapidjson::Value &result = adselect.queryCreativeById(seqId, paramMap[URL_CREATIVE_ID], esResp);
+                    rapidjson::Value &result = adselect.queryCreativeByIdCache(seqId, paramMap[URL_CREATIVE_ID], esResp);
                     if (!result.HasMember("html")) {
                         log.adInfo.bannerId = 0;
                         log.reqStatus = HttpResponse::k500ServerError;
@@ -817,7 +817,7 @@ namespace adservice{
             int httpThreads = serverConfig->coreHttpThreads;
             int port = serverConfig->corePort;
             setLogLevel(serverConfig->loggingLevel);
-            //点击逻辑初始化相关
+            //点击逻辑初始化相关,==现在的实际情况是所有逻辑都共用同一个logger,囧
             if(serverConfig->runClick) {
                 ClickConfig* clickConfig = (ClickConfig*)configManager.get(CONFIG_CLICK);
                 clickLogger = adservice::log::LogPusher::getLogger(CLICK_SERVICE_LOGGER,
@@ -833,6 +833,7 @@ namespace adservice{
             server->setThreadNum(httpThreads);
             configManager.registerOnChange(CONFIG_SERVICE,std::bind(&onConfigChange,CONFIG_SERVICE,_1,_2));
             configManager.registerOnChange(CONFIG_LOG,std::bind(&onConfigChange,CONFIG_LOG,_1,_2));
+            configManager.registerOnChange(CONFIG_ADSELECT,std::bind(&onConfigChange,CONFIG_ADSELECT,_1,_2));
         }
 
         struct ParamPack{

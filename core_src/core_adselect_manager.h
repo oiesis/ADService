@@ -40,7 +40,7 @@ namespace adservice{
         public:
             static AdSelectManager& getInstance(){
                 ADSelectConfig* config = (ADSelectConfig*)ConfigManager::getInstance().get(CONFIG_ADSELECT);
-                static AdSelectManager instance(config->entryNode);
+                static AdSelectManager instance(config->entryNode,config->authorization);
                 return instance;
             }
             static void release(){
@@ -65,6 +65,11 @@ namespace adservice{
             rapidjson::Value& queryCreativeById(int seqId,const std::string& bannerId,rapidjson::Document& result);
 
             /**
+             * 根据创意ID查询创意内容,结果Cached
+             */
+            rapidjson::Value& queryCreativeByIdCache(int seqId,const std::string& bannerId,rapidjson::Document& result);
+
+            /**
              * 根据PID查询广告信息
              */
             rapidjson::Value& queryAdInfoByPid(int seqId,const std::string& pid,rapidjson::Document& result,bool isAdxPid = false);
@@ -80,9 +85,9 @@ namespace adservice{
             rapidjson::Value& queryAdInfoByAdxPid(int seqId,const std::string& adxPid,rapidjson::Document& result);
 
         private:
-            AdSelectManager(const std::string& node){
+            AdSelectManager(const std::string& node,const std::string& auth = std::string()){
                 for(int i=0;i<ADSELECT_MAX_CONNECTION;i++) {
-                    agents[i]=new ElasticSearch(node, true);
+                    agents[i]=new ElasticSearch(node, true,auth);
                 }
                 //todo
                 loadFile(dsl_query_banner,ES_QUERY_CREATIVE);

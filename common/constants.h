@@ -24,6 +24,8 @@
 #define DEFAULT_ADSELECT_NODE                       "123.56.15.234"
 // 默认连接端口
 #define DEFAULT_ADSELECT_PORT                       9200
+// 默认的权限认证
+#define DEFAULT_AUTHORIZATION                       "cm9vdDpNdHR5Y29tMTIz"
 
 /**Http 参数相关常量**/
 // cookies userId key

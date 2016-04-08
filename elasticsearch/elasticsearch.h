@@ -13,7 +13,7 @@
 /// Node: Instance of elastic search on server represented by url:port
 class ElasticSearch {
     public:
-        ElasticSearch(const std::string& node, bool readOnly = false);
+        ElasticSearch(const std::string& node, bool readOnly = false, const std::string& auth = std::string());
         ~ElasticSearch();
 
          /// Test connection with node.
