@@ -13,6 +13,7 @@
 #define DEFAULT_KAFKA_BROKER                        "192.168.31.147"
 #define DEFAULT_KAFKA_TOPIC                         "mt-new-click"
 #define DEFAULT_KAFKA_KEY                           "click"
+#define DEFAULT_KAFKA_MQSIZE_STR                    "10000"
 
 #define DEFAULT_ALIYUN_PRODUCER_ID                  "PID_mtty001"
 #define DEFAULT_ALIYUN_TOPIC                        "adlog"
@@ -116,12 +117,18 @@
 // 广告主花费系数
 #define AD_OWNER_COST_FACTOR                        1.54
 
+#define ADX_MACRO_SUFFIX                            "http%3A%2F%2Fmtty-cdn.mtty.com%2F1x1.gif"
+
 
 /** 曝光类型 */
 // 广告代理曝光
 #define OF_DSP                                      "0"
 // 自有媒体曝光
 #define OF_SSP                                      "1"
+// 移动流量纯展示,参见http://redmine.mtty.com/redmine/issues/48
+#define OF_DSP_MOBILE_SHOW                          "2"
+// 移动流量日志计费
+#define OF_DSP_MOBILE_LOG                           "3"
 
 /** HTML模版路径 */
 // 曝光模块返回ADX html模板
@@ -133,6 +140,8 @@
 /** ADX 广告交换商代码 */
 // 淘宝
 #define ADX_TANX                                    1
+// 优酷
+#define ADX_YOUKU                                   5
 // 百度
 #define ADX_BAIDU                                   6
 
@@ -142,7 +151,7 @@
 // 创意ID基数
 #define ES_BANNER_ID_BASE                           5000000
 // ES中的索引名
-#define ES_INDEX_SOLUTIONS                          "solutionsv2"
+#define ES_INDEX_SOLUTIONS                          "solutions"
 // ES中的投放类型表
 #define ES_DOCUMENT_SOLUTION                        "solution"
 // ES中的创意类型表

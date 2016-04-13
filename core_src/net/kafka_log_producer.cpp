@@ -65,7 +65,7 @@ namespace adservice{
             if((res=conf->set("metadata.broker.list", brokers, errstr))!=RdKafka::Conf::CONF_OK ||
                     (res = conf->set("event_cb", &eventCb, errstr))!= RdKafka::Conf::CONF_OK ||
                     (res=conf->set("dr_cb", &drCb, errstr))!= RdKafka::Conf::CONF_OK ||
-                    (res=conf->set("queue.buffering.max.messages","100000",errstr))!=RdKafka::Conf::CONF_OK||
+                    (res=conf->set("queue.buffering.max.messages",logConfig->kafkaMQMaxSize,errstr))!=RdKafka::Conf::CONF_OK||
                     (res=conf->set("message.send.max.retries","3",errstr))!= RdKafka::Conf::CONF_OK ||
                     (res=conf->set("retry.backoff.ms","500",errstr))!=RdKafka::Conf::CONF_OK){
                 LOG_ERROR<<"error occured when configuring kafka log producer,"<<errstr;

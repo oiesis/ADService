@@ -25,6 +25,7 @@ then
 	fi
 else
    	 echo "$LOGROTATE_CONFIG" > ./conf/logrotate.conf
+   	 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib64/
 	./adservice >>./service_log/service.log 2>&1 &
 	#if [[ $? == 0 ]];
 	#then

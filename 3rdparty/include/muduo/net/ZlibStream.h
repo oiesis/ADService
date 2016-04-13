@@ -51,7 +51,8 @@ class ZlibOutputStream : boost::noncopyable
       bufferSize_(1024)
   {
     bzero(&zstream_, sizeof zstream_);
-    zerror_ = deflateInit(&zstream_, Z_DEFAULT_COMPRESSION);
+//    zerror_ = deflateInit(&zstream_, Z_DEFAULT_COMPRESSION);
+    zerror_=  deflateInit2(&zstream_, Z_DEFAULT_COMPRESSION, Z_DEFLATED, MAX_WBITS+16, 8,  Z_DEFAULT_STRATEGY);
   }
 
   ~ZlibOutputStream()

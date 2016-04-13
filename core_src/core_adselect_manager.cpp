@@ -21,6 +21,21 @@ namespace adservice{
         static const int CACHE_LEVEL_2_SIZE = 2048;
         static const int CACHE_LEVEL_3_SIZE = 4096;
         static const char* DEFAULT_SUPPORT_BANNERTYPE = "1,2,3,4,5";
+        static const char CACHE_RESULT_MTSTATUS[9] = "mtstatus";
+
+        /**
+         * 当请求结果并没有逻辑错误时,添加成功标记
+         */
+        inline void appendMtStatus(rapidjson::Document& result){
+            result.AddMember(CACHE_RESULT_MTSTATUS,MakeStringConstValue("ok"), result.GetAllocator());
+        }
+
+        /**
+         * 检查结果是否有成功标记
+         */
+        inline bool hasMtStatus(rapidjson::Document& result){
+            return result.HasMember(CACHE_RESULT_MTSTATUS);
+        }
 
         rapidjson::Value& AdSelectManager::queryCreativeById(int seqId,const std::string& bannerId,rapidjson::Document& result){
             ElasticSearch& agent = getAvailableConnection(seqId);
@@ -58,6 +73,7 @@ namespace adservice{
                         DebugMessageWithTime("error occured in queryCreativeByIdCache,document id:",bannerId);
                         return false;
                     }
+                    appendMtStatus(result);
                     std::string jsonResult = toJson(result);
                     if(jsonResult.length()>=newCache.size) {
                         DebugMessage("in queryCreativeByIdCache result too large,bannerId:",bannerId ,",result size:",jsonResult.length());
@@ -71,7 +87,7 @@ namespace adservice{
                 });
                 if(cacheResult!=NULL && result.Empty()){
                     parseJson((const char*)cacheResult->data,result);
-                }else if(result.Empty()){
+                }else if(result.Empty()||!hasMtStatus(result)){
                     DebugMessage("in queryCreativeByIdCache,failed to fetch valid creative for bannerId ",bannerId);
                     return result;
                 }
@@ -130,6 +146,7 @@ namespace adservice{
                         if(cnt<2)
                             return false;
                         result.AddMember("adplace",adplaceInfo,result.GetAllocator());
+                        appendMtStatus(result);
                         std::string jsonResult = toJson(result);
                         if(jsonResult.length()>=newCache.size) {
                             DebugMessage("in queryAdInfoByPid result too large,pid:", mttyPid,",result size:",jsonResult.length());
@@ -146,7 +163,7 @@ namespace adservice{
                 });
                 if(cacheResult!=NULL && result.Empty()){
                     parseJson((const char*)cacheResult->data,result);
-                }else if(result.Empty()){
+                }else if(result.Empty()||!hasMtStatus(result)){
                     DebugMessage("in queryAdInfoByMttyPid,failed to fetch valid adinfo for pid ",mttyPid);
                     return result;
                 }
@@ -196,6 +213,7 @@ namespace adservice{
                        if(cnt<2)
                            return false;
                        result.AddMember("adplace",adplaceInfo,result.GetAllocator());
+                       appendMtStatus(result);
                        std::string jsonResult = toJson(result);
                        if(jsonResult.length()>=newCache.size) {
                            DebugMessage("in queryAdInfoByAdxPid result too large,adxpid:", adxPid,",result size:",jsonResult.length());
@@ -212,7 +230,7 @@ namespace adservice{
                 });
                 if(cacheResult!=NULL && result.Empty()){
                     parseJson((const char*)cacheResult->data,result);
-                }else if(result.Empty()){
+                }else if(result.Empty()||!hasMtStatus(result)){
                     DebugMessage("in queryAdInfoByAdxPid,failed to fetch valid adinfo for adxpid ",adxPid);
                     return result;
                 }

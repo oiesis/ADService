@@ -6,9 +6,20 @@
 #include <array>
 #include <algorithm>
 #include "cypher.h"
+#include <cryptopp/base64.h>
+#include <cryptopp/modes.h>
+#include <cryptopp/aes.h>
+#include "functions.h"
 
 namespace adservice {
     namespace utility {
+
+        namespace rng{
+            extern int32_t randomInt();
+
+            extern double randomDouble();
+        }
+
         namespace cypher {
 
             using namespace std;
@@ -24,6 +35,18 @@ namespace adservice {
              */
             char_t* toHex(const uchar_t* input,int32_t size,INOUT char* hexResult){
                 static char hexMap[16] = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
+                for(int i=0,j=0;i<size;i++,j+=2){
+                    hexResult[j] = hexMap[input[i]&0x0F];
+                    hexResult[j+1] = hexMap[input[i]>>4];
+                }
+                hexResult[size<<1]='\0';
+                return hexResult;
+            }
+
+            char_t* toHex(bool isCapital,const uchar_t* input,int32_t size,INOUT char* hexResult){
+                if(isCapital)
+                    return toHex(input,size,hexResult);
+                static char hexMap[16] = {'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
                 for(int i=0,j=0;i<size;i++,j+=2){
                     hexResult[j] = hexMap[input[i]&0x0F];
                     hexResult[j+1] = hexMap[input[i]>>4];
@@ -123,6 +146,42 @@ namespace adservice {
                 return result;
             }
 
+            void urlsafe_base64decode(const std::string& input,std::string& output){
+                assert(input.size()<1024);
+                try {
+                    char buffer[1024];
+                    const char *p = input.c_str();
+                    char *dst = buffer;
+                    while (*p != '\0') {
+                        if (*p == '-') {
+                            *dst = '+';
+                        } else if (*p == '_') {
+                            *dst = '/';
+                        } else {
+                            *dst = *p;
+                        }
+                        p++;
+                        dst++;
+                    }
+                    CryptoPP::Base64Decoder decoder;
+                    decoder.Attach(new CryptoPP::StringSink(output));
+                    decoder.Put((uchar_t *) buffer, input.size());
+                    decoder.MessageEnd();
+                }catch(exception& e){
+                    DebugMessageWithTime("urlsafe_base64decode failed,e:",e.what());
+                }
+            }
+
+
+            void aes_ecbdecode(const uchar_t* key,const std::string& input,std::string& output){
+                try {
+                    CryptoPP::ECB_Mode<CryptoPP::AES>::Decryption d;
+                    d.SetKey(key, 16);
+                    CryptoPP::StringSource(input, true,new CryptoPP::StreamTransformationFilter(d,new CryptoPP::StringSink(output)));
+                }catch(CryptoPP::Exception& e){
+                    DebugMessageWithTime("aes_ecbdecode failed,e:",e.what());
+                }
+            }
 
             CypherMapGenerator::CypherMapGenerator(bool isInit){
                 if(!isInit){
@@ -135,6 +194,21 @@ namespace adservice {
                     }
                 }
                 regenerate();
+            }
+
+            std::string randomId(int field){
+                char buffer[256];
+                char* p = buffer;
+                for(int i=0;i<field;i++,*p++='-'){
+                    int r = rng::randomInt();
+                    toHex(false,(const uchar_t*)&r,sizeof(int),p);
+                    p+=sizeof(int)<<1;
+                }
+                if(p!=buffer)
+                    *(p-1)='\0';
+                else
+                    *p = '\0';
+                return std::string(buffer);
             }
 
             /**

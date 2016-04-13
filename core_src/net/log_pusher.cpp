@@ -52,6 +52,11 @@ namespace adservice{
                     DebugMessage("sendResult:",sendResult.getMessageId());
 #else
                     SendResult sendResult = producer->send(msg);
+                    if(sendResult==SendResult::SEND_ERROR){
+                        LogPusherPtr logger = LogPusher::getLogger(CLICK_SERVICE_LOGGER);
+                        logger->setWorkMode(true);
+                        logger->startRemoteMonitor(msg);
+                    }
 #endif
                 }catch(LogClientException& e){
                     LOG_ERROR << "LogClient error:" << e.GetMsg() << " errorcode:" << e.GetError();
@@ -69,7 +74,8 @@ namespace adservice{
         struct LogPushLocalThreadData{
             FILE* fp;
             long lastTime;
-            LogPushLocalThreadData():fp(NULL),lastTime(0){}
+            int logCnt;
+            LogPushLocalThreadData():fp(NULL),lastTime(0),logCnt(0){}
             ~LogPushLocalThreadData(){
                 if(fp!=NULL){
                     fclose(fp);
@@ -82,7 +88,7 @@ namespace adservice{
             }
         };
 
-
+#define HOUR_SECOND     3600
         struct LogPushLocalTask{
             LogPushLocalTask(std::shared_ptr<adservice::types::string>& l):log(l){}
             LogPushLocalTask(std::shared_ptr<adservice::types::string>&& l):log(l){}
@@ -96,10 +102,12 @@ namespace adservice{
                 FILE* fp = data->fp;
                 long curTime = utility::time::getCurrentTimeStamp();
                 bool expired = false;
-                if(fp==NULL||(expired=data->lastTime<curTime-DAY_SECOND)){
+                if(fp==NULL||(expired=data->lastTime<curTime-HOUR_SECOND)){
                     if(expired){
                         fclose(fp);
                         fp = NULL;
+                        DebugMessageWithTime("hourly log cnt:",data->logCnt," of thread ",(long)thread);
+                        data->logCnt=0;
                     }
                     if(access("log",F_OK)==-1){
                         if(mkdir("log",S_IRWXU|S_IRWXG)<0){
@@ -111,7 +119,7 @@ namespace adservice{
                     ::time(&currentTime);
                     tm* ltime = localtime(&currentTime);
                     char dirname[50];
-                    sprintf(dirname,"log/%d%02d%02d",1900+ltime->tm_year,ltime->tm_mon+1,ltime->tm_mday);
+                    sprintf(dirname,"log/%d%02d%02d%02d",1900+ltime->tm_year,ltime->tm_mon+1,ltime->tm_mday,ltime->tm_hour);
                     if(access(dirname,F_OK)==-1){
                         if(mkdir(dirname,S_IRWXU|S_IRWXG)<0){
                             LOG_ERROR << "dir "<<dirname<<" can not be created!";
@@ -124,13 +132,14 @@ namespace adservice{
                         LOG_ERROR << "file " << filename<<" can not be opened!";
                         return;
                     }
-                    data->lastTime = utility::time::getTodayStartTime();
+                    data->lastTime = utility::time::getTodayStartTime()+ltime->tm_hour*HOUR_SECOND;
                     data->fp = fp;
                 }
                 char flag[20]={'\0'};
                 sprintf(flag,"mt%d^",log->length());
                 fwrite(flag,strlen(flag),1,fp);
                 fwrite(log->c_str(),log->length(),1,fp);
+                data->logCnt++;
             }
             std::shared_ptr<adservice::types::string> log;
         };
@@ -205,6 +214,13 @@ namespace adservice{
                     LogPusher::getLogger(CLICK_SERVICE_LOGGER)->setWorkMode(false);
                     break;
 #elif defined USE_KAFKA_LOG
+                    if(result == SendResult::SEND_ERROR){
+                        if(retryTimes%30==0)
+                            LOG_ERROR<<"log client error still exists";
+                    }else{
+                        LogPusher::getLogger(CLICK_SERVICE_LOGGER)->setWorkMode(false);
+                        break;
+                    }
                     sleep(30);
                     if(!LogPusher::getLogger(CLICK_SERVICE_LOGGER)->getWorkMode()){
                         break;

@@ -14,12 +14,12 @@
 #ifdef UNIT_TEST
 
 template<typename T>
-void DebugMessage(T& obj){
+inline void DebugMessage(T& obj){
     std::cout<<obj<<std::endl;
 }
 
 template<typename T,typename ...Args>
-void DebugMessage(T& obj,Args... args){
+inline void DebugMessage(T& obj,Args... args){
    std::cout<<obj;
    DebugMessage(args...);
 };
@@ -27,32 +27,30 @@ void DebugMessage(T& obj,Args... args){
 #include "utility/mttytime.h"
 
 template<typename T>
-void DebugMessageWithTime(T& obj){
+inline void DebugMessageWithTime(T& obj){
     using namespace adservice::utility::time;
     std::cout<<getCurrentTimeUtcString()<<" "<<obj<<std::endl;
 }
 
 template<typename T,typename ...Args>
-void DebugMessageWithTime(T& obj,Args... args){
+inline void DebugMessageWithTime(T& obj,Args... args){
     using namespace adservice::utility::time;
     std::cout<<getCurrentTimeUtcString()<<" "<<obj;
     DebugMessage(args...);
 };
 
 #else
-#define DebugMessage(a) {}
-#define DebugMessage(a,b) {}
-#define DebugMessage(a,b,c) {}
-#define DebugMessage(a,b,c,d) {}
-#define DebugMessage(a,b,c,d,e) {}
-#define DebugMessage(a,b,c,d,e,f) {}
-#define DebugMessage(a,b,c,d,e,f,g) {}
-#define DebugMessageWithTime(a) {}
-#define DebugMessageWithTime(a,b) {}
-#define DebugMessageWithTime(a,b,c) {}
-#define DebugMessageWithTime(a,b,c,d) {}
-#define DebugMessageWithTime(a,b,c,d,e) {}
-#define DebugMessageWithTime(a,b,c,d,e,f) {}
-#define DebugMessageWithTime(a,b,c,d,e,f,g) {}
+template<typename T>
+inline void DebugMessage(T& obj){}
+
+template<typename T,typename ...Args>
+inline void DebugMessage(T& obj,Args... args){ }
+
+template<typename T>
+inline void DebugMessageWithTime(T& obj){}
+
+template<typename T,typename ...Args>
+inline void DebugMessageWithTime(T& obj,Args... args){}
+
 #endif
 #endif //ADCORE_FUNCTIONS_H

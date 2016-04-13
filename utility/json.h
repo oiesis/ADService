@@ -17,6 +17,16 @@ namespace adservice{
 
         namespace json{
 
+#define MakeStringValue(s) rapidjson::Value().SetString(s.c_str(),s.length())
+
+#define MakeStringConstValue(s) rapidjson::Value().SetString(s)
+
+#define MakeIntValue(s) rapidjson::Value().SetInt(s)
+
+#define MakeDoubleValue(d) rapidjson::Value().SetDouble(d)
+
+#define MakeBooleanValue(b) rapidjson::Value().SetBool(b)
+
             class JSONException : public std::exception{
             public:
                 JSONException() _GLIBCXX_USE_NOEXCEPT {}

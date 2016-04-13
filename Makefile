@@ -5,7 +5,7 @@ OS:=$(shell uname -s)
 ROOT_PATH:=$(shell pwd)
 THIRD_LIB_PATH=$(ROOT_PATH)/3rdparty/lib
 INCLUDE_PATH:=-I$(ROOT_PATH)/3rdparty/include/ -I$(ROOT_PATH)/common/ -I$(ROOT_PATH)/utility/ -I$(ROOT_PATH)/core_src -I$(ROOT_PATH)/
-LOAD_LIB:= -lpthread -lavrocpp -lonsclient4cpp -lssl -lcrypto
+LOAD_LIB:= -lpthread -lavrocpp -lonsclient4cpp -lssl -lcrypto -lcryptopp
 STRICT_CCFLAGS:=-Wall -Wextra -Werror -Wconversion -Wno-unused-parameter -Wold-style-cast -Woverloaded-virtual -Wpointer-arith -Wshadow -Wwrite-strings
 CCFlags:=--std=c++11 -g -march=native -O2 -finline-limit=1000 -DNDEBUG -DUNIT_TEST -DMUDUO_STD_STRING
 CCFlags+= -DUSE_KAFKA_LOG
@@ -98,11 +98,37 @@ elasticsearch.o:
 PLATFORM_FOLDER:=$(SRC_FOLDER)/protocol
 PLATFORM_SOURCE:= $(wildcard $(PLATFORM_FOLDER)/baidu/*.cpp)
 PLATFORM_SOURCE+= $(wildcard $(PLATFORM_FOLDER)/tanx/*.cpp)
+PLATFORM_SOURCE+= $(wildcard $(PLATFORM_FOLDER)/youku/*.cpp)
 platform.o:
 	cd $(PLATFORM_FOLDER) && \
 	$(CC) -c $(CCFlags) -Wno-narrowing  $(INCLUDE_PATH) $(PLATFORM_SOURCE) && \
 	$(LD) -r *.o -o $(BUILD_PATH)/platform.o && \
 	rm *.o
+
+LOCALLOG_FOLDER:=unit_test
+LOCALLOG_SOURCE:= locallog_collector.cpp
+LOCALLOG_SOURCE+= $(ROOT_PATH)/protocol/log/logstring.cpp
+LOCALLOG_DEPOBJ:=  cypher.o \
+        hash.o  \
+        mttytime.o \
+        json.o \
+        url.o \
+        file.o \
+        escape.o \
+        core.o \
+        elasticsearch.o \
+        platform.o \
+        random.o
+
+locallog.o:utility.o core.o
+	cd $(LOCALLOG_FOLDER) && \
+	$(CC) -c $(CCFlags) $(INCLUDE_PATH) $(LOCALLOG_SOURCE) && \
+	$(LD) -r *.o -o $(BUILD_PATH)/locallog.o && \
+	rm *.o
+	cd $(BUILD_PATH) && \
+        $(CC) $(CCFlags) $(MUDUO_CCFLAGS) $(LOCALLOG_DEPOBJ) locallog.o -o ../locallog $(MUDUO_LDFLAGS) $(LIB_FLAGS) -lboost_serialization
+	
+
 clean:
 	rm -rf $(BUILD_PATH)
 	rm adservice

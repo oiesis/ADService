@@ -19,6 +19,8 @@
 #include <boost/noncopyable.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
+#include <muduo/base/tbb/concurrent_hash_map.h>
+
 
 namespace muduo
 {
@@ -28,6 +30,7 @@ namespace net
 class Acceptor;
 class EventLoop;
 class EventLoopThreadPool;
+
 
 ///
 /// TCP server, supports single-threaded and thread-pool models.
@@ -101,6 +104,8 @@ class TcpServer : boost::noncopyable
   void removeConnectionInLoop(const TcpConnectionPtr& conn);
 
   typedef std::map<string, TcpConnectionPtr> ConnectionMap;
+  typedef tbb::concurrent_hash_map<string,TcpConnectionPtr> ConcurrentConnMap;
+  typedef tbb::concurrent_hash_map<string,TcpConnectionPtr>::accessor ConcurrentMapAccessor;
 
   EventLoop* loop_;  // the acceptor loop
   const string ipPort_;
@@ -115,6 +120,7 @@ class TcpServer : boost::noncopyable
   // always in loop thread
   int nextConnId_;
   ConnectionMap connections_;
+  ConcurrentConnMap connMap_;
 };
 
 }

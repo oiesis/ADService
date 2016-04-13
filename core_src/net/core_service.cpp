@@ -11,6 +11,7 @@
 #include "atomic.h"
 #include "protocol/baidu/baidu_price.h"
 #include "protocol/tanx/tanx_price.h"
+#include "protocol/youku/youku_price.h"
 #ifdef USE_ENCODING_GZIP
 #include "muduo/net/ZlibStream.h"
 #endif
@@ -43,9 +44,13 @@ namespace adservice{
              * 对ADX成交价进行解密
              */
         int decodeAdxExchangePrice(int adx,const std::string& input){
+            if(input.empty())
+                return 0;
             switch(adx){
                 case ADX_TANX:
                     return tanx_price_decode(input);
+                case ADX_YOUKU:
+                    return youku_price_decode(input);
                 case ADX_BAIDU:
                     return baidu_price_decode(input);
                 default:
@@ -260,6 +265,7 @@ namespace adservice{
                 userAgent = request.getHeader("User-Agent");
                 userIp = request.getHeader("X-Forwarded-For");
                 referer = request.getHeader("Referer");
+                needLog = true;
             }
             /**
              * 处理请求的通用逻辑
@@ -339,7 +345,8 @@ namespace adservice{
                     resp.setStatusCode(expectedReqStatus());
                     commonLogic(paramMap,log,resp);
                     customLogic(paramMap,log,resp);
-                    doLog(log);
+                    if(needLog)
+                        doLog(log);
                     Buffer buf;
                     resp.appendToBuffer(&buf);
                     conn->send(&buf); //这里将异步调用IO线程,进行数据回写
@@ -365,6 +372,7 @@ namespace adservice{
             adservice::types::string userIp;
             adservice::types::string data;
             adservice::types::string referer;
+            bool needLog;
             const TcpConnectionPtr& conn;
         };
 
@@ -439,6 +447,32 @@ namespace adservice{
                 }
             }
 
+            bool isShowForMobile(ParamMap& paramMap){
+                ParamMap::const_iterator iter = paramMap.find(URL_IMP_OF);
+                if(iter==paramMap.end()){
+                    return false;
+                }else{
+                    return iter->second == OF_DSP_MOBILE_SHOW || iter->second == OF_DSP_MOBILE_LOG;
+                }
+            }
+
+            /**
+             * 根据OF类型判定是否需要显示创意和纪录日志,http://redmine.mtty.com/redmine/issues/48
+             */
+            void dspSetParam(ParamMap& paramMap,bool& showCreative,bool& shouldLog){
+                ParamMap::const_iterator iter = paramMap.find(URL_IMP_OF);
+                if(iter==paramMap.end() || iter->second==OF_DSP){
+                    showCreative = true;
+                    shouldLog =true;
+                }else if(iter->second == OF_DSP_MOBILE_SHOW){
+                    showCreative = true;
+                    shouldLog = false;
+                }else if(iter->second == OF_DSP_MOBILE_LOG){
+                    showCreative = false;
+                    shouldLog = true;
+                }
+            }
+
 #define MakeStringValue(s) rapidjson::Value().SetString(s.c_str(),s.length())
 
 #define MakeStringConstValue(s) rapidjson::Value().SetString(s)
@@ -483,20 +517,25 @@ namespace adservice{
 
             int fillHtmlFixedParam(ParamMap& paramMap,const char* html,const char* templateFmt,char* buffer){
                 char mtAdInfo[1024];
+                char adxbuffer[1024];
+                std::string adxMacro;
+                urlDecode_f(paramMap[URL_ADX_MACRO],adxMacro,adxbuffer);
+                adxMacro+=ADX_MACRO_SUFFIX;
                 int len=sprintf(mtAdInfo,html,paramMap[URL_ADPLACE_ID].c_str(),paramMap[URL_EXPOSE_ID].c_str(),paramMap[URL_ADX_ID].c_str(),
-                                "",paramMap[URL_EXEC_ID].c_str(),paramMap[URL_AREA_ID].c_str(),paramMap[URL_ADX_MACRO].c_str());
+                                "",paramMap[URL_EXEC_ID].c_str(),paramMap[URL_AREA_ID].c_str(),adxMacro.c_str());
                 tripslash(mtAdInfo);
                 len = sprintf(buffer,templateFmt,mtAdInfo);
                 return len;
             }
 
-            int fillHtmlFixedParamSSP(rapidjson::Document& mtAdInfo,const char* templateFmt,char* buffer){
-
-            }
-
-            int fillHtmlFixedParam(rapidjson::Value& result,const char* html,const char* templateFmt,char* buffer){
+            int fillHtmlFixedParam(rapidjson::Value& solution,rapidjson::Value& adplace,rapidjson::Value& banner,ParamMap& paramMap,const char* html,
+                                   const char* templateFmt,char* buffer){
                 char mtAdInfo[1024];
                 int len = 0;
+                len=sprintf(mtAdInfo,html,to_string(adplace["pid"].GetInt()).c_str(),cypher::randomId(5).c_str(),to_string(adplace["adxid"].GetInt()).c_str(),
+                            "",to_string(solution["sid"].GetInt()).c_str(),"0086-ffff-ffff","");
+                tripslash(mtAdInfo);
+                len = sprintf(buffer,templateFmt,paramMap["callback"].c_str(),mtAdInfo);
                 return len;
             }
 
@@ -709,19 +748,18 @@ namespace adservice{
                     }
                     log.adInfo.bannerId = banner["bid"].GetInt();
                     log.adInfo.advId = banner["advid"].GetInt();
-                    log.adInfo.pid = adplace["pid"].GetInt();
+                    log.adInfo.pid = to_string(adplace["pid"].GetInt());
                     log.adInfo.sid = finalSolution["sid"].GetInt();
                     int finalPriceType = finalSolution["pricetype"].GetInt();
-                    log.adInfo.bidPrice = calcBidPrice(finalPriceType,getECPMFromSolutionScore(solScore[finalSolutionIdx],finalPriceType));
+                    log.adInfo.bidPrice = (int)calcBidPrice(finalPriceType,getECPMFromSolutionScore(solScore[finalSolutionIdx],finalPriceType));
                     const char* tmp = banner["html"].GetString();
                     //返回结果
                     char buffer[2048];
-                    //rapidjson::Document mtAdInfo;
-                    //json::parseJson(tmp,mtAdInfo);
-
-                    //int len = fillHtmlFixedParam(result,tmp,templateFmt,buffer);
-                    //respBody = std::string(buffer,buffer+len);
-                }else {//DSP
+                    int len = fillHtmlFixedParam(finalSolution,adplace,banner,paramMap,tmp,templateFmt,buffer);
+                    respBody = std::string(buffer,buffer+len);
+                }else {//DSP of=0,of=2,of=3
+                    bool showCreative = true;
+                    dspSetParam(paramMap,showCreative,needLog);
                     rapidjson::Document esResp;
                     rapidjson::Value &result = adselect.queryCreativeByIdCache(seqId, paramMap[URL_CREATIVE_ID], esResp);
                     if (!result.HasMember("html")) {
@@ -729,10 +767,12 @@ namespace adservice{
                         log.reqStatus = HttpResponse::k500ServerError;
                         return;
                     }
-                    const char *tmp = result["html"].GetString();
-                    char buffer[2048];
-                    int len = fillHtmlFixedParam(paramMap, tmp, templateFmt, buffer);
-                    respBody = std::string(buffer, buffer + len);
+                    if(showCreative) { //需要显示创意
+                        const char *tmp = result["html"].GetString();
+                        char buffer[2048];
+                        int len = fillHtmlFixedParam(paramMap, tmp, templateFmt, buffer);
+                        respBody = std::string(buffer, buffer + len);
+                    }
                 }
 #ifdef USE_ENCODING_GZIP
                 Buffer body;
@@ -865,7 +905,7 @@ namespace adservice{
 
         void CoreService::onRequest(const TcpConnectionPtr& conn,const HttpRequest& req, bool isClose) {
             //todo:改成table dispatcher
-            if (req.path() == "/v") { //show
+            if (req.path() == "/v" || req.path() == "/s") { //show
                 doShow(this,conn,req,isClose);
             } else if(req.path() == "/c"){ //click
                 doClick(this,conn,req,isClose);

@@ -66,7 +66,7 @@ namespace adservice{
                 char map[128];
                 UrlDecodeTable(){
                     for(int i=0;i<128;i++){
-                        if(i>'a'){
+                        if(i>='a'){
                             map[i]=i-'a'+10;
                         }else if(i>='A'){
                             map[i]=i-'A'+10;

@@ -257,15 +257,19 @@ void hash_test(){
 
 #include "protocol/baidu/baidu_price.h"
 #include "protocol/tanx/tanx_price.h"
+#include "protocol/youku/youku_price.h"
 
 void price_decode_test(){
 	cout<<"begin price decode test"<<endl;
 	const char* baiduPriceStr = "VpM2NwAB_RB7jEpgW5IA8hCvJAhKYEz1mEmAng";
 	int baiduPrice=baidu_price_decode(baiduPriceStr);
 	cout<<"baiduPrice:"<<baiduPrice<<endl;
-	const char* tanxPriceStr = "AQpnIAgAAlbw10bNJgdnB3dTFDSxPXxTxg%3D%3D";
+	const char* tanxPriceStr = "AQpnKhAAAFcJq2JrhgFIJc15JJObiySCPg%253D%253D";
 	int tanxPrice = tanx_price_decode(tanxPriceStr);
 	cout<<"tanxPrice:"<<tanxPrice<<endl;
+	const char* youkuPriceStr = "uc40oxgAQgoboJtQXA9B2fPMv0Lm4eMm-KD2-AIfVc8";
+	int youkuPrice = youku_price_decode(youkuPriceStr);
+	cout<<"youkuPrice:"<<youkuPrice<<endl;
 	cout<<"end of price decode test"<<endl;
 }
 

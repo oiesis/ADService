@@ -8,7 +8,6 @@
 #include <vector>
 
 ElasticSearch::ElasticSearch(const std::string& node, bool readOnly,const std::string& auth): _http(node, true,auth), _readOnly(readOnly) {
-
     // Test if instance is active.
     if(!isActive())
         EXCEPTION("Cannot create engine, database is not active.");
@@ -128,7 +127,7 @@ long ElasticSearch::search(const std::string& index, const std::string& type, co
 long ElasticSearch::search(const std::string& index, const std::string& type, const std::string& searchParam,const std::string& query, rapidjson::Document& result) {
     std::stringstream url;
     url << index << "/" << type << "/_search"<<searchParam;
-//    DebugMessage("query string:",query.c_str());
+    DebugMessage("query string:",query.c_str());
     _http.post(url.str().c_str(), query.c_str(), result);
     return result["hits"]["total"].GetInt();
 }

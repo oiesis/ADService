@@ -69,6 +69,7 @@ namespace adservice{
             std::string kafkaBroker;
             std::string kafkaTopic;
             std::string kafkaKey;
+            std::string kafkaMQMaxSize;
             std::string aliyunProducerId;
             std::string aliyunTopic;
             std::string aliyunAccessKey;
@@ -79,6 +80,7 @@ namespace adservice{
                 c->kafkaBroker = mw.getString("kafka_broker",DEFAULT_KAFKA_BROKER);
                 c->kafkaTopic = mw.getString("kafka_topic",DEFAULT_KAFKA_TOPIC);
                 c->kafkaKey = mw.getString("kafka_key",DEFAULT_KAFKA_KEY);
+                c->kafkaMQMaxSize = mw.getString("kafka_mqmaxsize",DEFAULT_KAFKA_MQSIZE_STR);
                 c->aliyunProducerId = mw.getString("aliyun_producer_id",DEFAULT_ALIYUN_PRODUCER_ID);
                 c->aliyunTopic = mw.getString("aliyun_topic",DEFAULT_ALIYUN_TOPIC);
                 c->aliyunAccessKey = mw.getString("aliyun_access_key",DEFAULT_ALIYUN_ACCESS_KEY);

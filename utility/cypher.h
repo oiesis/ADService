@@ -33,6 +33,12 @@ namespace adservice{
             uchar_t *fromLittleEndiumHex(const char *hexInput, int32_t size, INOUT uchar_t *result, INOUT
                                          int32_t &outSize, bool capital = true);
 
+            void urlsafe_base64decode(const std::string& input,std::string& output);
+
+            void aes_ecbdecode(const uchar_t* key,const std::string& input,std::string& output);
+
+            std::string randomId(int field);
+
             /**
              * 用于调试输入输出,解析十六进制字符流
              */

@@ -71,7 +71,7 @@ namespace adservice{
             }else{
                 coreNum = nprocessors;
             }
-            DebugMessage("core executor core num:",threadNum);
+            DebugMessage("core executor core num:",coreNum);
         }
 
         int Executor::getThreadSeqId(){
