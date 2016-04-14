@@ -9,8 +9,13 @@
 
 ElasticSearch::ElasticSearch(const std::string& node, bool readOnly,const std::string& auth): _http(node, true,auth), _readOnly(readOnly) {
     // Test if instance is active.
-    if(!isActive())
-        EXCEPTION("Cannot create engine, database is not active.");
+    if(!isActive()) {
+        _active = false;
+        DebugMessageWithTime("Cannot create engine,elastic search is not active");
+        //EXCEPTION("Cannot create engine, database is not active.");
+    }else{
+        _active = true;
+    }
 }
 
 ElasticSearch::~ElasticSearch() {
@@ -26,30 +31,40 @@ bool ElasticSearch::isActive() {
     }
     catch(ElasticSearchException& e){
         printf("get(0) failed in ElasticSearch::isActive(). ElasticSearchException caught: %s\n", e.what());
+        _active = false;
         return false;
     }
     catch(std::exception& e){
         printf("get(0) failed in ElasticSearch::isActive(). std::exception caught: %s\n", e.what());
+        _active = false;
         return false;
     }
     catch(...){
         printf("get(0) failed in ElasticSearch::isActive().\n");
+        _active = false;
         return false;
     }
 
-    if(root.Empty())
+    if(root.Empty()) {
+        _active = false;
         return false;
+    }
 
     if(!root.HasMember("status") || root["status"].GetInt() != 200){
         printf("Status is not 200. Cannot find Elasticsearch Node.\n");
+        _active = false;
         return false;
     }
-
+    _active = true;
     return true;
 }
 
 // Request the document by index/type/id.
 bool ElasticSearch::getDocument(const char* index, const char* type, const char* id, rapidjson::Document& msg) {
+    if(!this->good()){
+        if(!this->isActive())
+            return false;
+    }
     std::ostringstream oss;
     oss << index << "/" << type << "/" << id;
     _http.get(oss.str().c_str(), 0, msg);
@@ -60,6 +75,10 @@ bool ElasticSearch::getDocument(const char* index, const char* type, const char*
 
 // Request the document by index/type/ query key:value.
 void ElasticSearch::getDocument(const std::string& index, const std::string& type, const std::string& key, const std::string& value, rapidjson::Document& msg) {
+    if(!this->good()){
+        if(!this->isActive())
+            return;
+    }
     std::ostringstream oss;
     oss << index << "/" << type << "/_search";
     std::stringstream query;
@@ -70,6 +89,10 @@ void ElasticSearch::getDocument(const std::string& index, const std::string& typ
 
 // Request the document number of type T in index I.
 long unsigned int ElasticSearch::getDocumentCount(const char* index, const char* type) {
+    if(!this->good()){
+        if(!this->isActive())
+            return 0;
+    }
     std::ostringstream oss;
     oss << index << "/" << type << "/_count";
     rapidjson::Document msg;
@@ -86,6 +109,10 @@ long unsigned int ElasticSearch::getDocumentCount(const char* index, const char*
 
 // Test if document exists
 bool ElasticSearch::exist(const std::string& index, const std::string& type, const std::string& id) {
+    if(!this->good()){
+        if(!this->isActive())
+            return false;
+    }
     std::stringstream url;
     url << index << "/" << type << "/" << id;
 
@@ -103,7 +130,10 @@ bool ElasticSearch::exist(const std::string& index, const std::string& type, con
 
 /// Search API of ES.
 long ElasticSearch::search(const std::string& index, const std::string& type, const std::string& query, rapidjson::Document& result) {
-
+    if(!this->good()){
+        if(!this->isActive())
+            return 0;
+    }
     std::stringstream url;
     url << index << "/" << type << "/_search";
 
@@ -125,6 +155,10 @@ long ElasticSearch::search(const std::string& index, const std::string& type, co
 }
 
 long ElasticSearch::search(const std::string& index, const std::string& type, const std::string& searchParam,const std::string& query, rapidjson::Document& result) {
+    if(!this->good()){ //初始状态不正常,再尝试一次
+        if(!this->isActive()) //依然不正常
+            return 0;
+    }
     std::stringstream url;
     url << index << "/" << type << "/_search"<<searchParam;
     DebugMessage("query string:",query.c_str());

@@ -56,6 +56,7 @@ namespace adservice{
                         delete agents[i];
                     agents[i]=NULL;
                 }
+                cacheManager.destroy();
             }
 
 

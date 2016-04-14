@@ -50,7 +50,7 @@ namespace adservice{
             if(cnt!=1) {
                 DebugMessageWithTime("error occured in queryCreativeById,document id:",bannerId);
                 //throw AdSelectException("not exactly one docuemnts fetched in queryCreativeById", -1);
-                return result["hits"];
+                return result;
             }
             return result["hits"]["hits"][0]["_source"];
         }

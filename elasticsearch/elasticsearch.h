@@ -19,6 +19,11 @@ class ElasticSearch {
          /// Test connection with node.
         bool isActive() ;
 
+        // ElasticSearch实例初始化时的状态
+        bool good(){
+                return _active;
+        }
+
         /// Request document number of type T in index I.
         long unsigned int getDocumentCount(const char* index, const char* type);
 
@@ -52,6 +57,7 @@ class ElasticSearch {
 
         /// Read Only option, all index functions return false.
         bool _readOnly;
+        bool _active;
 };
 
 

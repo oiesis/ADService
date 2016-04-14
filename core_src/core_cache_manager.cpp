@@ -28,6 +28,7 @@ namespace adservice{
         }
 
         void MemoryManageStategy::free(int id) {
+            //DebugMessageWithTime("free memory pool unit ",id);
             spinlock_lock(&lock);
             aux[id]=head;
             head = id;
@@ -37,6 +38,7 @@ namespace adservice{
         void* MemoryPool::alloc() {
             int memId = memStategy.alloc();
             if(memId==-1){
+                DebugMessageWithTime("memory pool ran out!!");
                 return NULL;
             }
             return memory+memId*unitSize;
@@ -68,7 +70,7 @@ namespace adservice{
             if (data == NULL)
                 return false;
             memcpy(data, value, size);
-            int h = hash(key) % 1024;
+            int h = hash(key) % MEMORY_ALLOC_UNIT_CNT;
             CacheResult *newCache = (CacheResult *) cacheResultSpare.alloc();
             if (newCache == NULL) {
                 pool.free(data);
@@ -92,7 +94,7 @@ namespace adservice{
 
 
         CacheResult* CacheManager::get(const char* key,int dataSize,const CacheAbsentCallback& cb){
-            int h = hash(key)%1024;
+            int h = hash(key)%MEMORY_ALLOC_UNIT_CNT;
             int64_t currentTime = getCurrentTimeStamp();
             if(dataSize!=-1) {
                 int level = getCacheLevel(dataSize);
@@ -107,6 +109,8 @@ namespace adservice{
                     while (result) {
                         if (result->expired(currentTime)) { //过期
                             *pre = result->next;
+                            if(result->data!=NULL)
+                                memPools[level].free(result->data);
                             cacheResultSpare.free(result);
                             result = *pre;
                         } else if (strcmp(result->key, key) == 0) { //cache hit
@@ -117,7 +121,7 @@ namespace adservice{
                         }
                     }
                     //cache missing
-                    DebugMessageWithTime("cache level ",level,",key:",key," cache miss");
+                    //DebugMessageWithTime("cache level ",level,",key:",key," cache miss");
                     if (cb) {
                         CacheResult *newCache = (CacheResult *) cacheResultSpare.alloc();
                         if (!newCache)
@@ -130,7 +134,8 @@ namespace adservice{
                             slot.caches[h] = newCache;
                             return newCache;
                         } //失败
-                        memPools[level].free(newCache->data);
+                        if(newCache->data!=NULL)
+                            memPools[level].free(newCache->data);
                         cacheResultSpare.free(newCache);
                     }
                 }

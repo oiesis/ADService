@@ -11,6 +11,7 @@
 #include "muduo/base/Mutex.h"
 #include "spinlock.h"
 #include "utility/mttytime.h"
+#include "functions.h"
 
 namespace adservice{
     namespace cache{
@@ -54,10 +55,10 @@ namespace adservice{
         };
 
         struct CacheSlot{
-            struct CacheResult* caches[1024];
-            MutexLock mutex[1024];
+            struct CacheResult* caches[MEMORY_ALLOC_UNIT_CNT];
+            MutexLock mutex[MEMORY_ALLOC_UNIT_CNT];
             CacheSlot(){
-                for(int i=0;i<1024;i++){
+                for(int i=0;i<MEMORY_ALLOC_UNIT_CNT;i++){
                     caches[i] = NULL;
                 }
             }
@@ -109,9 +110,13 @@ namespace adservice{
                 memStategy.init();
             }
             ~MemoryPool(){
+                destroy();
+            }
+            void destroy(){
                 if(memory!=NULL) {
                     delete[] memory;
                     memory = NULL;
+                    DebugMessageWithTime("CacheManager MemoryPool gone");
                 }
             }
             void* alloc();
@@ -141,9 +146,13 @@ namespace adservice{
                     allocSize+=DEFAULT_MEMORY_ALLOC_SIZE;
                     unitSize+=MEMORY_ALLOC_UNIT;
                 }
-                cacheResultSpare.init(10240*sizeof(CacheResult),sizeof(CacheResult));
+                cacheResultSpare.init(MEMORY_ALLOC_UNIT_CNT*CACHE_MAX_LEVEL*4*sizeof(CacheResult),sizeof(CacheResult));
             }
             void destroy(){
+                for(int i=0;i<CACHE_MAX_LEVEL;i++){
+                    memPools[i].destroy();
+                }
+                cacheResultSpare.destroy();
             }
 
             void setHashMethod(const HashFunc& hFunc){

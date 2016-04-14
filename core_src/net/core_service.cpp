@@ -677,7 +677,9 @@ namespace adservice{
                     rapidjson::Document esResp;
                     rapidjson::Value& result = adselect.queryAdInfoByPid(seqId,queryPid,esResp,isAdxPid);
                     if(result.Empty()||!result.IsArray()){ //正常情况下应该刷出solution和banner以及相应的高级出价器列表
-                        log.adInfo.pid = "0";
+                        log.adInfo.pid = isAdxPid?"0":queryPid;
+                        log.adInfo.adxpid = isAdxPid?queryPid:"0";
+                        log.reqStatus = 500;
                         return ;
                     }
                     //从返回结果中整理数据
@@ -744,10 +746,12 @@ namespace adservice{
                     //筛选出最后结果
                     if(!banner.HasMember("html")){ //SSP没刷出广告,属于错误的情况
                         log.adInfo.bannerId = 0;
+                        log.reqStatus = 500;
                         return ;
                     }
                     log.adInfo.bannerId = banner["bid"].GetInt();
                     log.adInfo.advId = banner["advid"].GetInt();
+                    log.adInfo.adxid = adplace["adxid"].GetInt();
                     log.adInfo.pid = to_string(adplace["pid"].GetInt());
                     log.adInfo.sid = finalSolution["sid"].GetInt();
                     int finalPriceType = finalSolution["pricetype"].GetInt();

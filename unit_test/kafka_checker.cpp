@@ -14,7 +14,9 @@
 /* Do not include these defines from your program, they will not be
  * provided by librdkafka. */
 extern "C" {
+//#include "﻿/root/mtty/thirdparty/librdkafka/src/rd.h"
 #include "../../thirdparty/librdkafka/src/rd.h"
+//#include "﻿/root/mtty/thirdparty/librdkafka/src/rdtime.h"
 #include "../../thirdparty/librdkafka/src/rdtime.h"
 }
 #include <string>
@@ -586,7 +588,7 @@ int main (int argc, char **argv) {
 
 	while ((opt =
 		getopt(argc, argv,
-		       "Ct:p:b:k:s:o:B:v:f:q:")) != -1) {
+		       "Ct:p:b:k:s:o:B:v:f:q::")) != -1) {
 		switch (opt) {
 		case 'C':
 			mode = opt;
