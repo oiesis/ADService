@@ -1,0 +1,14 @@
+#0  0x0000003659f2f000 in __strncasecmp_l_sse42 () from /lib64/libc.so.6
+#1  0x0000000000466178 in fillHtmlFixedParam (this=Unhandled dwarf expression opcode 0xf3
+) at /root/new_core/deploy/ADCore/core_src/net/core_service.cpp:535
+#2  adservice::corelogic::HandleShowQueryTask::customLogic (this=Unhandled dwarf expression opcode 0xf3
+) at /root/new_core/deploy/ADCore/core_src/net/core_service.cpp:796
+#3  0x00000000004640f6 in adservice::corelogic::AbstractQueryTask::operator() (this=0x7ff35805b2e0)
+    at /root/new_core/deploy/ADCore/core_src/net/core_service.cpp:348
+#4  0x0000000000493858 in operator() (this=0x2219248) at /usr/local/include/boost/function/function_template.hpp:767
+#5  muduo::ThreadPool::runInThread (this=0x2219248) at /root/new_core/mtty/thirdparty/muduo/muduo/muduo/base/ThreadPool.cc:153
+#6  0x000000000049270a in operator() (obj=0x221f4b0) at /usr/local/include/boost/function/function_template.hpp:767
+#7  runInThread (obj=0x221f4b0) at /root/new_core/mtty/thirdparty/muduo/muduo/muduo/base/Thread.cc:94
+#8  muduo::detail::startThread (obj=0x221f4b0) at /root/new_core/mtty/thirdparty/muduo/muduo/muduo/base/Thread.cc:124
+#9  0x000000365a207aa1 in start_thread () from /lib64/libpthread.so.0
+#10 0x0000003659ee893d in clone () from /lib64/libc.so.6

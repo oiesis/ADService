@@ -2,6 +2,7 @@
 // Created by guoze.lin on 16/2/2.
 //
 
+#include <signal.h>
 #include "core_service.h"
 #include "utility/utility.h"
 #include "protocol/log/log.h"
@@ -39,6 +40,20 @@ namespace adservice{
         using namespace adservice::types;
         using namespace rapidjson;
 
+        void handle_sigsegv(int signal,siginfo_t* siginfo,void* p){
+            DebugMessage("segment fault detected,address:",siginfo->si_addr);
+            if(g_coreService.use_count()==0)
+                exit(0);
+            g_coreService->setNeedRestart();
+            g_coreService->stop();
+        }
+
+        void signal_sigsegv(){
+            struct sigaction sa;
+            sa.sa_handler = handle_sigsegv;
+            sa.sa_flags = SA_SIGINFO;
+            sigaction(SIGSEGV, &sa, 0);
+        }
 
         /**
              * 对ADX成交价进行解密
@@ -89,12 +104,12 @@ namespace adservice{
                 if ((iter=paramMap.find(URL_ADOWNER_ID)) != paramMap.end()) { //广告主Id
                     adservice::types::string &d = iter->second;//paramMap[URL_ADOWNER_ID];
                     log.adInfo.advId = std::stol(d);
+                    log.adInfo.cpid = log.adInfo.advId;
                 }
-                if ((iter=paramMap.find(URL_ADPLAN_ID)) != paramMap.end()) { // 推广计划Id
-                    adservice::types::string &t = iter->second;//paramMap[URL_ADPLAN_ID];
-                    const char* cstr = t.c_str();
-                    log.adInfo.cpid = t;
-                }
+//                if ((iter=paramMap.find(URL_ADPLAN_ID)) != paramMap.end()) { // 推广计划Id
+//                    adservice::types::string &t = iter->second;//paramMap[URL_ADPLAN_ID];
+//                    log.adInfo.cpid = std::stol(t);
+//                }
                 if ((iter=paramMap.find(URL_EXEC_ID)) != paramMap.end()) { // 投放单元Id
                     adservice::types::string &e = iter->second;//paramMap[URL_EXEC_ID];
                     log.adInfo.sid = std::stol(e);
@@ -162,14 +177,18 @@ namespace adservice{
             size+=sizeof(log.adInfo.bidPrice);
             size+=sizeof(log.adInfo.cost);
             size+=sizeof(log.adInfo.cpid);
-            size+=sizeof(log.adInfo.pid);
+            size+=log.adInfo.pid.length();
             size+=sizeof(log.adInfo.adxid);
+            size+=log.adInfo.adxuid.length();
             size+=log.adInfo.areaId.length();
-            size+=log.adInfo.cid.length();
+            size+=sizeof(log.adInfo.cid);
             size+=log.adInfo.clickId.length();
             size+=log.adInfo.imp_id.length();
             size+=log.adInfo.landingUrl.length();
-            size+=log.adInfo.mid.length();
+            size+=sizeof(log.adInfo.adxpid);
+            size+=sizeof(log.adInfo.adxuid);
+            size+=sizeof(log.adInfo.offerPrice);
+            size+=sizeof(log.adInfo.mid);
             size+=sizeof(log.geoInfo.city);
             size+=sizeof(log.geoInfo.country);
             size+=sizeof(log.geoInfo.district);
@@ -187,8 +206,8 @@ namespace adservice{
         bool operator==(const protocol::log::AdInfo& a,const protocol::log::AdInfo& b){
             return a.advId==b.advId && a.adxid == b.adxid && a.areaId == b.areaId && a.bidPrice == b.bidPrice
                     && a.cid == b.cid && a.cost == b.cost && a.clickId == b.clickId && a.cpid == b.cpid
-                   && a.bannerId == b.bannerId && a.imp_id == b.imp_id && a.landingUrl == b.landingUrl;
-
+                   && a.bannerId == b.bannerId && a.imp_id == b.imp_id && a.landingUrl == b.landingUrl
+                    && a.adxuid == b.adxuid;
         }
 
         bool operator==(const protocol::log::GeoInfo& a, const protocol::log::GeoInfo& b){
@@ -267,6 +286,19 @@ namespace adservice{
                 referer = request.getHeader("Referer");
                 needLog = true;
             }
+
+            /**
+             * 过滤安全参数
+             */
+            void filterParamMapSafe(ParamMap& paramMap){
+                for(ParamMap::iterator iter = paramMap.begin();iter!=paramMap.end();iter++){
+                    iter->second = stringSafeInput(iter->second,URL_LONG_INPUT_PARAMETER);
+                }
+                paramMap[URL_CREATIVE_ID]=stringSafeNumber(paramMap[URL_CREATIVE_ID]);
+                paramMap[URL_SSP_ADX_PID]=stringSafeNumber(paramMap[URL_SSP_ADX_PID]);
+                paramMap[URL_SSP_PID]=stringSafeNumber(paramMap[URL_SSP_PID]);
+            }
+
             /**
              * 处理请求的通用逻辑
              * 1.装填log 对象并序列化
@@ -275,6 +307,7 @@ namespace adservice{
              */
             void commonLogic(ParamMap& paramMap,protocol::log::LogItem& log,HttpResponse& resp){
                 getParam(paramMap,data.c_str()+1);
+                filterParamMapSafe(paramMap);
                 log.userAgent = userAgent;
                 log.logType = currentPhase();
                 log.reqMethod = reqMethod();
@@ -373,7 +406,7 @@ namespace adservice{
             adservice::types::string data;
             adservice::types::string referer;
             bool needLog;
-            const TcpConnectionPtr& conn;
+            const TcpConnectionPtr conn;
         };
 
         /**
@@ -515,27 +548,48 @@ namespace adservice{
                 mtAdInfo.AddMember("mtls",mtls.Move(),mtAdInfo.GetAllocator());
             }
 
-            int fillHtmlFixedParam(ParamMap& paramMap,const char* html,const char* templateFmt,char* buffer){
-                char mtAdInfo[1024];
+            int fillHtmlFixedParam(ParamMap& paramMap,const char* html,const char* templateFmt,char* buffer,int bufferSize){
+                char mtAdInfo[2048];
                 char adxbuffer[1024];
                 std::string adxMacro;
                 urlDecode_f(paramMap[URL_ADX_MACRO],adxMacro,adxbuffer);
                 adxMacro+=ADX_MACRO_SUFFIX;
-                int len=sprintf(mtAdInfo,html,paramMap[URL_ADPLACE_ID].c_str(),paramMap[URL_EXPOSE_ID].c_str(),paramMap[URL_ADX_ID].c_str(),
+                //这里因为使用了C++的字符串模板进行参数绑定,而获取的模板中有可能带有混淆字符,所以需要分解处理
+                //更好的解决方法还是使用json parse的方式,不过要求html的json格式按照RFC规范
+                char* mtlsPos = (char*)strstr(html,"mtls");
+                char backupChar = '\0';
+                if(mtlsPos!=NULL){
+                    backupChar = *mtlsPos;
+                    *mtlsPos = '\0';
+                }
+                int len=snprintf(mtAdInfo,2048,html,paramMap[URL_ADPLACE_ID].c_str(),paramMap[URL_EXPOSE_ID].c_str(),paramMap[URL_ADX_ID].c_str(),
                                 "",paramMap[URL_EXEC_ID].c_str(),paramMap[URL_AREA_ID].c_str(),adxMacro.c_str());
+                if(mtlsPos!=NULL){
+                    *mtlsPos = backupChar;
+                    strncpy(mtAdInfo+len,mtlsPos,2048-len);
+                }
                 tripslash(mtAdInfo);
-                len = sprintf(buffer,templateFmt,mtAdInfo);
+                len = snprintf(buffer,bufferSize,templateFmt,mtAdInfo);
                 return len;
             }
 
             int fillHtmlFixedParam(rapidjson::Value& solution,rapidjson::Value& adplace,rapidjson::Value& banner,ParamMap& paramMap,const char* html,
-                                   const char* templateFmt,char* buffer){
-                char mtAdInfo[1024];
-                int len = 0;
-                len=sprintf(mtAdInfo,html,to_string(adplace["pid"].GetInt()).c_str(),cypher::randomId(5).c_str(),to_string(adplace["adxid"].GetInt()).c_str(),
+                                   const char* templateFmt,char* buffer,int bufferSize){
+                char mtAdInfo[2048];
+                char* mtlsPos = (char*)strstr(html,"mtls");
+                char backupChar = '\0';
+                if(mtlsPos!=NULL){
+                    backupChar = *mtlsPos;
+                    *mtlsPos = '\0';
+                }
+                int len=snprintf(mtAdInfo,2048,html,to_string(adplace["pid"].GetInt()).c_str(),cypher::randomId(5).c_str(),to_string(adplace["adxid"].GetInt()).c_str(),
                             "",to_string(solution["sid"].GetInt()).c_str(),"0086-ffff-ffff","");
+                if(mtlsPos!=NULL){
+                    *mtlsPos = backupChar;
+                    strncpy(mtAdInfo+len,mtlsPos,2048-len);
+                }
                 tripslash(mtAdInfo);
-                len = sprintf(buffer,templateFmt,paramMap["callback"].c_str(),mtAdInfo);
+                len = snprintf(buffer,bufferSize,templateFmt,paramMap["callback"].c_str(),mtAdInfo);
                 return len;
             }
 
@@ -648,7 +702,23 @@ namespace adservice{
                 return l;
             }
 
-            double calcBidPrice(int priceType,double ecpm){
+            double calcBidPrice(int priceType,double ecpm1,double ecpm2,double basePrice,double offerPrice){
+                switch(priceType){
+                    case PRICETYPE_CPD:
+                    case PRICETYPE_CPM:
+                    case PRICETYPE_CPC:
+                        return 0;
+                    case PRICETYPE_RCPC: //offerprice
+                        return std::max(offerPrice,basePrice);
+                    case PRICETYPE_RTB:
+                    case PRICETYPE_RRTB_CPM:
+                    case PRICETYPE_RRTB_CPC:
+                        if(ecpm2<0){ //只有一个出价
+                            return std::max(ecpm1,basePrice);
+                        }else{ // 第二高价加一毛钱
+                            return std::max(ecpm2+0.1,basePrice);
+                        }
+                }
                 return 0;
             }
 
@@ -674,9 +744,9 @@ namespace adservice{
                         }
                         isAdxPid = true;
                     }
-                    rapidjson::Document esResp;
+                    rapidjson::Document esResp(rapidjson::kObjectType);
                     rapidjson::Value& result = adselect.queryAdInfoByPid(seqId,queryPid,esResp,isAdxPid);
-                    if(result.Empty()||!result.IsArray()){ //正常情况下应该刷出solution和banner以及相应的高级出价器列表
+                    if(!result.IsArray()||result.Empty()){ //正常情况下应该刷出solution和banner以及相应的高级出价器列表
                         log.adInfo.pid = isAdxPid?"0":queryPid;
                         log.adInfo.adxpid = isAdxPid?queryPid:"0";
                         log.reqStatus = 500;
@@ -704,21 +774,39 @@ namespace adservice{
                             superPricer = &(result[i]["_source"]);
                         }
                     }
+                    if(solCnt==0){ //失败
+                        log.adInfo.pid = isAdxPid?"0":queryPid;
+                        log.adInfo.adxpid = isAdxPid?queryPid:"0";
+                        log.reqStatus = 500;
+                        return ;
+                    }
                     //计算投放单ecpm,并计算score进行排序
                     int solIdx[100];
+                    double finalOfferPrice[100];
                     double solScore[100];
+                    double top1Ecpm = -1,top2Ecpm = -1;
+                    double hourPercent = getCurrentHourPercent();
                     for(int i=0;i<solCnt;i++){
                         solIdx[i] = i;
                         rapidjson::Value& solution = *(solutions[i]);
-                        double ecpm = solution["offerprice"].GetDouble();
+                        double offerprice = solution["offerprice"].GetDouble();
+                        double ctr = solution["ctr"].GetDouble();
                         if(superPricer && (*superPricer)["sid"].GetInt()==solution["sid"].GetInt()){
-                            ecpm+=(*superPricer)["offerprice"].GetDouble();
+                            offerprice+=(*superPricer)["offerprice"].GetDouble();
+                            ctr+=(*superPricer)["ctr"].GetDouble();
                         }
                         int bgid = solution["bgid"].GetInt();
                         rapidjson::Value& banner = bestBannerFromBannerGroup(bannerMap,bgid);
-                        ecpm += banner["offerprice"].GetDouble();
+                        offerprice += banner["offerprice"].GetDouble();
+                        ctr += banner["ctr"].GetDouble();
+                        double ecpm = offerprice * ctr * hourPercent;
+                        finalOfferPrice[i] = offerprice;
                         int priceType = solution["pricetype"].GetInt();
                         solScore[i] = calcSolutionScore(priceType,ecpm);
+                        if(ecpm>top1Ecpm){
+                            top1Ecpm = ecpm;
+                            top2Ecpm = top1Ecpm;
+                        }
                     }
                     sortSolutionScore(solIdx,solScore,solCnt);
                     //按排序概率展示
@@ -743,6 +831,7 @@ namespace adservice{
                     int finalSolutionIdx = randomSolution(totalRate,accRate,solCnt);
                     rapidjson::Value& finalSolution = *(solutions[solIdx[finalSolutionIdx]]);
                     rapidjson::Value& banner = bestBannerFromBannerGroup(bannerMap,finalSolution["bgid"].GetInt());
+                    double offerPrice = finalOfferPrice[solIdx[finalSolutionIdx]];
                     //筛选出最后结果
                     if(!banner.HasMember("html")){ //SSP没刷出广告,属于错误的情况
                         log.adInfo.bannerId = 0;
@@ -755,16 +844,18 @@ namespace adservice{
                     log.adInfo.pid = to_string(adplace["pid"].GetInt());
                     log.adInfo.sid = finalSolution["sid"].GetInt();
                     int finalPriceType = finalSolution["pricetype"].GetInt();
-                    log.adInfo.bidPrice = (int)calcBidPrice(finalPriceType,getECPMFromSolutionScore(solScore[finalSolutionIdx],finalPriceType));
+                    double basePrice = adplace["baseprice"].GetDouble();
+                    log.adInfo.bidPrice = (int)calcBidPrice(finalPriceType,top1Ecpm,top2Ecpm,basePrice,offerPrice);
+                    log.adInfo.cost = adplace["costprice"].GetInt();
                     const char* tmp = banner["html"].GetString();
                     //返回结果
-                    char buffer[2048];
-                    int len = fillHtmlFixedParam(finalSolution,adplace,banner,paramMap,tmp,templateFmt,buffer);
+                    char buffer[4096];
+                    int len = fillHtmlFixedParam(finalSolution,adplace,banner,paramMap,tmp,templateFmt,buffer,sizeof(buffer));
                     respBody = std::string(buffer,buffer+len);
                 }else {//DSP of=0,of=2,of=3
                     bool showCreative = true;
                     dspSetParam(paramMap,showCreative,needLog);
-                    rapidjson::Document esResp;
+                    rapidjson::Document esResp(rapidjson::kObjectType);
                     rapidjson::Value &result = adselect.queryCreativeByIdCache(seqId, paramMap[URL_CREATIVE_ID], esResp);
                     if (!result.HasMember("html")) {
                         log.adInfo.bannerId = 0;
@@ -773,8 +864,9 @@ namespace adservice{
                     }
                     if(showCreative) { //需要显示创意
                         const char *tmp = result["html"].GetString();
-                        char buffer[2048];
-                        int len = fillHtmlFixedParam(paramMap, tmp, templateFmt, buffer);
+                        char buffer[4096];
+                        DebugMessage("template",tmp);
+                        int len = fillHtmlFixedParam(paramMap, tmp, templateFmt, buffer,sizeof(buffer));
                         respBody = std::string(buffer, buffer + len);
                     }
                 }
@@ -909,11 +1001,14 @@ namespace adservice{
 
         void CoreService::onRequest(const TcpConnectionPtr& conn,const HttpRequest& req, bool isClose) {
             //todo:改成table dispatcher
+            if(req.path().length()>URL_LONG_REQUEST_THRESH){
+                DebugMessage("Received Long Request,",req.path().length(),",input:",req.path());
+            }
             if (req.path() == "/v" || req.path() == "/s") { //show
                 doShow(this,conn,req,isClose);
             } else if(req.path() == "/c"){ //click
                 doClick(this,conn,req,isClose);
-            } else if(req.path() == "/jt.html"){
+            } else if(req.path() == "/jt.html"){ //http健康检查
                 HttpResponse resp(false);
                 resp.setStatusCode(HttpResponse::k200Ok);
                 Buffer buf;
@@ -923,7 +1018,7 @@ namespace adservice{
                 conn->shutdown();
 #endif
             }
-            else
+            else // 404
             {
                 DebugMessage("req.path() not match target!",req.path());
                 HttpResponse resp(isClose);

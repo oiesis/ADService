@@ -47,6 +47,14 @@ namespace adservice{
                 return (int64_t)mktime(&todayTime);
             }
 
+            double getCurrentHourPercent(){
+                time_t currentTime;
+                ::time(&currentTime);
+                struct tm t = {0};
+                localtime_r(&currentTime,&t);
+                return (t.tm_min*60+t.tm_sec) * 1.0 / 3600;
+            }
+
             std::string getCurrentTimeString(){
                 time_t currentTime;
                 ::time(&currentTime);
@@ -63,6 +71,14 @@ namespace adservice{
                 char tstr[50];
                 int len = sprintf(tstr,"%04d%02d%02d %02d:%02d:%02d",1900+t.tm_year,t.tm_mon+1,t.tm_mday,t.tm_hour,t.tm_min,t.tm_sec);
                 return std::string(tstr,tstr+len);
+            }
+
+            std::string adTimeSelectCode(int64_t timestamp){
+                struct tm t = {0};
+                localtime_r((const time_t*)&timestamp,&t);
+                char scode[10];
+                int len = sprintf(scode,"%d%02d",t.tm_wday==0?7:t.tm_wday,t.tm_hour);
+                return std::string(scode,scode+len);
             }
         }
     }

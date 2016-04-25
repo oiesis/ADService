@@ -62,6 +62,14 @@ namespace adservice{
                 return timeStringFromTimeStamp(getCurrentTimeStampUtc());
             }
 
+            std::string adTimeSelectCode(int64_t timestamp);
+
+            inline std::string adSelectTimeCodeUtc(){
+                return adTimeSelectCode(getCurrentTimeStampUtc());
+            }
+
+            double getCurrentHourPercent();
+
             /**
              * 用于离线计算mtty基准时间
              */

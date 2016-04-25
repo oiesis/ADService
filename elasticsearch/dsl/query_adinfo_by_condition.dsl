@@ -26,6 +26,7 @@
                                     {"terms": {"d_adplacetype":["0","%d"]}},
                                     {"terms": {"d_displaynumber":["0","%d"]}},
                                     {"terms": {"d_flowtype":["0","%d"]}},
+                                    {"terms": {"d_hour":["0","%s"]}},
                                     {"range": {"starttime": {"lte": "now"}}},
                                     {"range": {"endtime":{"gte":"now"}}},
                                     {"has_parent": {
@@ -68,6 +69,7 @@
                                                                 {"terms": {"d_adplacetype":["0","%d"]}},
                                                                 {"terms": {"d_displaynumber":["0","%d"]}},
                                                                 {"terms": {"d_flowtype":["0","%d"]}},
+                                                                {"terms": {"d_hour":["0","%s"]}},
                                                                 {"range": {"starttime": {"lte": "now"}}},
                                                                 {"range": {"endtime":{"gte":"now"}}}
                                                             ]

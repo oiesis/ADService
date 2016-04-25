@@ -17,8 +17,8 @@
  */
 
 
-#ifndef LOG_AVRO_LOG_H_2445483147__H_
-#define LOG_AVRO_LOG_H_2445483147__H_
+#ifndef LOG_AVRO_LOG_H_606959820__H_
+#define LOG_AVRO_LOG_H_606959820__H_
 
 
 #include <sstream>
@@ -51,35 +51,39 @@ struct GeoInfo {
 struct AdInfo {
     std::string areaId;
     int64_t advId;
-    std::string cpid;
+    int64_t cpid;
     int64_t sid;
     int64_t bannerId;
     std::string clickId;
     int32_t adxid;
-    std::string mid;
-    std::string cid;
+    int64_t mid;
+    int64_t cid;
     std::string pid;
     std::string imp_id;
     std::string landingUrl;
     int32_t cost;
     int32_t bidPrice;
     std::string adxpid;
+    std::string adxuid;
+    int32_t offerPrice;
     AdInfo() :
         areaId(std::string()),
         advId(int64_t()),
-        cpid(std::string()),
+        cpid(int64_t()),
         sid(int64_t()),
         bannerId(int64_t()),
         clickId(std::string()),
         adxid(int32_t()),
-        mid(std::string()),
-        cid(std::string()),
+        mid(int64_t()),
+        cid(int64_t()),
         pid(std::string()),
         imp_id(std::string()),
         landingUrl(std::string()),
         cost(int32_t()),
         bidPrice(int32_t()),
-        adxpid(std::string())
+        adxpid(std::string()),
+        adxuid(std::string()),
+        offerPrice(int32_t())
         { }
 };
 
@@ -337,6 +341,8 @@ template<> struct codec_traits<protocol::log::AdInfo> {
         avro::encode(e, v.cost);
         avro::encode(e, v.bidPrice);
         avro::encode(e, v.adxpid);
+        avro::encode(e, v.adxuid);
+        avro::encode(e, v.offerPrice);
     }
     static void decode(Decoder& d, protocol::log::AdInfo& v) {
         if (avro::ResolvingDecoder *rd =
@@ -390,6 +396,12 @@ template<> struct codec_traits<protocol::log::AdInfo> {
                 case 14:
                     avro::decode(d, v.adxpid);
                     break;
+                case 15:
+                    avro::decode(d, v.adxuid);
+                    break;
+                case 16:
+                    avro::decode(d, v.offerPrice);
+                    break;
                 default:
                     break;
                 }
@@ -410,6 +422,8 @@ template<> struct codec_traits<protocol::log::AdInfo> {
             avro::decode(d, v.cost);
             avro::decode(d, v.bidPrice);
             avro::decode(d, v.adxpid);
+            avro::decode(d, v.adxuid);
+            avro::decode(d, v.offerPrice);
         }
     }
 };

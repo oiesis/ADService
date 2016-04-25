@@ -264,7 +264,7 @@ static bool decodePrice(uchar* src, int32_t& realPrice, time_t& time)
 using namespace adservice::utility::url;
 
 std::string noescape(const std::string& input,char oc='-',char nc='%'){
-    char buf[256];
+    char buf[2048];
     const char* p = input.c_str();
     char* dest=buf;
     while(*p!='\0'){
@@ -293,7 +293,7 @@ void noescape(char* buf,char oc = '-',char nc = '%'){
 
 
 int64_t tanx_price_decode(const std::string& ori_input){
-    char buffer[256];
+    char buffer[2048];
     std::string input;
     urlDecode_f(ori_input,input,buffer);
     input = noescape(noescape(input),' ','+');

@@ -168,7 +168,11 @@ namespace adservice{
             if(!modeLocal) {
 #if defined USE_KAFKA_LOG
                 //由于现在使用的kafka client api有自己的消息队列机制,所以不需要走logpusher内部消息队列
-                producer->send(Message(DEFAULT_KAFKA_TOPIC,*(logstring.get())));
+                SendResult sendResult = producer->send(Message(DEFAULT_KAFKA_TOPIC,*(logstring.get())));
+                if(sendResult==SendResult::SEND_ERROR){
+                    this->setWorkMode(true);
+                    this->startRemoteMonitor(Message(DEFAULT_KAFKA_TOPIC,*(logstring.get())));
+                }
 #else
                 executor.run(std::bind(LogPushTask(producer, logstring)));
 #endif
@@ -180,7 +184,11 @@ namespace adservice{
         void LogPusher::push(std::shared_ptr<adservice::types::string>&& logstring){
             if(!modeLocal) {
 #if defined USE_KAFKA_LOG
-                producer->send(Message(DEFAULT_KAFKA_TOPIC,*(logstring.get())));
+                SendResult sendResult =producer->send(Message(DEFAULT_KAFKA_TOPIC,*(logstring.get())));
+                if(sendResult==SendResult::SEND_ERROR){
+                    this->setWorkMode(true);
+                    this->startRemoteMonitor(Message(DEFAULT_KAFKA_TOPIC,*(logstring.get())));
+                }
 #else
                 executor.run(std::bind(LogPushTask(producer, logstring)));
 #endif
@@ -219,10 +227,12 @@ namespace adservice{
                             LOG_ERROR<<"log client error still exists";
                     }else{
                         LogPusher::getLogger(CLICK_SERVICE_LOGGER)->setWorkMode(false);
+                        DebugMessage("log client error recover,continue with remote logging");
                         break;
                     }
-                    sleep(30);
+                    sleep(5);
                     if(!LogPusher::getLogger(CLICK_SERVICE_LOGGER)->getWorkMode()){
+                        DebugMessage("log client error recover,continue with remote logging");
                         break;
                     }
 #endif
@@ -236,7 +246,7 @@ namespace adservice{
             return NULL;
         }
 
-        void LogPusher::startRemoteMonitor(log::Message& msg) { //fixme:fix multi log problem by defining param as a class member
+        void LogPusher::startRemoteMonitor(const log::Message& msg) { //fixme:fix multi log problem by defining param as a class member
             static RemoteMonitorThreadParam param;
             if(param.started)
                 return;

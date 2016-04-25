@@ -25,7 +25,7 @@ record AdInfo{
     // 广告主Id,可能为空,取决于接收到的链接
     long advId;
     // 推广计划Id,可能为空,取决于接收到的链接
-    string cpid;
+    long cpid;
     // 推广单元Id,可能为空,取决于接收到的链接
     long sid;
     // 创意Id,可能为空,取决于接收到的链接
@@ -35,9 +35,9 @@ record AdInfo{
     // 广告交换商Id,可能为空,取决于接收到的链接
     int adxid ;
     // 网站Id,可能为空,取决于接收到的链接
-    string mid ;
+    long mid ;
     // 频道Id,可能为空,取决于接收到的链接
-    string cid ;
+    long cid ;
     // 广告位Id,可能为空,取决于接收到的链接
     string pid ;
     // 曝光Id,可能为空,取决于接收到的链接
@@ -50,6 +50,10 @@ record AdInfo{
     int bidPrice;
     // 广告交换商的pid,暂时和pid维持一样
     string adxpid ;
+    // 广告交换商的uid
+    string adxuid;
+    // 竞价模块返回给ADX的出价
+    int offerPrice;
 }
 
 @namespace("com.mtty.protocol")

@@ -15,6 +15,7 @@
 #include <cstring>
 #include <sstream>
 #include <tuple>
+#include <exception>
 #include "common/types.h"
 
 namespace adservice{
@@ -60,6 +61,28 @@ namespace adservice{
              * 从xxx-xxx-xxx形式的字符串提取国家,省,市
              */
             void extractAreaInfo(const char* input,int& country,int& province,int& city);
+
+            /**
+             * 提取不超过指定长度的字符串
+             */
+            inline std::string stringSafeInput(const std::string& input,int len){
+                if(input.length()>len){
+                    return input.substr(0,len);
+                }
+                return input;
+            }
+
+            /**
+             * 提取没有其它冗余信息的合格的数字字符串
+             */
+            inline std::string stringSafeNumber(const std::string& input){
+                try {
+                    long num = std::stol(input);
+                    return std::to_string(num);
+                }catch(std::exception& e){
+                    return std::string("0");
+                }
+            }
         }
 
     }

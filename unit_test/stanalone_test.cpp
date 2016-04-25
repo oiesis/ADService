@@ -10,8 +10,12 @@
 #include "common/functions.h"
 #include "common/constants.h"
 #include "utility/url.h"
+#include "utility/json.h"
+#include "utility/hash.h"
 
 using namespace adservice::utility::url;
+using namespace adservice::utility::json;
+using namespace adservice::utility::hash;
 using namespace std;
 
 void paramTest(){
@@ -29,26 +33,45 @@ void paramTest(){
     DebugMessage("after decoded,l:",output);
 }
 
-int main(int argc,char** argv){
-    std::string output="{\n"
+void jsontest(){
+    const char* input="{\n"
+            "   \"took\": 3,\n"
             "   \"hits\": {\n"
             "      \"total\": 1,\n"
             "      \"hits\": [\n"
             "         {\n"
+            "            \"_index\": \"solutions\",\n"
+            "            \"_type\": \"banner\",\n"
+            "            \"_id\": \"5002588\",\n"
+            "            \"_score\": 7.1737857,\n"
+            "            \"_routing\": \"185\",\n"
+            "            \"_parent\": \"185\",\n"
             "            \"_source\": {\n"
-            "               \"banner_type\": 2,\n"
-            "               \"bgid\": 28,\n"
-            "               \"bid\": 59,\n"
+            "               \"banner_type\": 1,\n"
+            "               \"bgid\": 185,\n"
+            "               \"bid\": 2588,\n"
             "               \"ctr\": 0,\n"
-            "               \"height\": 50,\n"
-            "               \"html\": \"{mt_ad_pid:\\\\'%s\\\\',mt_ad_width:\\\\'300\\\\',mt_ad_height:\\\\'50\\\\',mt_ad_impid:\\\\'%s\\\\',mt_ad_advid:\\\\'23\\\\',mt_ad_unid:\\\\'%s\\\\',mt_ad_plid:\\\\'%s\\\\',mt_ad_gpid:\\\\'%s\\\\',mt_ad_cid:\\\\'59\\\\',mt_ad_arid:\\\\'%s\\\\',mt_ad_ctype:\\\\'2\\\\',mt_ad_xcurl:\\\\'%s\\\\',mt_ad_of:\\\\'0\\\\',mt_ad_tview:\\\\'\\\\',mt_ad_mtls: [{p0: \\\\'http://material.mtty.com/201601/08/0Oa4KL.swf\\\\',p1: \\\\'http://bd.5399.com/htmlcode/534726.html\\\\',p2: \\\\'000\\\\',p3: \\\\'300\\\\',p4: \\\\'50\\\\',p5:\\\\'\\\\',p6:\\\\'\\\\',p7:\\\\'\\\\',p8:\\\\'\\\\',p9:\\\\'\\\\'}]}\",\n"
+            "               \"height\": 90,\n"
+            "               \"html\": \"{pid:\\\\'%s\\\\',width:\\\\'960\\\\',height:\\\\'90\\\\',impid:\\\\'%s\\\\',advid:\\\\'40\\\\',unid:\\\\'%s\\\\',plid:\\\\'%s\\\\',gpid:\\\\'%s\\\\',cid:\\\\'2588\\\\',arid:\\\\'%s\\\\',ctype:\\\\'1\\\\',xcurl:\\\\'%s\\\\',of:\\\\'0\\\\',tview:\\\\'\\\\',mtls: [{p0: \\\\'http://material.mtty.com/201603/17/Fi8K7Z.jpg\\\\',p1: \\\\'http://jump.ztcadx.com/diy?target=http%3A%2F%2Fhuishanmy.tmall.com%2F%3Fkid%3D34095_207194_970488_1436040%26shop_id%3D116953304\\\\',p2: \\\\'000\\\\',p3: \\\\'960\\\\',p4: \\\\'90\\\\',p5:\\\\'\\\\',p6:\\\\'\\\\',p7:\\\\'\\\\',p8:\\\\'\\\\',p9:\\\\'\\\\'}]}\",\n"
             "               \"offerprice\": 0,\n"
-            "               \"width\": 300\n"
+            "               \"width\": 960\n"
             "            }\n"
             "         }\n"
             "      ]\n"
             "   }\n"
             "}";
-    paramTest();
+    rapidjson::Document doc;
+    parseJson(input,doc);
+    DebugMessageWithTime("doc.a:",doc["a"].GetString());
+}
+
+void hash_test(){
+    const char* key = "creative_id_164";
+    int h = fnv_hash(key,strlen(key)) % 1024;
+    DebugMessageWithTime("hash:",h);
+}
+
+int main(int argc,char** argv){
+    hash_test();
     return 0;
 }

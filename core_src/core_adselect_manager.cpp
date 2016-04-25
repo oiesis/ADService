@@ -6,16 +6,20 @@
 #include "core_adselect_manager.h"
 #include "core_cache_manager.h"
 #include "utility/json.h"
+#include "utility/mttytime.h"
 #include "constants.h"
 #include "atomic.h"
+#include "common/types.h"
 
 namespace adservice{
     namespace adselect{
 
         using namespace adservice::cache;
         using namespace adservice::utility::json;
+        using namespace adservice::utility::time;
 
         static const int DEFAULT_KEY_LENGTH = 56;
+        static const int LITTLE_BUFFER_SIZE = 1024;
         static const int LARGE_BUFFER_SIZE = 10240;
         static const int CACHE_LEVEL_1_SIZE = 1;
         static const int CACHE_LEVEL_2_SIZE = 2048;
@@ -41,8 +45,8 @@ namespace adservice{
             ElasticSearch& agent = getAvailableConnection(seqId);
             int cnt = 0;
             try {
-                char buffer[256];
-                sprintf(buffer, dsl_query_banner, std::stoi(bannerId));
+                char buffer[LITTLE_BUFFER_SIZE];
+                snprintf(buffer,LITTLE_BUFFER_SIZE,dsl_query_banner, std::stoi(bannerId));
                 cnt = agent.search(ES_INDEX_SOLUTIONS, ES_DOCUMENT_BANNER, ES_FILTER_FORMAT, buffer, result);
             }catch(std::exception& e){
                 DebugMessageWithTime("exception in queryCreativeById,e:",e.what());
@@ -59,12 +63,12 @@ namespace adservice{
             try{
                 ElasticSearch& agent = getAvailableConnection(seqId);
                 char key[DEFAULT_KEY_LENGTH];
-                sprintf(key,"creative_id_%s",bannerId.c_str());
+                snprintf(key,DEFAULT_KEY_LENGTH,"creative_id_%s",bannerId.c_str());
                 CacheResult* cacheResult = cacheManager.get(key,CACHE_LEVEL_1_SIZE,[&bannerId,this,&agent,&result](CacheResult& newCache){
                     int cnt = 0;
                     try {
-                        char buffer[256];
-                        sprintf(buffer, this->dsl_query_banner, std::stoi(bannerId));
+                        char buffer[LITTLE_BUFFER_SIZE];
+                        snprintf(buffer,LITTLE_BUFFER_SIZE, this->dsl_query_banner, std::stoi(bannerId));
                         cnt = agent.search(ES_INDEX_SOLUTIONS, ES_DOCUMENT_BANNER, ES_FILTER_FORMAT, buffer, result);
                     }catch(std::exception& e){
                         DebugMessageWithTime("exception in queryCreativeByIdCache,e:",e.what());
@@ -85,9 +89,9 @@ namespace adservice{
                     newCache.expireTime = getCurrentTimeStamp() + ADSELECT_CACHE_EXPIRE_TIME;
                     return true;
                 });
-                if(cacheResult!=NULL && result.Empty()){
+                if(cacheResult!=NULL && result.ObjectEmpty()){
                     parseJson((const char*)cacheResult->data,result);
-                }else if(result.Empty()||!hasMtStatus(result)){
+                }else if(result.ObjectEmpty()||!hasMtStatus(result)){
                     DebugMessage("in queryCreativeByIdCache,failed to fetch valid creative for bannerId ",bannerId);
                     return result;
                 }
@@ -107,41 +111,53 @@ namespace adservice{
             }
         }
 
+        /**
+         * 进行条件参数绑定
+         */
+        void bindSelectCondition(rapidjson::Value& adplaceInfo,const char* cTemplate,INOUT char* output,const char* pid){
+            //创意支持类型过滤
+            const char* supportBanner = adplaceInfo["supportbanner"].IsNull()?DEFAULT_SUPPORT_BANNERTYPE:adplaceInfo["supportbanner"].GetString();
+            //时间定点过滤
+            std::string dHour = adSelectTimeCodeUtc();
+            sprintf(output,cTemplate,pid,
+                    adplaceInfo["media_type"].GetInt(),
+                    pid,
+                    adplaceInfo["adplacetype"].GetInt(),
+                    adplaceInfo["displaynumber"].GetInt(),
+                    adplaceInfo["flowtype"].GetInt(),
+                    dHour.c_str(),
+                    adplaceInfo["width"].GetInt(),
+                    adplaceInfo["height"].GetInt(),
+                    supportBanner,
+                    adplaceInfo["width"].GetInt(),
+                    adplaceInfo["height"].GetInt(),
+                    supportBanner,
+                    adplaceInfo["media_type"].GetInt(),
+                    pid,
+                    adplaceInfo["adplacetype"].GetInt(),
+                    adplaceInfo["displaynumber"].GetInt(),
+                    adplaceInfo["flowtype"].GetInt(),
+                    dHour.c_str()
+            );
+        }
 
         rapidjson::Value& AdSelectManager::queryAdInfoByMttyPid(int seqId,const std::string& mttyPid,rapidjson::Document& result){
             try{
                 ElasticSearch& agent = getAvailableConnection(seqId);
                 char key[DEFAULT_KEY_LENGTH];
-                sprintf(key,"adinfo_pid_%s",mttyPid.c_str());
+                snprintf(key,DEFAULT_KEY_LENGTH,"adinfo_pid_%s",mttyPid.c_str());
                 CacheResult* cacheResult = cacheManager.get(key,CACHE_LEVEL_3_SIZE,[&mttyPid,this,&agent,&result](CacheResult& newCache){
                     try {
                         char buffer[LARGE_BUFFER_SIZE];
-                        sprintf(buffer,this->dsl_query_adplace_pid, mttyPid.c_str());
+                        snprintf(buffer,LARGE_BUFFER_SIZE,this->dsl_query_adplace_pid, mttyPid.c_str());
                         rapidjson::Document adplace;
                         int cnt = agent.search(ES_INDEX_SOLUTIONS, ES_DOCUMENT_ADPLACE, ES_FILTER_FORMAT, buffer,
                                                adplace);
                         if (cnt == 0)
                             return false;
                         rapidjson::Value& adplaceInfo = adplace["hits"]["hits"][0]["_source"];
-                        const char* supportBanner = adplaceInfo["supportbanner"].IsNull()?DEFAULT_SUPPORT_BANNERTYPE:adplaceInfo["supportbanner"].GetString();
-                        sprintf(buffer,this->dsl_query_adinfo_condition,mttyPid.c_str(),
-                                adplaceInfo["media_type"].GetInt(),
-                                mttyPid.c_str(),
-                                adplaceInfo["adplacetype"].GetInt(),
-                                adplaceInfo["displaynumber"].GetInt(),
-                                adplaceInfo["flowtype"].GetInt(),
-                                adplaceInfo["width"].GetInt(),
-                                adplaceInfo["height"].GetInt(),
-                                supportBanner,
-                                adplaceInfo["width"].GetInt(),
-                                adplaceInfo["height"].GetInt(),
-                                supportBanner,
-                                adplaceInfo["media_type"].GetInt(),
-                                mttyPid.c_str(),
-                                adplaceInfo["adplacetype"].GetInt(),
-                                adplaceInfo["displaynumber"].GetInt(),
-                                adplaceInfo["flowtype"].GetInt()
-                        );
+                        //过滤条件绑定
+                        bindSelectCondition(adplaceInfo,this->dsl_query_adinfo_condition,buffer,mttyPid.c_str());
                         cnt = agent.search(ES_INDEX_SOLUTIONS,ES_DOCUMENT_SOLBANADPLACE,ES_FILTER_FORMAT2,buffer,result);
                         if(cnt<2)
                             return false;
@@ -161,9 +177,9 @@ namespace adservice{
                         return false;
                     }
                 });
-                if(cacheResult!=NULL && result.Empty()){
+                if(cacheResult!=NULL && result.ObjectEmpty()){
                     parseJson((const char*)cacheResult->data,result);
-                }else if(result.Empty()||!hasMtStatus(result)){
+                }else if(result.ObjectEmpty()||!hasMtStatus(result)){
                     DebugMessage("in queryAdInfoByMttyPid,failed to fetch valid adinfo for pid ",mttyPid);
                     return result;
                 }
@@ -178,37 +194,20 @@ namespace adservice{
             try{
                 ElasticSearch& agent = getAvailableConnection(seqId);
                 char key[DEFAULT_KEY_LENGTH];
-                sprintf(key,"adinfo_adxpid_%s",adxPid.c_str());
+                snprintf(key,DEFAULT_KEY_LENGTH,"adinfo_adxpid_%s",adxPid.c_str());
                 CacheResult* cacheResult = cacheManager.get(key,CACHE_LEVEL_3_SIZE,[&adxPid,this,&agent,&result](CacheResult& newCache){
                    try {
                        char buffer[LARGE_BUFFER_SIZE];
-                       sprintf(buffer,this->dsl_query_adplace_adxpid, adxPid.c_str());
+                       snprintf(buffer,LARGE_BUFFER_SIZE,this->dsl_query_adplace_adxpid, adxPid.c_str());
                        rapidjson::Document adplace;
                        int cnt = agent.search(ES_INDEX_SOLUTIONS, ES_DOCUMENT_ADPLACE, ES_FILTER_FORMAT, buffer,
                                               adplace);
                        if (cnt == 0)
                            return false;
                        rapidjson::Value& adplaceInfo = adplace["hits"]["hits"][0]["_source"];
-                       const char* supportBanner = adplaceInfo["supportbanner"].IsNull()?DEFAULT_SUPPORT_BANNERTYPE:adplaceInfo["supportbanner"].GetString();
                        std::string pid = to_string(adplaceInfo["pid"].GetInt());
-                       sprintf(buffer,this->dsl_query_adinfo_condition,pid.c_str(),
-                               adplaceInfo["media_type"].GetInt(),
-                               pid.c_str(),
-                               adplaceInfo["adplacetype"].GetInt(),
-                               adplaceInfo["displaynumber"].GetInt(),
-                               adplaceInfo["flowtype"].GetInt(),
-                               adplaceInfo["width"].GetInt(),
-                               adplaceInfo["height"].GetInt(),
-                               supportBanner,
-                               adplaceInfo["width"].GetInt(),
-                               adplaceInfo["height"].GetInt(),
-                               supportBanner,
-                               adplaceInfo["media_type"].GetInt(),
-                               pid.c_str(),
-                               adplaceInfo["adplacetype"].GetInt(),
-                               adplaceInfo["displaynumber"].GetInt(),
-                               adplaceInfo["flowtype"].GetInt()
-                       );
+                       //过滤条件绑定
+                       bindSelectCondition(adplaceInfo,this->dsl_query_adinfo_condition,buffer,pid.c_str());
                        cnt = agent.search(ES_INDEX_SOLUTIONS,ES_DOCUMENT_SOLBANADPLACE,ES_FILTER_FORMAT2,buffer,result);
                        if(cnt<2)
                            return false;
@@ -228,9 +227,9 @@ namespace adservice{
                        return false;
                    }
                 });
-                if(cacheResult!=NULL && result.Empty()){
+                if(cacheResult!=NULL && result.ObjectEmpty()){
                     parseJson((const char*)cacheResult->data,result);
-                }else if(result.Empty()||!hasMtStatus(result)){
+                }else if(result.ObjectEmpty()||!hasMtStatus(result)){
                     DebugMessage("in queryAdInfoByAdxPid,failed to fetch valid adinfo for adxpid ",adxPid);
                     return result;
                 }

@@ -193,5 +193,9 @@
 // ADSELECT CACHE存活秒数
 #define  ADSELECT_CACHE_EXPIRE_TIME                 30
 
+// URL多长被认为是长URL
+#define  URL_LONG_REQUEST_THRESH                    1024
+#define  URL_LONG_INPUT_PARAMETER                   1024
+
 
 #endif //ADCORE_CONSTANTS_H

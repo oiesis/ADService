@@ -36,7 +36,7 @@
       "type" : "long"
     }, {
       "name" : "cpid",
-      "type" : "string"
+      "type" : "long"
     }, {
       "name" : "sid",
       "type" : "long"
@@ -51,10 +51,10 @@
       "type" : "int"
     }, {
       "name" : "mid",
-      "type" : "string"
+      "type" : "long"
     }, {
       "name" : "cid",
-      "type" : "string"
+      "type" : "long"
     }, {
       "name" : "pid",
       "type" : "string"
@@ -73,6 +73,12 @@
     }, {
       "name" : "adxpid",
       "type" : "string"
+    }, {
+      "name" : "adxuid",
+      "type" : "string"
+    }, {
+      "name" : "offerPrice",
+      "type" : "int"
     } ]
   }, {
     "type" : "enum",

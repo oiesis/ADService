@@ -12,6 +12,7 @@ LOGROTATE_CONFIG+=$(cat <<'HEREDOC'
 HEREDOC
 )
 
+mkdir -p service_log
 
 if [[ $# == 1 ]];
 then

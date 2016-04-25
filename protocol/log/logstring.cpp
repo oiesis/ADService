@@ -51,7 +51,7 @@ void printLogAdInfo(std::stringstream& ss,protocol::log::AdInfo& adInfo){
     ss<<"\tadvId:"<<adInfo.advId<<endl;
     ss<<"\tadxId:"<<adInfo.adxid<<endl;
     ss<<"\tcid:"<<adInfo.cid<<endl;
-    ss<<"\tcpid:"<<(adInfo.cpid.empty()?to_string(adInfo.advId):adInfo.cpid)<<endl;
+    ss<<"\tcpid:"<<(adInfo.cpid==0?adInfo.advId:adInfo.cpid)<<endl;
     ss<<"\timpId:"<<adInfo.imp_id<<endl;
     ss<<"\tmid:"<<adInfo.mid<<endl;
     ss<<"\tpid:"<<adInfo.pid<<endl;
@@ -59,8 +59,10 @@ void printLogAdInfo(std::stringstream& ss,protocol::log::AdInfo& adInfo){
     ss<<"\tsid:"<<adInfo.sid<<endl;
     ss<<"\tlanding url:"<<urlDecode(adInfo.landingUrl)<<endl;
     ss<<"\tclickId:"<<adInfo.clickId<<endl;
-    ss<<"\tbidPrice:"<<adInfo.areaId<<endl;
+    ss<<"\tbidPrice:"<<adInfo.bidPrice<<endl;
+    ss<<"\tofferPrice:"<<adInfo.offerPrice<<endl;
     ss<<"\tcost:"<<adInfo.cost<<endl;
+    ss<<"\tadxuid:"<<adInfo.adxuid<<endl;
 }
 
 void printLogGeoInfo(std::stringstream& ss,protocol::log::GeoInfo& geoInfo){

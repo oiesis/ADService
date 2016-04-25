@@ -1,0 +1,44 @@
+#0  0x0000003659e32625 in raise () from /lib64/libc.so.6
+#1  0x0000003659e33e05 in abort () from /lib64/libc.so.6
+#2  0x0000003659e2b74e in __assert_fail_base () from /lib64/libc.so.6
+#3  0x0000003659e2b870 in __assert_perror_fail () from /lib64/libc.so.6
+#4  0x000000000047a072 in lock (this=0x1b494d8, cb=...)
+    at /root/new_core/mtty/thirdparty/muduo/muduo/muduo/base/Mutex.h:81
+#5  MutexLockGuard (this=0x1b494d8, cb=...) at /root/new_core/mtty/thirdparty/muduo/muduo/muduo/base/Mutex.h:143
+#6  muduo::net::EventLoop::queueInLoop (this=0x1b494d8, cb=...)
+    at /root/new_core/mtty/thirdparty/muduo/muduo/muduo/net/EventLoop.cc:207
+#7  0x000000000047a101 in muduo::net::EventLoop::runInLoop (this=Unhandled dwarf expression opcode 0xf3
+)
+    at /root/new_core/mtty/thirdparty/muduo/muduo/muduo/net/EventLoop.cc:200
+#8  0x0000000000486c3f in muduo::net::TcpServer::removeConnection (this=0x1b4ef20, conn=Unhandled dwarf expression opcode 0xf3
+)
+    at /root/new_core/mtty/thirdparty/muduo/muduo/muduo/net/TcpServer.cc:107
+#9  0x0000000000483c60 in operator() (this=0x135af830) at /usr/local/include/boost/function/function_template.hpp:767
+#10 muduo::net::TcpConnection::handleClose (this=0x135af830)
+    at /root/new_core/mtty/thirdparty/muduo/muduo/muduo/net/TcpConnection.cc:422
+#11 0x0000000000484108 in muduo::net::TcpConnection::handleRead (this=0x135af830, receiveTime=...)
+    at /root/new_core/mtty/thirdparty/muduo/muduo/muduo/net/TcpConnection.cc:360
+#12 0x0000000000484220 in operator() (function_obj_ptr=Unhandled dwarf expression opcode 0xf3
+) at /usr/local/include/boost/bind/mem_fn_template.hpp:165
+#13 operator()<boost::_mfi::mf1<void, muduo::net::TcpConnection, muduo::Timestamp>, boost::_bi::list1<muduo::Timestamp&> > (function_obj_ptr=Unhandled dwarf expression opcode 0xf3
+) at /usr/local/include/boost/bind/bind.hpp:313
+#14 operator()<muduo::Timestamp> (function_obj_ptr=Unhandled dwarf expression opcode 0xf3
+) at /usr/local/include/boost/bind/bind_template.hpp:32
+#15 boost::detail::function::void_function_obj_invoker1<boost::_bi::bind_t<void, boost::_mfi::mf1<void, muduo::net::TcpConnection, muduo::Timestamp>, boost::_bi::list2<boost::_bi::value<muduo::net::TcpConnection*>, boost::arg<1> > >, void, muduo::Timestamp>::invoke (function_obj_ptr=Unhandled dwarf expression opcode 0xf3
+) at /usr/local/include/boost/function/function_template.hpp:153
+#16 0x000000000048d282 in operator() (this=0x135af9c0, receiveTime=...)
+    at /usr/local/include/boost/function/function_template.hpp:767
+#17 muduo::net::Channel::handleEventWithGuard (this=0x135af9c0, receiveTime=...#)
+##18 0x000000000048d617 in muduo::net::Channel::handleEvent (this=Unhandled dwarf expression opcode 0xf3
+#)
+#    at /root/new_core/mtty/thirdparty/muduo/muduo/muduo/net/Channel.cc:74
+#    #19 0x0000000000479ae5 in muduo::net::EventLoop::loop (this=0x7f46817e9c70)
+#        at /root/new_core/mtty/thirdparty/muduo/muduo/muduo/net/EventLoop.cc:125
+#        #20 0x000000000048e8a8 in muduo::net::EventLoopThread::threadFunc (this=0x1b56800)
+#            at /root/new_core/mtty/thirdparty/muduo/muduo/muduo/net/EventLoopThread.cc:73
+#            #21 0x000000000049270a in operator() (obj=0x1b54590) at /usr/local/include/boost/function/function_template.hpp:767
+#            #22 runInThread (obj=0x1b54590) at /root/new_core/mtty/thirdparty/muduo/muduo/muduo/base/Thread.cc:94
+#            #23 muduo::detail::startThread (obj=0x1b54590) at /root/new_core/mtty/thirdparty/muduo/muduo/muduo/base/Thread.cc:124
+#            #24 0x000000365a207aa1 in start_thread () from /lib64/libpthread.so.0
+#            #25 0x0000003659ee893d in clone () from /lib64/libc.so.6
+#

@@ -42,9 +42,9 @@ PriceDecoder decoder(TOKEN);
 int64_t youku_price_decode(const std::string& input){
     int price = 0;
     try {
-        char buffer[256];
+        char buffer[2048];
         std::string output;
-        urlDecode_f(input,output,buffer);
+        urlDecode_f(input,output,buffer);//Maby twice?
         price = decoder.getPrice(output);
     }catch(std::exception& e){
         DebugMessageWithTime("youku_price_decode failed,input:",input);

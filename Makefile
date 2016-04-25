@@ -12,7 +12,10 @@ CCFlags+= -DUSE_KAFKA_LOG
 CCFlags+= -DUSE_SHORT_CONN
 #CCFlags+= -DUSE_ENCODING_GZIP
 #CCFlags+= -DUSE_ALIYUN_LOG
+#CCFlags+= -DUSE_TBB_HASHMAP
+#LOAD_LIB+= -ltbb
 LOAD_LIB+= -lrdkafka++ -lz
+
 prerun:
 
 ifeq ($(OS),Linux)

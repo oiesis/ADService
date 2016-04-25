@@ -45,7 +45,7 @@ bool ElasticSearch::isActive() {
         return false;
     }
 
-    if(root.Empty()) {
+    if(root.ObjectEmpty()) {
         _active = false;
         return false;
     }
@@ -163,6 +163,10 @@ long ElasticSearch::search(const std::string& index, const std::string& type, co
     url << index << "/" << type << "/_search"<<searchParam;
     DebugMessage("query string:",query.c_str());
     _http.post(url.str().c_str(), query.c_str(), result);
+    if(result.ObjectEmpty()){
+        DebugMessageWithTime("elasticsearch received empty result!!");
+        return 0;
+    }
     return result["hits"]["total"].GetInt();
 }
 

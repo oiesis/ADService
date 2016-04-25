@@ -83,7 +83,7 @@ namespace adservice{
                 }
                 modeLocal = workLocal;
             }
-            void startRemoteMonitor(Message& msg);
+            void startRemoteMonitor(const Message& msg);
 
             void push(std::shared_ptr<adservice::types::string>& logstring);
             void push(std::shared_ptr<adservice::types::string>&& logstring);

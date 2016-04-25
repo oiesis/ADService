@@ -533,12 +533,14 @@ unsigned int HTTP::readMessage(std::string& output, size_t& contentLength, bool&
     // Is error ?
     if(ret < 0) {
         disconnect();
+        DebugMessageWithTime("elasticsearch disconnnected");
         result = ERROR;
         return statusCode;
     }
 
     // Is timeout ?
     if(ret == 0) {
+        DebugMessageWithTime("elasticsearch read timeout!!");
         result = ERROR;
         return statusCode;
     }
@@ -546,6 +548,7 @@ unsigned int HTTP::readMessage(std::string& output, size_t& contentLength, bool&
     // Check error on socket
     if(FD_ISSET( fd, &errorSet)) {
         error();
+        DebugMessageWithTime("elasticsearch read error!!");
         result = ERROR;
         return statusCode;
     }
@@ -607,6 +610,7 @@ unsigned int HTTP::parseMessage(std::string& output, size_t& contentLength, bool
         if(readSize <= 0) {
 
             if(!connect()) {
+                DebugMessageWithTime("parseMessage error,read failed!!");
                 result = ERROR;
                 return statusCode;
             }

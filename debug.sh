@@ -1,6 +1,6 @@
 #!/bin/bash
 
-﻿echo "connection info:"
+echo "connection info:"
 #netstat -napt|grep "1922"
 CONN=`netstat -napt|grep "1922"|grep "ESTABLISHED"|wc -l`
 echo "connected:${CONN}"
