@@ -53,14 +53,14 @@ namespace adservice{
 #else
                     SendResult sendResult = producer->send(msg);
                     if(sendResult==SendResult::SEND_ERROR){
-                        LogPusherPtr logger = LogPusher::getLogger(CLICK_SERVICE_LOGGER);
+                        LogPusherPtr logger = LogPusher::getLogger(MTTY_SERVICE_LOGGER);
                         logger->setWorkMode(true);
                         logger->startRemoteMonitor(msg);
                     }
 #endif
                 }catch(LogClientException& e){
                     LOG_ERROR << "LogClient error:" << e.GetMsg() << " errorcode:" << e.GetError();
-                    LogPusherPtr logger = LogPusher::getLogger(CLICK_SERVICE_LOGGER);
+                    LogPusherPtr logger = LogPusher::getLogger(MTTY_SERVICE_LOGGER);
                     logger->setWorkMode(true);
                     logger->startRemoteMonitor(msg);
                 }catch(std::exception& e){
@@ -219,19 +219,19 @@ namespace adservice{
                 try {
                     SendResult result = producer->send(msg);
 #if defined USE_ALIYUN_LOG
-                    LogPusher::getLogger(CLICK_SERVICE_LOGGER)->setWorkMode(false);
+                    LogPusher::getLogger(MTTY_SERVICE_LOGGER)->setWorkMode(false);
                     break;
 #elif defined USE_KAFKA_LOG
                     if(result == SendResult::SEND_ERROR){
                         if(retryTimes%30==0)
                             LOG_ERROR<<"log client error still exists";
                     }else{
-                        LogPusher::getLogger(CLICK_SERVICE_LOGGER)->setWorkMode(false);
+                        LogPusher::getLogger(MTTY_SERVICE_LOGGER)->setWorkMode(false);
                         DebugMessage("log client error recover,continue with remote logging");
                         break;
                     }
                     sleep(5);
-                    if(!LogPusher::getLogger(CLICK_SERVICE_LOGGER)->getWorkMode()){
+                    if(!LogPusher::getLogger(MTTY_SERVICE_LOGGER)->getWorkMode()){
                         DebugMessage("log client error recover,continue with remote logging");
                         break;
                     }

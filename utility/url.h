@@ -73,6 +73,15 @@ namespace adservice{
             }
 
             /**
+             * 如果输入字符串超出指定长度,截断
+             */
+            inline void stringSafeInput(std::string& input,int len){
+                if(input.length()>len){
+                    input = input.substr(0,len);
+                }
+            }
+
+            /**
              * 提取没有其它冗余信息的合格的数字字符串
              */
             inline std::string stringSafeNumber(const std::string& input){

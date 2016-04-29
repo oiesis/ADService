@@ -7,7 +7,7 @@
 
 /**日志类别相关常量**/
 // 点击日志生成器名
-#define CLICK_SERVICE_LOGGER                        "ClickServiceLog"
+#define MTTY_SERVICE_LOGGER                        "MttyServiceLog"
 
 /**日志引擎相关默认参数*/
 #define DEFAULT_KAFKA_BROKER                        "192.168.31.147"

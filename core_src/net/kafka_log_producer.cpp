@@ -19,7 +19,7 @@ namespace adservice{
         void LogDeliverReportCb::dr_cb(RdKafka::Message &message){
             if(message.err()!=ERR_NO_ERROR && !needRecover){ //kafka 发送发生错误
                 DebugMessageWithTime("error occured in kafka,err",message.errstr()," errCode:",message.err());
-                LogPusherPtr logPusher = LogPusher::getLogger(CLICK_SERVICE_LOGGER);
+                LogPusherPtr logPusher = LogPusher::getLogger(MTTY_SERVICE_LOGGER);
                 logPusher->setWorkMode(true);
                 const char* payload = (const char*)message.payload();
 #if defined(USE_ALIYUN_LOG)
@@ -32,7 +32,7 @@ namespace adservice{
             }else if(message.err()==ERR_NO_ERROR && needRecover){ //kafka 错误恢复
                 DebugMessageWithTime("kafka error recover,continue to work");
                 needRecover = false;
-                LogPusherPtr logPusher = LogPusher::getLogger(CLICK_SERVICE_LOGGER);
+                LogPusherPtr logPusher = LogPusher::getLogger(MTTY_SERVICE_LOGGER);
                 logPusher->setWorkMode(false);
             }
         }

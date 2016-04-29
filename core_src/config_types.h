@@ -48,15 +48,11 @@ namespace adservice{
         struct ClickConfig{
             int clickPort;
             int httpthreads;
-            int clickLoggerThreads;
-            bool clickLogRemote;
             static void* parse(const MessageWraper& mw,void* data){
                 data = data==NULL?(new ClickConfig):data;
                 ClickConfig* c = (ClickConfig*)data;
                 c->clickPort = mw.getInt("click_port",8808);
                 c->httpthreads = mw.getInt("click_http_threads",24);
-                c->clickLoggerThreads = mw.getInt("click_logger_threads",10);
-                c->clickLogRemote = mw.getBoolean("click_log_remote",false);
                 return data;
             }
             static void destruct(void* data){
@@ -74,9 +70,13 @@ namespace adservice{
             std::string aliyunTopic;
             std::string aliyunAccessKey;
             std::string aliyunSecretKey;
+            int loggerThreads;
+            bool logRemote;
             static void* parse(const MessageWraper& mw,void* data){
                 data = data==NULL?(new LogConfig):data;
                 LogConfig* c = (LogConfig*)data;
+                c->loggerThreads = mw.getInt("logger_threads",10);
+                c->logRemote = mw.getBoolean("log_remote",false);
                 c->kafkaBroker = mw.getString("kafka_broker",DEFAULT_KAFKA_BROKER);
                 c->kafkaTopic = mw.getString("kafka_topic",DEFAULT_KAFKA_TOPIC);
                 c->kafkaKey = mw.getString("kafka_key",DEFAULT_KAFKA_KEY);

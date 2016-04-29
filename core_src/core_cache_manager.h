@@ -35,13 +35,17 @@ namespace adservice{
             int64_t expireTime;
             CacheResult* next;
             CacheResult(){
+                init();
+            }
+            void init(){
                 expireTime = EXPIRE_TIME_INFINITE;
                 next = NULL;
                 data = NULL;
                 size = 0;
             }
             void setKey(const char* k){
-                strncpy(key,k,CACHE_KEY_LENGTH);
+                strncpy(key,k,CACHE_KEY_LENGTH-1);
+                key[CACHE_KEY_LENGTH-1]='\0';
             }
             bool expired(){
                 return expireTime <= getCurrentTimeStamp();

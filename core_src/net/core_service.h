@@ -65,12 +65,12 @@ namespace adservice{
             void stop(){
                 loop.quit();
                 executor.stop();
-                clickLogger->stop();
-                adservice::log::LogPusher::removeLogger(CLICK_SERVICE_LOGGER);
+                serviceLogger->stop();
+                adservice::log::LogPusher::removeLogger(MTTY_SERVICE_LOGGER);
             }
 
             adservice::log::LogPusherPtr& getLogger(){
-                return clickLogger;
+                return serviceLogger;
             }
 
             bool isNeedRestart(){
@@ -88,7 +88,7 @@ namespace adservice{
         private:
             bool needRestart;
             ServerPtr server;
-            adservice::log::LogPusherPtr clickLogger;
+            adservice::log::LogPusherPtr serviceLogger;
             muduo::net::EventLoop loop;
             adservice::server::Executor executor;
         };

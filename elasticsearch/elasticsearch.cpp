@@ -161,7 +161,7 @@ long ElasticSearch::search(const std::string& index, const std::string& type, co
     }
     std::stringstream url;
     url << index << "/" << type << "/_search"<<searchParam;
-    DebugMessage("query string:",query.c_str());
+    //DebugMessage("query string:",query.c_str());
     _http.post(url.str().c_str(), query.c_str(), result);
     if(result.ObjectEmpty()){
         DebugMessageWithTime("elasticsearch received empty result!!");

@@ -12,10 +12,12 @@
 #include "utility/url.h"
 #include "utility/json.h"
 #include "utility/hash.h"
+#include "utility/mttytime.h"
 
 using namespace adservice::utility::url;
 using namespace adservice::utility::json;
 using namespace adservice::utility::hash;
+using namespace adservice::utility::time;
 using namespace std;
 
 void paramTest(){
@@ -71,7 +73,15 @@ void hash_test(){
     DebugMessageWithTime("hash:",h);
 }
 
+struct CacheResult{
+    char key[56];
+    uchar_t* data;
+    int32_t size;
+    int64_t expireTime;
+    CacheResult* next;
+};
+
 int main(int argc,char** argv){
-    hash_test();
+    DebugMessageWithTime("sizeof CacheResult:",sizeof(CacheResult));
     return 0;
 }

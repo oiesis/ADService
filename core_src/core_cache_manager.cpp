@@ -82,6 +82,7 @@ namespace adservice{
             newCache->expireTime = expireTime;
             //加锁
             {
+                //todo:增加version
                 MutexLockGuard lockGuard(slot.mutex[h]);
                 CacheResult *result = slot.caches[h];
                 if (result) {
@@ -114,6 +115,7 @@ namespace adservice{
                             cacheResultSpare.free(result);
                             result = *pre;
                         } else if (strcmp(result->key, key) == 0) { //cache hit
+                            //todo:latent risk:如果在hit传出内存后马上过期释放,可能引发未定义的行为.解决办法是将内存复制出去
                             return result;
                         } else {
                             pre = &(result->next);
@@ -126,6 +128,7 @@ namespace adservice{
                         CacheResult *newCache = (CacheResult *) cacheResultSpare.alloc();
                         if (!newCache)
                             return NULL;
+                        newCache->init();
                         newCache->data = (uchar_t *) memPools[level].alloc();
                         newCache->size = memPools[level].getUnitSize();
                         if (newCache->data && cb(*newCache)) { //成功
