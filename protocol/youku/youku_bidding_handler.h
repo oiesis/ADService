@@ -24,12 +24,10 @@ namespace protocol{
             void fillLogItem(protocol::log::LogItem& logItem);
 
             /**
-             * 根据ADX的请求进行竞价匹配,决定是否接受这个流量,当不接受时将调用reject方法,同时设置isBidAccepted
-             * @return: 是否接受流量,true接受,false不接受
+             * 当接受流量时装配合适的输出
              */
-            bool match(INOUT HttpResponse& response);
+            void match(INOUT HttpResponse& response);
 
-        protected:
             /**
              * 不接受ADX的流量请求
              */

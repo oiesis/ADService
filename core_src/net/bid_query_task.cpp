@@ -92,7 +92,9 @@ namespace adservice{
                 DebugMessageWithTime("Bidding Handler Not Found,adxId:",adxId);
                 return;
             }
-            biddingHandler->parseRequestData(data);
+            if(!biddingHandler->parseRequestData(data)){
+                DebugMessageWithTime("Parse Bidding Request Failed,adxId",adxId);
+            }
         }
 
         void HandleBidQueryTask::customLogic(ParamMap& paramMap,protocol::log::LogItem& log,HttpResponse& resp){
@@ -100,7 +102,14 @@ namespace adservice{
             if(biddingHandler==NULL){
                 log.reqStatus = 500;
             }else{
-                biddingHandler->match(resp);
+                bool bidResult = biddingHandler->filter([](int pid)->bool{
+                   return false;
+                });
+                if(bidResult){
+                    biddingHandler->match(response);
+                }else{
+                    biddingHandler->reject(response);
+                }
                 biddingHandler->fillLogItem(log);
             }
         }

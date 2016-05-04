@@ -15,16 +15,17 @@ namespace protocol {
         }
 
         void TanxBiddingHandler::fillLogItem(protocol::log::LogItem &logItem) {
-
         }
 
-        bool TanxBiddingHandler::match(HttpResponse &response) {
-
+        bool TanxBiddingHandler::filter(const BiddingFilterCallback& filterCb){
+            isBidAccepted = false;
             return false;
         }
 
-        void TanxBiddingHandler::reject(HttpResponse &response) {
+        void TanxBiddingHandler::match(HttpResponse &response) {
+        }
 
+        void TanxBiddingHandler::reject(HttpResponse &response) {
         }
 
     }

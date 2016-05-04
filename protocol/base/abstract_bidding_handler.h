@@ -5,6 +5,7 @@
 #ifndef ADCORE_ABSTRACT_BIDDING_HANDLER_H
 #define ADCORE_ABSTRACT_BIDDING_HANDLER_H
 
+#include <function>
 #include "protocol/log/log.h"
 #include "muduo/net/http/HttpResponse.h"
 #include "common/types.h"
@@ -14,8 +15,13 @@ namespace protocol{
 
         using namespace muduo::net;
 
+        typedef std::function<bool(int)> BiddingFilterCallback;
+
         class AbstractBiddingHandler{
         public:
+
+            AbstractBiddingHandler():isBidAccepted(false){}
+
             /**
              * 从Adx Bid Post请求数据中获取具体的请求信息
              */
@@ -27,12 +33,16 @@ namespace protocol{
             virtual void fillLogItem(protocol::log::LogItem& logItem){}
 
             /**
-             * 根据ADX的请求进行竞价匹配,决定是否接受这个流量,当不接受时将调用reject方法,同时设置isBidAccepted
-             * @return: 是否接受流量,true接受,false不接受
+             * 根据ADX的请求进行竞价匹配,决定是否接受这个流量,同时设置isBidAccepted
+             * @return: true接受流量,false不接受流量
              */
-            virtual bool match(INOUT HttpResponse& response) = 0;
+            virtual bool filter(const BiddingFilterCallback& filterCb){isBidAccepted=false;return false;}
 
-        protected:
+            /**
+             * 当接受流量时装配合适的输出
+             */
+            virtual void match(INOUT HttpResponse& response) = 0;
+
             /**
              * 不接受ADX的流量请求
              */
