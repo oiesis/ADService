@@ -130,7 +130,7 @@ namespace adservice{
                 //DebugMessage("in request c,query=", req.query());
                 service->getExecutor().run(std::bind(HandleClickQueryTask(conn,req)));
             }catch(std::exception &e){
-                LOG_ERROR<<"error occured in ClickService::onRequest"<<e.what();
+                LOG_ERROR<<"error occured in CoreService doClick"<<e.what();
             }
         }
 
@@ -139,7 +139,15 @@ namespace adservice{
                 //DebugMessage("in request v,query=",req.query());
                 service->getExecutor().run(std::bind(HandleShowQueryTask(conn,req)));
             }catch(std::exception &e){
-                LOG_ERROR<<"error occured in ClickService::onRequest"<<e.what();
+                LOG_ERROR<<"error occured in CoreService doShow"<<e.what();
+            }
+        }
+
+        void doBid(CoreService* service,const TcpConnectionPtr& conn,const HttpRequest& req,bool isClose){
+            try{
+                service->getExecutor().run(std::bind(HandleBidQueryTask(conn,req)));
+            }catch(std::exception &e){
+                LOG_ERROR<<"error occured in CoreService doBid"<<e.what();
             }
         }
 
@@ -150,6 +158,8 @@ namespace adservice{
             }
             if (req.path() == "/v" || req.path() == "/s") { //show
                 doShow(this,conn,req,isClose);
+            } else if(req.path().find("bid")!=std::string::npos){
+                doBid(this,conn,req,isClose);
             } else if(req.path() == "/c"){ //click
                 doClick(this,conn,req,isClose);
             } else if(req.path() == "/jt.html"){ //http健康检查

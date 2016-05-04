@@ -74,18 +74,10 @@ void hash_test(){
     DebugMessageWithTime("hash:",h);
 }
 
-struct CacheResult{
-    char key[56];
-    uchar_t* data;
-    int32_t size;
-    int64_t expireTime;
-    CacheResult* next;
-};
-
 int main(int argc,char** argv){
     try {
-        std::string empty("1");
-        long t = std::stol(empty);
+        char buffer[8196];
+        long t = sizeof(buffer);
         DebugMessageWithTime(t);
     }catch(std::exception& e){
         DebugMessageWithTime("exception:",e.what());

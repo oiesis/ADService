@@ -21,6 +21,7 @@ namespace adservice{
         struct ModuleIndex{
             int64_t moduleHash;
             int64_t adxId;
+            ModuleIndex(){}
             ModuleIndex(int64_t h,int64_t id){
                 moduleHash = h;
                 adxId  = id;
@@ -61,7 +62,7 @@ namespace adservice{
         public:
             static int initialized;
             static int moduleCnt;
-            static ModuleIndex moduleAdx[BID_MAX_MODULES];
+            static struct ModuleIndex moduleAdx[BID_MAX_MODULES];
             static int moduleIdx[BID_MAX_MODULES];
             static void init();
             static int getAdxId(const std::string& path);

@@ -5,7 +5,8 @@
 #ifndef ADCORE_ABSTRACT_BIDDING_HANDLER_H
 #define ADCORE_ABSTRACT_BIDDING_HANDLER_H
 
-#include <function>
+#include <functional>
+#include <string>
 #include "protocol/log/log.h"
 #include "muduo/net/http/HttpResponse.h"
 #include "common/types.h"
@@ -15,8 +16,12 @@ namespace protocol{
 
         using namespace muduo::net;
 
-        typedef std::function<bool(int)> BiddingFilterCallback;
+        typedef std::function<bool(const std::string&)> BiddingFilterCallback;
 
+        /**
+         * BiddingHandler主要处理协议层数据转换,屏蔽各个平台之间输入输出的差异
+         * 实际上应该叫做BiddingDataAdapter
+         */
         class AbstractBiddingHandler{
         public:
 
@@ -48,6 +53,8 @@ namespace protocol{
              */
             virtual void reject(INOUT HttpResponse& response) = 0;
 
+        protected:
+            //最近一次匹配的结果
             bool isBidAccepted;
         };
 

@@ -114,7 +114,7 @@ void adservice_free(void* ptr);
            using google::protobuf::Message;
 
            template<typename T>
-           inline bool getProtoBufObject(T& obj,std::string& data){
+           inline bool getProtoBufObject(T& obj,const std::string& data){
                return obj.ParseFromString(data);
            }
 
@@ -124,7 +124,7 @@ void adservice_free(void* ptr);
            }
 
            template<typename T>
-           inline bool getProtoBufObject(T& obj,std::stringstream& stream){
+           inline bool getProtoBufObject(T& obj,const std::stringstream& stream){
                return obj.ParseFromIstream(&stream);
            }
 

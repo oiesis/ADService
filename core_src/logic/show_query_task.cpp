@@ -3,7 +3,7 @@
 //
 
 #include "show_query_task.h"
-#include "core_adselect_manager.h"
+#include "adselect/core_adselect_manager.h"
 #include "atomic.h"
 
 namespace adservice{
@@ -211,11 +211,18 @@ namespace adservice{
                              "",paramMap[URL_EXEC_ID].c_str(),paramMap[URL_AREA_ID].c_str(),adxMacro.c_str());
             if(mtlsPos!=NULL){
                 *mtlsPos = backupChar;
+                if(len>=sizeof(mtAdInfo)){
+                    DebugMessageWithTime("mtAdInfo length too long,length:",len);
+                    len = sizeof(mtAdInfo)-1;
+                }
                 strncpy(mtAdInfo+len,mtlsPos,sizeof(mtAdInfo)-len-1);
                 mtAdInfo[sizeof(mtAdInfo)-1]='\0';
             }
             tripslash(mtAdInfo);
-            len = snprintf(buffer,bufferSize,templateFmt,mtAdInfo);
+            len = snprintf(buffer,bufferSize-1,templateFmt,mtAdInfo);
+            if(len>=bufferSize){
+                len = bufferSize - 1;
+            }
             return len;
         }
 
@@ -245,11 +252,18 @@ namespace adservice{
                              "",to_string(solution["sid"].GetInt()).c_str(),"0086-ffff-ffff","");
             if(mtlsPos!=NULL){
                 *mtlsPos = backupChar;
+                if(len>=sizeof(mtAdInfo)){
+                    DebugMessageWithTime("mtAdInfo length too long,length:",len);
+                    len = sizeof(mtAdInfo)-1;
+                }
                 strncpy(mtAdInfo+len,mtlsPos,sizeof(mtAdInfo)-len-1);
                 mtAdInfo[sizeof(mtAdInfo)-1]='\0';
             }
             tripslash(mtAdInfo);
-            len = snprintf(buffer,bufferSize,templateFmt,paramMap["callback"].c_str(),mtAdInfo);
+            len = snprintf(buffer,bufferSize-1,templateFmt,paramMap["callback"].c_str(),mtAdInfo);
+            if(len>=bufferSize){
+                len = bufferSize -1;
+            }
             return len;
         }
 

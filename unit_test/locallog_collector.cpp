@@ -15,7 +15,7 @@
 #include "functions.h"
 #include "utility/utility.h"
 #include "core_config_manager.h"
-#include "core_src/net/kafka_log_producer.h"
+#include "core_src/logpusher/kafka_log_producer.h"
 
 #define PROGRESS_FILE       "progress.bin"
 #define COUNTER_FILE        "counter.bin"

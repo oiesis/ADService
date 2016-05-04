@@ -3,7 +3,7 @@
 //
 
 #include "bid_query_task.h"
-#include "protocol/"
+#include "adselect/core_adselect_manager.h"
 
 namespace adservice{
     namespace corelogic{
@@ -11,7 +11,7 @@ namespace adservice{
         int HandleBidQueryTask::initialized = 0;
         int HandleBidQueryTask::moduleCnt = 0;
         int HandleBidQueryTask::moduleIdx[BID_MAX_MODULES];
-        ModuleIndex HandleBidQueryTask::moduleAdx[BID_MAX_MODULES];
+        struct ModuleIndex HandleBidQueryTask::moduleAdx[BID_MAX_MODULES];
 
 #define ADD_MODULE_ENTRY(name,adxid) {moduleIdx[moduleCnt] = moduleCnt; \
         moduleAdx[moduleCnt++] = {fnv_hash(name,strlen(name)),adxid}; \
@@ -79,7 +79,7 @@ namespace adservice{
                 BiddingHandlerMap::iterator iter;
                 if((iter=data->biddingHandlers.find(adxId))==data->biddingHandlers.end()){
                     biddingHandler = getBiddingHandler(adxId);
-                    data->insert(std::make_pair(adxId,biddingHandler));
+                    data->biddingHandlers.insert(std::make_pair(adxId,biddingHandler));
                 }else{
                     biddingHandler = iter->second;
                 }
@@ -102,13 +102,22 @@ namespace adservice{
             if(biddingHandler==NULL){
                 log.reqStatus = 500;
             }else{
-                bool bidResult = biddingHandler->filter([](int pid)->bool{
+                bool bidResult = biddingHandler->filter([](const std::string& adxpid)->bool{
+                    //连接ADSelect
+                    AdSelectManager& adselect = AdSelectManager::getInstance();
+                    int seqId = 0;
+                    CoreModule coreModule = CoreService::getInstance();
+                    if(coreModule.use_count()>0){
+                        seqId = coreModule->getExecutor().getThreadSeqId();
+                    }
+                    rapidjson::Document esResp;
+                    rapidjson::Value& result = adselect.queryAdInfoByAdxPid(seqId,adxpid,esResp);
                    return false;
                 });
                 if(bidResult){
-                    biddingHandler->match(response);
+                    biddingHandler->match(resp);
                 }else{
-                    biddingHandler->reject(response);
+                    biddingHandler->reject(resp);
                 }
                 biddingHandler->fillLogItem(log);
             }
