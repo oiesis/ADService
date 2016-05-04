@@ -4,6 +4,7 @@
 
 #include "bid_query_task.h"
 #include "adselect/core_adselect_manager.h"
+#include "adselect/ad_select_logic.h"
 
 namespace adservice{
     namespace corelogic{
@@ -110,9 +111,11 @@ namespace adservice{
                     if(coreModule.use_count()>0){
                         seqId = coreModule->getExecutor().getThreadSeqId();
                     }
-                    rapidjson::Document esResp;
-                    rapidjson::Value& result = adselect.queryAdInfoByAdxPid(seqId,adxpid,esResp);
-                   return false;
+                    AdSelectLogic adSelectLogic(&adselect);
+                    if(!adSelectLogic.selectByPid(seqId,adxpid,true)){
+                        return false;
+                    }
+                   return true;
                 });
                 if(bidResult){
                     biddingHandler->match(resp);
