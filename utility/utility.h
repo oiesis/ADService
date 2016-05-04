@@ -113,16 +113,24 @@ void adservice_free(void* ptr);
            //support of protobuf object
            using google::protobuf::Message;
 
-
            template<typename T>
-           inline T& getProtoBufObject(T& obj,std::stringstream& stream){
-               obj.ParseFromIstream(&stream);
-               return obj;
+           inline bool getProtoBufObject(T& obj,std::string& data){
+               return obj.ParseFromString(data);
            }
 
            template<typename T>
-           inline void writeProtoBufObject(T& obj,std::stringstream& stream){
-               obj.SerializeToOstream(&stream);
+           inline bool writeProtoBufObject(T& obj,std::string* out){
+               return obj.SerializeToString(out);
+           }
+
+           template<typename T>
+           inline bool getProtoBufObject(T& obj,std::stringstream& stream){
+               return obj.ParseFromIstream(&stream);
+           }
+
+           template<typename T>
+           inline bool writeProtoBufObject(T& obj,std::stringstream& stream){
+               return obj.SerializeToOstream(&stream);
            }
 
            /**

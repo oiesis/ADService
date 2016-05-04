@@ -22,7 +22,7 @@ namespace adservice{
             static void loadTemplates();
         public:
             explicit HandleShowQueryTask(const TcpConnectionPtr& _conn,const HttpRequest& request):AbstractQueryTask(_conn,request){
-                loadTemplates();
+                //loadTemplates();
             }
 
             protocol::log::LogPhaseType currentPhase(){

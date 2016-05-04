@@ -109,8 +109,8 @@ namespace adservice{
                         DebugMessageWithTime("hourly log cnt:",data->logCnt," of thread ",(long)thread);
                         data->logCnt=0;
                     }
-                    if(access("log",F_OK)==-1){
-                        if(mkdir("log",S_IRWXU|S_IRWXG)<0){
+                    if(access("logs",F_OK)==-1){
+                        if(mkdir("logs",S_IRWXU|S_IRWXG)<0){
                             LOG_ERROR << "dir log can not be created!";
                             return;
                         }
@@ -119,7 +119,7 @@ namespace adservice{
                     ::time(&currentTime);
                     tm* ltime = localtime(&currentTime);
                     char dirname[50];
-                    sprintf(dirname,"log/%d%02d%02d%02d",1900+ltime->tm_year,ltime->tm_mon+1,ltime->tm_mday,ltime->tm_hour);
+                    sprintf(dirname,"logs/%d%02d%02d%02d",1900+ltime->tm_year,ltime->tm_mon+1,ltime->tm_mday,ltime->tm_hour);
                     if(access(dirname,F_OK)==-1){
                         if(mkdir(dirname,S_IRWXU|S_IRWXG)<0){
                             LOG_ERROR << "dir "<<dirname<<" can not be created!";

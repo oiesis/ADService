@@ -25,8 +25,10 @@ namespace adservice{
 
         void HandleShowQueryTask::filterParamMapSafe(ParamMap &paramMap) {
             AbstractQueryTask::filterParamMapSafe(paramMap);
-            paramMap[URL_CREATIVE_ID]=stringSafeNumber(paramMap[URL_CREATIVE_ID]);
-            paramMap[URL_SSP_PID]=stringSafeNumber(paramMap[URL_SSP_PID]);
+            if(paramMap.find(URL_CREATIVE_ID)!=paramMap.end())
+                stringSafeNumber(paramMap[URL_CREATIVE_ID]);
+            if(paramMap.find(URL_SSP_PID)!=paramMap.end())
+                stringSafeNumber(paramMap[URL_SSP_PID]);
         }
 
         /**
@@ -192,7 +194,7 @@ namespace adservice{
          * @param bufferSize: buffer的大小
          */
         int fillHtmlFixedParam(ParamMap& paramMap,const char* html,const char* templateFmt,char* buffer,int bufferSize){
-            char mtAdInfo[2048];
+            char mtAdInfo[4096];
             char adxbuffer[1024];
             std::string adxMacro;
             urlDecode_f(paramMap[URL_ADX_MACRO],adxMacro,adxbuffer);
@@ -232,7 +234,7 @@ namespace adservice{
          */
         int fillHtmlFixedParam(rapidjson::Value& solution,rapidjson::Value& adplace,rapidjson::Value& banner,ParamMap& paramMap,const char* html,
                                const char* templateFmt,char* buffer,int bufferSize){
-            char mtAdInfo[2048];
+            char mtAdInfo[4096];
             char* mtlsPos = (char*)strstr(html,"mtls");
             char backupChar = '\0';
             if(mtlsPos!=NULL){
@@ -477,7 +479,7 @@ namespace adservice{
                 log.adInfo.cost = adplace["costprice"].GetInt();
                 const char* tmp = banner["html"].GetString();
                 //返回结果
-                char buffer[4096];
+                char buffer[8192];
                 int len = fillHtmlFixedParam(finalSolution,adplace,banner,paramMap,tmp,templateFmt,buffer,sizeof(buffer));
                 respBody = std::string(buffer,buffer+len);
             }else {//DSP of=0,of=2,of=3
@@ -492,7 +494,7 @@ namespace adservice{
                 }
                 if(showCreative) { //需要显示创意
                     const char *tmp = result["html"].GetString();
-                    char buffer[4096];
+                    char buffer[8192];
                     int len = fillHtmlFixedParam(paramMap, tmp, templateFmt, buffer,sizeof(buffer));
                     respBody = std::string(buffer, buffer + len);
                 }

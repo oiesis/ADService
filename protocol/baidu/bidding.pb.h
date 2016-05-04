@@ -28,7 +28,7 @@
 // @@protoc_insertion_point(includes)
 
 namespace protocol {
-namespace baidu {
+namespace Baidu {
 
 // Internal implementation detail -- do not call these.
 void  protobuf_AddDesc_bidding_2eproto();
@@ -247,7 +247,7 @@ class BidRequest_BaiduId : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 baidu_user_id_version() const;
   inline void set_baidu_user_id_version(::google::protobuf::int32 value);
 
-  // @@protoc_insertion_point(class_scope:protocol.baidu.BidRequest.BaiduId)
+  // @@protoc_insertion_point(class_scope:protocol.Baidu.BidRequest.BaiduId)
  private:
   inline void set_has_baidu_user_id();
   inline void clear_has_baidu_user_id();
@@ -350,12 +350,12 @@ class BidRequest_Geo_Coordinate : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // optional .protocol.baidu.BidRequest.Geo.Coordinate.Standard standard = 1;
+  // optional .protocol.Baidu.BidRequest.Geo.Coordinate.Standard standard = 1;
   inline bool has_standard() const;
   inline void clear_standard();
   static const int kStandardFieldNumber = 1;
-  inline ::protocol::baidu::BidRequest_Geo_Coordinate_Standard standard() const;
-  inline void set_standard(::protocol::baidu::BidRequest_Geo_Coordinate_Standard value);
+  inline ::protocol::Baidu::BidRequest_Geo_Coordinate_Standard standard() const;
+  inline void set_standard(::protocol::Baidu::BidRequest_Geo_Coordinate_Standard value);
 
   // optional float latitude = 2;
   inline bool has_latitude() const;
@@ -371,7 +371,7 @@ class BidRequest_Geo_Coordinate : public ::google::protobuf::Message {
   inline float longitude() const;
   inline void set_longitude(float value);
 
-  // @@protoc_insertion_point(class_scope:protocol.baidu.BidRequest.Geo.Coordinate)
+  // @@protoc_insertion_point(class_scope:protocol.Baidu.BidRequest.Geo.Coordinate)
  private:
   inline void set_has_standard();
   inline void clear_has_standard();
@@ -500,7 +500,7 @@ class BidRequest_Geo_UserLocation : public ::google::protobuf::Message {
   inline ::std::string* release_street();
   inline void set_allocated_street(::std::string* street);
 
-  // @@protoc_insertion_point(class_scope:protocol.baidu.BidRequest.Geo.UserLocation)
+  // @@protoc_insertion_point(class_scope:protocol.Baidu.BidRequest.Geo.UserLocation)
  private:
   inline void set_has_province();
   inline void clear_has_province();
@@ -587,36 +587,36 @@ class BidRequest_Geo : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // repeated .protocol.baidu.BidRequest.Geo.Coordinate user_coordinate = 1;
+  // repeated .protocol.Baidu.BidRequest.Geo.Coordinate user_coordinate = 1;
   inline int user_coordinate_size() const;
   inline void clear_user_coordinate();
   static const int kUserCoordinateFieldNumber = 1;
-  inline const ::protocol::baidu::BidRequest_Geo_Coordinate& user_coordinate(int index) const;
-  inline ::protocol::baidu::BidRequest_Geo_Coordinate* mutable_user_coordinate(int index);
-  inline ::protocol::baidu::BidRequest_Geo_Coordinate* add_user_coordinate();
-  inline const ::google::protobuf::RepeatedPtrField< ::protocol::baidu::BidRequest_Geo_Coordinate >&
+  inline const ::protocol::Baidu::BidRequest_Geo_Coordinate& user_coordinate(int index) const;
+  inline ::protocol::Baidu::BidRequest_Geo_Coordinate* mutable_user_coordinate(int index);
+  inline ::protocol::Baidu::BidRequest_Geo_Coordinate* add_user_coordinate();
+  inline const ::google::protobuf::RepeatedPtrField< ::protocol::Baidu::BidRequest_Geo_Coordinate >&
       user_coordinate() const;
-  inline ::google::protobuf::RepeatedPtrField< ::protocol::baidu::BidRequest_Geo_Coordinate >*
+  inline ::google::protobuf::RepeatedPtrField< ::protocol::Baidu::BidRequest_Geo_Coordinate >*
       mutable_user_coordinate();
 
-  // optional .protocol.baidu.BidRequest.Geo.UserLocation user_location = 2;
+  // optional .protocol.Baidu.BidRequest.Geo.UserLocation user_location = 2;
   inline bool has_user_location() const;
   inline void clear_user_location();
   static const int kUserLocationFieldNumber = 2;
-  inline const ::protocol::baidu::BidRequest_Geo_UserLocation& user_location() const;
-  inline ::protocol::baidu::BidRequest_Geo_UserLocation* mutable_user_location();
-  inline ::protocol::baidu::BidRequest_Geo_UserLocation* release_user_location();
-  inline void set_allocated_user_location(::protocol::baidu::BidRequest_Geo_UserLocation* user_location);
+  inline const ::protocol::Baidu::BidRequest_Geo_UserLocation& user_location() const;
+  inline ::protocol::Baidu::BidRequest_Geo_UserLocation* mutable_user_location();
+  inline ::protocol::Baidu::BidRequest_Geo_UserLocation* release_user_location();
+  inline void set_allocated_user_location(::protocol::Baidu::BidRequest_Geo_UserLocation* user_location);
 
-  // @@protoc_insertion_point(class_scope:protocol.baidu.BidRequest.Geo)
+  // @@protoc_insertion_point(class_scope:protocol.Baidu.BidRequest.Geo)
  private:
   inline void set_has_user_location();
   inline void clear_has_user_location();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
-  ::google::protobuf::RepeatedPtrField< ::protocol::baidu::BidRequest_Geo_Coordinate > user_coordinate_;
-  ::protocol::baidu::BidRequest_Geo_UserLocation* user_location_;
+  ::google::protobuf::RepeatedPtrField< ::protocol::Baidu::BidRequest_Geo_Coordinate > user_coordinate_;
+  ::protocol::Baidu::BidRequest_Geo_UserLocation* user_location_;
 
   mutable int _cached_size_;
   ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
@@ -705,7 +705,7 @@ class BidRequest_Mobile_DeviceOsVersion : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 os_version_micro() const;
   inline void set_os_version_micro(::google::protobuf::int32 value);
 
-  // @@protoc_insertion_point(class_scope:protocol.baidu.BidRequest.Mobile.DeviceOsVersion)
+  // @@protoc_insertion_point(class_scope:protocol.Baidu.BidRequest.Mobile.DeviceOsVersion)
  private:
   inline void set_has_os_version_major();
   inline void clear_has_os_version_major();
@@ -848,17 +848,17 @@ class BidRequest_Mobile_MobileApp : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 app_publisher_id() const;
   inline void set_app_publisher_id(::google::protobuf::int32 value);
 
-  // repeated .protocol.baidu.BidRequest.Mobile.MobileApp.AppInteractionType app_interaction_type = 5;
+  // repeated .protocol.Baidu.BidRequest.Mobile.MobileApp.AppInteractionType app_interaction_type = 5;
   inline int app_interaction_type_size() const;
   inline void clear_app_interaction_type();
   static const int kAppInteractionTypeFieldNumber = 5;
-  inline ::protocol::baidu::BidRequest_Mobile_MobileApp_AppInteractionType app_interaction_type(int index) const;
-  inline void set_app_interaction_type(int index, ::protocol::baidu::BidRequest_Mobile_MobileApp_AppInteractionType value);
-  inline void add_app_interaction_type(::protocol::baidu::BidRequest_Mobile_MobileApp_AppInteractionType value);
+  inline ::protocol::Baidu::BidRequest_Mobile_MobileApp_AppInteractionType app_interaction_type(int index) const;
+  inline void set_app_interaction_type(int index, ::protocol::Baidu::BidRequest_Mobile_MobileApp_AppInteractionType value);
+  inline void add_app_interaction_type(::protocol::Baidu::BidRequest_Mobile_MobileApp_AppInteractionType value);
   inline const ::google::protobuf::RepeatedField<int>& app_interaction_type() const;
   inline ::google::protobuf::RepeatedField<int>* mutable_app_interaction_type();
 
-  // @@protoc_insertion_point(class_scope:protocol.baidu.BidRequest.Mobile.MobileApp)
+  // @@protoc_insertion_point(class_scope:protocol.Baidu.BidRequest.Mobile.MobileApp)
  private:
   inline void set_has_app_id();
   inline void clear_has_app_id();
@@ -1036,28 +1036,28 @@ class BidRequest_Mobile : public ::google::protobuf::Message {
   inline ::std::string* release_device_id();
   inline void set_allocated_device_id(::std::string* device_id);
 
-  // optional .protocol.baidu.BidRequest.Mobile.MobileDeviceType device_type = 2;
+  // optional .protocol.Baidu.BidRequest.Mobile.MobileDeviceType device_type = 2;
   inline bool has_device_type() const;
   inline void clear_device_type();
   static const int kDeviceTypeFieldNumber = 2;
-  inline ::protocol::baidu::BidRequest_Mobile_MobileDeviceType device_type() const;
-  inline void set_device_type(::protocol::baidu::BidRequest_Mobile_MobileDeviceType value);
+  inline ::protocol::Baidu::BidRequest_Mobile_MobileDeviceType device_type() const;
+  inline void set_device_type(::protocol::Baidu::BidRequest_Mobile_MobileDeviceType value);
 
-  // optional .protocol.baidu.BidRequest.Mobile.OS platform = 3 [default = UNKNOWN_OS];
+  // optional .protocol.Baidu.BidRequest.Mobile.OS platform = 3 [default = UNKNOWN_OS];
   inline bool has_platform() const;
   inline void clear_platform();
   static const int kPlatformFieldNumber = 3;
-  inline ::protocol::baidu::BidRequest_Mobile_OS platform() const;
-  inline void set_platform(::protocol::baidu::BidRequest_Mobile_OS value);
+  inline ::protocol::Baidu::BidRequest_Mobile_OS platform() const;
+  inline void set_platform(::protocol::Baidu::BidRequest_Mobile_OS value);
 
-  // optional .protocol.baidu.BidRequest.Mobile.DeviceOsVersion os_version = 4;
+  // optional .protocol.Baidu.BidRequest.Mobile.DeviceOsVersion os_version = 4;
   inline bool has_os_version() const;
   inline void clear_os_version();
   static const int kOsVersionFieldNumber = 4;
-  inline const ::protocol::baidu::BidRequest_Mobile_DeviceOsVersion& os_version() const;
-  inline ::protocol::baidu::BidRequest_Mobile_DeviceOsVersion* mutable_os_version();
-  inline ::protocol::baidu::BidRequest_Mobile_DeviceOsVersion* release_os_version();
-  inline void set_allocated_os_version(::protocol::baidu::BidRequest_Mobile_DeviceOsVersion* os_version);
+  inline const ::protocol::Baidu::BidRequest_Mobile_DeviceOsVersion& os_version() const;
+  inline ::protocol::Baidu::BidRequest_Mobile_DeviceOsVersion* mutable_os_version();
+  inline ::protocol::Baidu::BidRequest_Mobile_DeviceOsVersion* release_os_version();
+  inline void set_allocated_os_version(::protocol::Baidu::BidRequest_Mobile_DeviceOsVersion* os_version);
 
   // optional string brand = 5;
   inline bool has_brand() const;
@@ -1104,12 +1104,12 @@ class BidRequest_Mobile : public ::google::protobuf::Message {
   inline ::google::protobuf::int64 carrier_id() const;
   inline void set_carrier_id(::google::protobuf::int64 value);
 
-  // optional .protocol.baidu.BidRequest.Mobile.WirelessNetworkType wireless_network_type = 10;
+  // optional .protocol.Baidu.BidRequest.Mobile.WirelessNetworkType wireless_network_type = 10;
   inline bool has_wireless_network_type() const;
   inline void clear_wireless_network_type();
   static const int kWirelessNetworkTypeFieldNumber = 10;
-  inline ::protocol::baidu::BidRequest_Mobile_WirelessNetworkType wireless_network_type() const;
-  inline void set_wireless_network_type(::protocol::baidu::BidRequest_Mobile_WirelessNetworkType value);
+  inline ::protocol::Baidu::BidRequest_Mobile_WirelessNetworkType wireless_network_type() const;
+  inline void set_wireless_network_type(::protocol::Baidu::BidRequest_Mobile_WirelessNetworkType value);
 
   // optional string for_advertising_id = 11;
   inline bool has_for_advertising_id() const;
@@ -1123,16 +1123,16 @@ class BidRequest_Mobile : public ::google::protobuf::Message {
   inline ::std::string* release_for_advertising_id();
   inline void set_allocated_for_advertising_id(::std::string* for_advertising_id);
 
-  // optional .protocol.baidu.BidRequest.Mobile.MobileApp mobile_app = 12;
+  // optional .protocol.Baidu.BidRequest.Mobile.MobileApp mobile_app = 12;
   inline bool has_mobile_app() const;
   inline void clear_mobile_app();
   static const int kMobileAppFieldNumber = 12;
-  inline const ::protocol::baidu::BidRequest_Mobile_MobileApp& mobile_app() const;
-  inline ::protocol::baidu::BidRequest_Mobile_MobileApp* mutable_mobile_app();
-  inline ::protocol::baidu::BidRequest_Mobile_MobileApp* release_mobile_app();
-  inline void set_allocated_mobile_app(::protocol::baidu::BidRequest_Mobile_MobileApp* mobile_app);
+  inline const ::protocol::Baidu::BidRequest_Mobile_MobileApp& mobile_app() const;
+  inline ::protocol::Baidu::BidRequest_Mobile_MobileApp* mutable_mobile_app();
+  inline ::protocol::Baidu::BidRequest_Mobile_MobileApp* release_mobile_app();
+  inline void set_allocated_mobile_app(::protocol::Baidu::BidRequest_Mobile_MobileApp* mobile_app);
 
-  // @@protoc_insertion_point(class_scope:protocol.baidu.BidRequest.Mobile)
+  // @@protoc_insertion_point(class_scope:protocol.Baidu.BidRequest.Mobile)
  private:
   inline void set_has_device_id();
   inline void clear_has_device_id();
@@ -1164,14 +1164,14 @@ class BidRequest_Mobile : public ::google::protobuf::Message {
   ::std::string* device_id_;
   int device_type_;
   int platform_;
-  ::protocol::baidu::BidRequest_Mobile_DeviceOsVersion* os_version_;
+  ::protocol::Baidu::BidRequest_Mobile_DeviceOsVersion* os_version_;
   ::std::string* brand_;
   ::std::string* model_;
   ::google::protobuf::int32 screen_width_;
   ::google::protobuf::int32 screen_height_;
   ::google::protobuf::int64 carrier_id_;
   ::std::string* for_advertising_id_;
-  ::protocol::baidu::BidRequest_Mobile_MobileApp* mobile_app_;
+  ::protocol::Baidu::BidRequest_Mobile_MobileApp* mobile_app_;
   int wireless_network_type_;
 
   mutable int _cached_size_;
@@ -1287,7 +1287,7 @@ class BidRequest_Video : public ::google::protobuf::Message {
   inline ::google::protobuf::RepeatedField< ::google::protobuf::int64 >*
       mutable_channel_id();
 
-  // @@protoc_insertion_point(class_scope:protocol.baidu.BidRequest.Video)
+  // @@protoc_insertion_point(class_scope:protocol.Baidu.BidRequest.Video)
  private:
   inline void set_has_title();
   inline void clear_has_title();
@@ -1381,7 +1381,7 @@ class BidRequest_AdSlot_PreferredOrderInfo_PreferredOrder : public ::google::pro
   inline ::google::protobuf::int64 fixed_cpm() const;
   inline void set_fixed_cpm(::google::protobuf::int64 value);
 
-  // @@protoc_insertion_point(class_scope:protocol.baidu.BidRequest.AdSlot.PreferredOrderInfo.PreferredOrder)
+  // @@protoc_insertion_point(class_scope:protocol.Baidu.BidRequest.AdSlot.PreferredOrderInfo.PreferredOrder)
  private:
   inline void set_has_order_id();
   inline void clear_has_order_id();
@@ -1461,16 +1461,16 @@ class BidRequest_AdSlot_PreferredOrderInfo : public ::google::protobuf::Message 
 
   // accessors -------------------------------------------------------
 
-  // repeated .protocol.baidu.BidRequest.AdSlot.PreferredOrderInfo.PreferredOrder preferred_orders = 1;
+  // repeated .protocol.Baidu.BidRequest.AdSlot.PreferredOrderInfo.PreferredOrder preferred_orders = 1;
   inline int preferred_orders_size() const;
   inline void clear_preferred_orders();
   static const int kPreferredOrdersFieldNumber = 1;
-  inline const ::protocol::baidu::BidRequest_AdSlot_PreferredOrderInfo_PreferredOrder& preferred_orders(int index) const;
-  inline ::protocol::baidu::BidRequest_AdSlot_PreferredOrderInfo_PreferredOrder* mutable_preferred_orders(int index);
-  inline ::protocol::baidu::BidRequest_AdSlot_PreferredOrderInfo_PreferredOrder* add_preferred_orders();
-  inline const ::google::protobuf::RepeatedPtrField< ::protocol::baidu::BidRequest_AdSlot_PreferredOrderInfo_PreferredOrder >&
+  inline const ::protocol::Baidu::BidRequest_AdSlot_PreferredOrderInfo_PreferredOrder& preferred_orders(int index) const;
+  inline ::protocol::Baidu::BidRequest_AdSlot_PreferredOrderInfo_PreferredOrder* mutable_preferred_orders(int index);
+  inline ::protocol::Baidu::BidRequest_AdSlot_PreferredOrderInfo_PreferredOrder* add_preferred_orders();
+  inline const ::google::protobuf::RepeatedPtrField< ::protocol::Baidu::BidRequest_AdSlot_PreferredOrderInfo_PreferredOrder >&
       preferred_orders() const;
-  inline ::google::protobuf::RepeatedPtrField< ::protocol::baidu::BidRequest_AdSlot_PreferredOrderInfo_PreferredOrder >*
+  inline ::google::protobuf::RepeatedPtrField< ::protocol::Baidu::BidRequest_AdSlot_PreferredOrderInfo_PreferredOrder >*
       mutable_preferred_orders();
 
   // optional bool allow_auction = 2 [default = true];
@@ -1480,14 +1480,14 @@ class BidRequest_AdSlot_PreferredOrderInfo : public ::google::protobuf::Message 
   inline bool allow_auction() const;
   inline void set_allow_auction(bool value);
 
-  // @@protoc_insertion_point(class_scope:protocol.baidu.BidRequest.AdSlot.PreferredOrderInfo)
+  // @@protoc_insertion_point(class_scope:protocol.Baidu.BidRequest.AdSlot.PreferredOrderInfo)
  private:
   inline void set_has_allow_auction();
   inline void clear_has_allow_auction();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
-  ::google::protobuf::RepeatedPtrField< ::protocol::baidu::BidRequest_AdSlot_PreferredOrderInfo_PreferredOrder > preferred_orders_;
+  ::google::protobuf::RepeatedPtrField< ::protocol::Baidu::BidRequest_AdSlot_PreferredOrderInfo_PreferredOrder > preferred_orders_;
   bool allow_auction_;
 
   mutable int _cached_size_;
@@ -1668,16 +1668,16 @@ class BidRequest_AdSlot : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 minimum_cpm() const;
   inline void set_minimum_cpm(::google::protobuf::int32 value);
 
-  // optional .protocol.baidu.BidRequest.AdSlot.PreferredOrderInfo preferred_order_info = 13;
+  // optional .protocol.Baidu.BidRequest.AdSlot.PreferredOrderInfo preferred_order_info = 13;
   inline bool has_preferred_order_info() const;
   inline void clear_preferred_order_info();
   static const int kPreferredOrderInfoFieldNumber = 13;
-  inline const ::protocol::baidu::BidRequest_AdSlot_PreferredOrderInfo& preferred_order_info() const;
-  inline ::protocol::baidu::BidRequest_AdSlot_PreferredOrderInfo* mutable_preferred_order_info();
-  inline ::protocol::baidu::BidRequest_AdSlot_PreferredOrderInfo* release_preferred_order_info();
-  inline void set_allocated_preferred_order_info(::protocol::baidu::BidRequest_AdSlot_PreferredOrderInfo* preferred_order_info);
+  inline const ::protocol::Baidu::BidRequest_AdSlot_PreferredOrderInfo& preferred_order_info() const;
+  inline ::protocol::Baidu::BidRequest_AdSlot_PreferredOrderInfo* mutable_preferred_order_info();
+  inline ::protocol::Baidu::BidRequest_AdSlot_PreferredOrderInfo* release_preferred_order_info();
+  inline void set_allocated_preferred_order_info(::protocol::Baidu::BidRequest_AdSlot_PreferredOrderInfo* preferred_order_info);
 
-  // @@protoc_insertion_point(class_scope:protocol.baidu.BidRequest.AdSlot)
+  // @@protoc_insertion_point(class_scope:protocol.Baidu.BidRequest.AdSlot)
  private:
   inline void set_has_ad_block_key();
   inline void clear_has_ad_block_key();
@@ -1717,7 +1717,7 @@ class BidRequest_AdSlot : public ::google::protobuf::Message {
   mutable int _creative_type_cached_byte_size_;
   ::google::protobuf::RepeatedPtrField< ::std::string> excluded_landing_page_url_;
   ::google::protobuf::RepeatedField< ::google::protobuf::uint64 > publisher_settings_list_id_;
-  ::protocol::baidu::BidRequest_AdSlot_PreferredOrderInfo* preferred_order_info_;
+  ::protocol::Baidu::BidRequest_AdSlot_PreferredOrderInfo* preferred_order_info_;
   ::google::protobuf::int32 minimum_cpm_;
 
   mutable int _cached_size_;
@@ -1872,16 +1872,16 @@ class BidRequest : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 baidu_user_id_version() const;
   inline void set_baidu_user_id_version(::google::protobuf::int32 value);
 
-  // repeated .protocol.baidu.BidRequest.BaiduId baidu_id_list = 8;
+  // repeated .protocol.Baidu.BidRequest.BaiduId baidu_id_list = 8;
   inline int baidu_id_list_size() const;
   inline void clear_baidu_id_list();
   static const int kBaiduIdListFieldNumber = 8;
-  inline const ::protocol::baidu::BidRequest_BaiduId& baidu_id_list(int index) const;
-  inline ::protocol::baidu::BidRequest_BaiduId* mutable_baidu_id_list(int index);
-  inline ::protocol::baidu::BidRequest_BaiduId* add_baidu_id_list();
-  inline const ::google::protobuf::RepeatedPtrField< ::protocol::baidu::BidRequest_BaiduId >&
+  inline const ::protocol::Baidu::BidRequest_BaiduId& baidu_id_list(int index) const;
+  inline ::protocol::Baidu::BidRequest_BaiduId* mutable_baidu_id_list(int index);
+  inline ::protocol::Baidu::BidRequest_BaiduId* add_baidu_id_list();
+  inline const ::google::protobuf::RepeatedPtrField< ::protocol::Baidu::BidRequest_BaiduId >&
       baidu_id_list() const;
-  inline ::google::protobuf::RepeatedPtrField< ::protocol::baidu::BidRequest_BaiduId >*
+  inline ::google::protobuf::RepeatedPtrField< ::protocol::Baidu::BidRequest_BaiduId >*
       mutable_baidu_id_list();
 
   // repeated int64 user_category = 6;
@@ -1896,12 +1896,12 @@ class BidRequest : public ::google::protobuf::Message {
   inline ::google::protobuf::RepeatedField< ::google::protobuf::int64 >*
       mutable_user_category();
 
-  // optional .protocol.baidu.BidRequest.Gender gender = 7;
+  // optional .protocol.Baidu.BidRequest.Gender gender = 7;
   inline bool has_gender() const;
   inline void clear_gender();
   static const int kGenderFieldNumber = 7;
-  inline ::protocol::baidu::BidRequest_Gender gender() const;
-  inline void set_gender(::protocol::baidu::BidRequest_Gender value);
+  inline ::protocol::Baidu::BidRequest_Gender gender() const;
+  inline void set_gender(::protocol::Baidu::BidRequest_Gender value);
 
   // optional string detected_language = 9;
   inline bool has_detected_language() const;
@@ -1927,14 +1927,14 @@ class BidRequest : public ::google::protobuf::Message {
   inline ::std::string* release_flash_version();
   inline void set_allocated_flash_version(::std::string* flash_version);
 
-  // optional .protocol.baidu.BidRequest.Geo user_geo_info = 28;
+  // optional .protocol.Baidu.BidRequest.Geo user_geo_info = 28;
   inline bool has_user_geo_info() const;
   inline void clear_user_geo_info();
   static const int kUserGeoInfoFieldNumber = 28;
-  inline const ::protocol::baidu::BidRequest_Geo& user_geo_info() const;
-  inline ::protocol::baidu::BidRequest_Geo* mutable_user_geo_info();
-  inline ::protocol::baidu::BidRequest_Geo* release_user_geo_info();
-  inline void set_allocated_user_geo_info(::protocol::baidu::BidRequest_Geo* user_geo_info);
+  inline const ::protocol::Baidu::BidRequest_Geo& user_geo_info() const;
+  inline ::protocol::Baidu::BidRequest_Geo* mutable_user_geo_info();
+  inline ::protocol::Baidu::BidRequest_Geo* release_user_geo_info();
+  inline void set_allocated_user_geo_info(::protocol::Baidu::BidRequest_Geo* user_geo_info);
 
   // optional string url = 11;
   inline bool has_url() const;
@@ -2023,34 +2023,34 @@ class BidRequest : public ::google::protobuf::Message {
   inline ::google::protobuf::RepeatedField< ::google::protobuf::int32 >*
       mutable_excluded_product_category();
 
-  // optional .protocol.baidu.BidRequest.Mobile mobile = 29;
+  // optional .protocol.Baidu.BidRequest.Mobile mobile = 29;
   inline bool has_mobile() const;
   inline void clear_mobile();
   static const int kMobileFieldNumber = 29;
-  inline const ::protocol::baidu::BidRequest_Mobile& mobile() const;
-  inline ::protocol::baidu::BidRequest_Mobile* mutable_mobile();
-  inline ::protocol::baidu::BidRequest_Mobile* release_mobile();
-  inline void set_allocated_mobile(::protocol::baidu::BidRequest_Mobile* mobile);
+  inline const ::protocol::Baidu::BidRequest_Mobile& mobile() const;
+  inline ::protocol::Baidu::BidRequest_Mobile* mutable_mobile();
+  inline ::protocol::Baidu::BidRequest_Mobile* release_mobile();
+  inline void set_allocated_mobile(::protocol::Baidu::BidRequest_Mobile* mobile);
 
-  // optional .protocol.baidu.BidRequest.Video video = 30;
+  // optional .protocol.Baidu.BidRequest.Video video = 30;
   inline bool has_video() const;
   inline void clear_video();
   static const int kVideoFieldNumber = 30;
-  inline const ::protocol::baidu::BidRequest_Video& video() const;
-  inline ::protocol::baidu::BidRequest_Video* mutable_video();
-  inline ::protocol::baidu::BidRequest_Video* release_video();
-  inline void set_allocated_video(::protocol::baidu::BidRequest_Video* video);
+  inline const ::protocol::Baidu::BidRequest_Video& video() const;
+  inline ::protocol::Baidu::BidRequest_Video* mutable_video();
+  inline ::protocol::Baidu::BidRequest_Video* release_video();
+  inline void set_allocated_video(::protocol::Baidu::BidRequest_Video* video);
 
-  // repeated .protocol.baidu.BidRequest.AdSlot adslot = 20;
+  // repeated .protocol.Baidu.BidRequest.AdSlot adslot = 20;
   inline int adslot_size() const;
   inline void clear_adslot();
   static const int kAdslotFieldNumber = 20;
-  inline const ::protocol::baidu::BidRequest_AdSlot& adslot(int index) const;
-  inline ::protocol::baidu::BidRequest_AdSlot* mutable_adslot(int index);
-  inline ::protocol::baidu::BidRequest_AdSlot* add_adslot();
-  inline const ::google::protobuf::RepeatedPtrField< ::protocol::baidu::BidRequest_AdSlot >&
+  inline const ::protocol::Baidu::BidRequest_AdSlot& adslot(int index) const;
+  inline ::protocol::Baidu::BidRequest_AdSlot* mutable_adslot(int index);
+  inline ::protocol::Baidu::BidRequest_AdSlot* add_adslot();
+  inline const ::google::protobuf::RepeatedPtrField< ::protocol::Baidu::BidRequest_AdSlot >&
       adslot() const;
-  inline ::google::protobuf::RepeatedPtrField< ::protocol::baidu::BidRequest_AdSlot >*
+  inline ::google::protobuf::RepeatedPtrField< ::protocol::Baidu::BidRequest_AdSlot >*
       mutable_adslot();
 
   // optional bool is_test = 26 [default = false];
@@ -2067,7 +2067,7 @@ class BidRequest : public ::google::protobuf::Message {
   inline bool is_ping() const;
   inline void set_is_ping(bool value);
 
-  // @@protoc_insertion_point(class_scope:protocol.baidu.BidRequest)
+  // @@protoc_insertion_point(class_scope:protocol.Baidu.BidRequest)
  private:
   inline void set_has_id();
   inline void clear_has_id();
@@ -2116,13 +2116,13 @@ class BidRequest : public ::google::protobuf::Message {
   ::std::string* ip_;
   ::std::string* user_agent_;
   ::std::string* baidu_user_id_;
-  ::google::protobuf::RepeatedPtrField< ::protocol::baidu::BidRequest_BaiduId > baidu_id_list_;
+  ::google::protobuf::RepeatedPtrField< ::protocol::Baidu::BidRequest_BaiduId > baidu_id_list_;
   ::google::protobuf::int32 baidu_user_id_version_;
   int gender_;
   ::google::protobuf::RepeatedField< ::google::protobuf::int64 > user_category_;
   ::std::string* detected_language_;
   ::std::string* flash_version_;
-  ::protocol::baidu::BidRequest_Geo* user_geo_info_;
+  ::protocol::Baidu::BidRequest_Geo* user_geo_info_;
   ::std::string* url_;
   ::std::string* referer_;
   ::google::protobuf::int32 site_category_;
@@ -2132,12 +2132,12 @@ class BidRequest : public ::google::protobuf::Message {
   ::google::protobuf::int32 page_quality_;
   ::google::protobuf::RepeatedField< ::google::protobuf::int32 > excluded_product_category_;
   mutable int _excluded_product_category_cached_byte_size_;
-  ::protocol::baidu::BidRequest_Mobile* mobile_;
-  ::protocol::baidu::BidRequest_Video* video_;
+  ::protocol::Baidu::BidRequest_Mobile* mobile_;
+  ::protocol::Baidu::BidRequest_Video* video_;
   ::google::protobuf::int32 page_vertical_;
   bool is_test_;
   bool is_ping_;
-  ::google::protobuf::RepeatedPtrField< ::protocol::baidu::BidRequest_AdSlot > adslot_;
+  ::google::protobuf::RepeatedPtrField< ::protocol::Baidu::BidRequest_AdSlot > adslot_;
 
   mutable int _cached_size_;
   ::google::protobuf::uint32 _has_bits_[(25 + 31) / 32];
@@ -2327,7 +2327,7 @@ class BidResponse_Ad : public ::google::protobuf::Message {
   inline ::google::protobuf::int64 preferred_order_id() const;
   inline void set_preferred_order_id(::google::protobuf::int64 value);
 
-  // @@protoc_insertion_point(class_scope:protocol.baidu.BidResponse.Ad)
+  // @@protoc_insertion_point(class_scope:protocol.Baidu.BidResponse.Ad)
  private:
   inline void set_has_sequence_id();
   inline void clear_has_sequence_id();
@@ -2453,16 +2453,16 @@ class BidResponse : public ::google::protobuf::Message {
   inline ::std::string* release_id();
   inline void set_allocated_id(::std::string* id);
 
-  // repeated .protocol.baidu.BidResponse.Ad ad = 2;
+  // repeated .protocol.Baidu.BidResponse.Ad ad = 2;
   inline int ad_size() const;
   inline void clear_ad();
   static const int kAdFieldNumber = 2;
-  inline const ::protocol::baidu::BidResponse_Ad& ad(int index) const;
-  inline ::protocol::baidu::BidResponse_Ad* mutable_ad(int index);
-  inline ::protocol::baidu::BidResponse_Ad* add_ad();
-  inline const ::google::protobuf::RepeatedPtrField< ::protocol::baidu::BidResponse_Ad >&
+  inline const ::protocol::Baidu::BidResponse_Ad& ad(int index) const;
+  inline ::protocol::Baidu::BidResponse_Ad* mutable_ad(int index);
+  inline ::protocol::Baidu::BidResponse_Ad* add_ad();
+  inline const ::google::protobuf::RepeatedPtrField< ::protocol::Baidu::BidResponse_Ad >&
       ad() const;
-  inline ::google::protobuf::RepeatedPtrField< ::protocol::baidu::BidResponse_Ad >*
+  inline ::google::protobuf::RepeatedPtrField< ::protocol::Baidu::BidResponse_Ad >*
       mutable_ad();
 
   // optional string debug_string = 3;
@@ -2484,7 +2484,7 @@ class BidResponse : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 processing_time_ms() const;
   inline void set_processing_time_ms(::google::protobuf::int32 value);
 
-  // @@protoc_insertion_point(class_scope:protocol.baidu.BidResponse)
+  // @@protoc_insertion_point(class_scope:protocol.Baidu.BidResponse)
  private:
   inline void set_has_id();
   inline void clear_has_id();
@@ -2496,7 +2496,7 @@ class BidResponse : public ::google::protobuf::Message {
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::std::string* id_;
-  ::google::protobuf::RepeatedPtrField< ::protocol::baidu::BidResponse_Ad > ad_;
+  ::google::protobuf::RepeatedPtrField< ::protocol::Baidu::BidResponse_Ad > ad_;
   ::std::string* debug_string_;
   ::google::protobuf::int32 processing_time_ms_;
 
@@ -2613,7 +2613,7 @@ inline void BidRequest_BaiduId::set_baidu_user_id_version(::google::protobuf::in
 
 // BidRequest_Geo_Coordinate
 
-// optional .protocol.baidu.BidRequest.Geo.Coordinate.Standard standard = 1;
+// optional .protocol.Baidu.BidRequest.Geo.Coordinate.Standard standard = 1;
 inline bool BidRequest_Geo_Coordinate::has_standard() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
@@ -2627,11 +2627,11 @@ inline void BidRequest_Geo_Coordinate::clear_standard() {
   standard_ = 0;
   clear_has_standard();
 }
-inline ::protocol::baidu::BidRequest_Geo_Coordinate_Standard BidRequest_Geo_Coordinate::standard() const {
-  return static_cast< ::protocol::baidu::BidRequest_Geo_Coordinate_Standard >(standard_);
+inline ::protocol::Baidu::BidRequest_Geo_Coordinate_Standard BidRequest_Geo_Coordinate::standard() const {
+  return static_cast< ::protocol::Baidu::BidRequest_Geo_Coordinate_Standard >(standard_);
 }
-inline void BidRequest_Geo_Coordinate::set_standard(::protocol::baidu::BidRequest_Geo_Coordinate_Standard value) {
-  assert(::protocol::baidu::BidRequest_Geo_Coordinate_Standard_IsValid(value));
+inline void BidRequest_Geo_Coordinate::set_standard(::protocol::Baidu::BidRequest_Geo_Coordinate_Standard value) {
+  assert(::protocol::Baidu::BidRequest_Geo_Coordinate_Standard_IsValid(value));
   set_has_standard();
   standard_ = value;
 }
@@ -2968,32 +2968,32 @@ inline void BidRequest_Geo_UserLocation::set_allocated_street(::std::string* str
 
 // BidRequest_Geo
 
-// repeated .protocol.baidu.BidRequest.Geo.Coordinate user_coordinate = 1;
+// repeated .protocol.Baidu.BidRequest.Geo.Coordinate user_coordinate = 1;
 inline int BidRequest_Geo::user_coordinate_size() const {
   return user_coordinate_.size();
 }
 inline void BidRequest_Geo::clear_user_coordinate() {
   user_coordinate_.Clear();
 }
-inline const ::protocol::baidu::BidRequest_Geo_Coordinate& BidRequest_Geo::user_coordinate(int index) const {
+inline const ::protocol::Baidu::BidRequest_Geo_Coordinate& BidRequest_Geo::user_coordinate(int index) const {
   return user_coordinate_.Get(index);
 }
-inline ::protocol::baidu::BidRequest_Geo_Coordinate* BidRequest_Geo::mutable_user_coordinate(int index) {
+inline ::protocol::Baidu::BidRequest_Geo_Coordinate* BidRequest_Geo::mutable_user_coordinate(int index) {
   return user_coordinate_.Mutable(index);
 }
-inline ::protocol::baidu::BidRequest_Geo_Coordinate* BidRequest_Geo::add_user_coordinate() {
+inline ::protocol::Baidu::BidRequest_Geo_Coordinate* BidRequest_Geo::add_user_coordinate() {
   return user_coordinate_.Add();
 }
-inline const ::google::protobuf::RepeatedPtrField< ::protocol::baidu::BidRequest_Geo_Coordinate >&
+inline const ::google::protobuf::RepeatedPtrField< ::protocol::Baidu::BidRequest_Geo_Coordinate >&
 BidRequest_Geo::user_coordinate() const {
   return user_coordinate_;
 }
-inline ::google::protobuf::RepeatedPtrField< ::protocol::baidu::BidRequest_Geo_Coordinate >*
+inline ::google::protobuf::RepeatedPtrField< ::protocol::Baidu::BidRequest_Geo_Coordinate >*
 BidRequest_Geo::mutable_user_coordinate() {
   return &user_coordinate_;
 }
 
-// optional .protocol.baidu.BidRequest.Geo.UserLocation user_location = 2;
+// optional .protocol.Baidu.BidRequest.Geo.UserLocation user_location = 2;
 inline bool BidRequest_Geo::has_user_location() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
@@ -3004,24 +3004,24 @@ inline void BidRequest_Geo::clear_has_user_location() {
   _has_bits_[0] &= ~0x00000002u;
 }
 inline void BidRequest_Geo::clear_user_location() {
-  if (user_location_ != NULL) user_location_->::protocol::baidu::BidRequest_Geo_UserLocation::Clear();
+  if (user_location_ != NULL) user_location_->::protocol::Baidu::BidRequest_Geo_UserLocation::Clear();
   clear_has_user_location();
 }
-inline const ::protocol::baidu::BidRequest_Geo_UserLocation& BidRequest_Geo::user_location() const {
+inline const ::protocol::Baidu::BidRequest_Geo_UserLocation& BidRequest_Geo::user_location() const {
   return user_location_ != NULL ? *user_location_ : *default_instance_->user_location_;
 }
-inline ::protocol::baidu::BidRequest_Geo_UserLocation* BidRequest_Geo::mutable_user_location() {
+inline ::protocol::Baidu::BidRequest_Geo_UserLocation* BidRequest_Geo::mutable_user_location() {
   set_has_user_location();
-  if (user_location_ == NULL) user_location_ = new ::protocol::baidu::BidRequest_Geo_UserLocation;
+  if (user_location_ == NULL) user_location_ = new ::protocol::Baidu::BidRequest_Geo_UserLocation;
   return user_location_;
 }
-inline ::protocol::baidu::BidRequest_Geo_UserLocation* BidRequest_Geo::release_user_location() {
+inline ::protocol::Baidu::BidRequest_Geo_UserLocation* BidRequest_Geo::release_user_location() {
   clear_has_user_location();
-  ::protocol::baidu::BidRequest_Geo_UserLocation* temp = user_location_;
+  ::protocol::Baidu::BidRequest_Geo_UserLocation* temp = user_location_;
   user_location_ = NULL;
   return temp;
 }
-inline void BidRequest_Geo::set_allocated_user_location(::protocol::baidu::BidRequest_Geo_UserLocation* user_location) {
+inline void BidRequest_Geo::set_allocated_user_location(::protocol::Baidu::BidRequest_Geo_UserLocation* user_location) {
   delete user_location_;
   user_location_ = user_location;
   if (user_location) {
@@ -3289,22 +3289,22 @@ inline void BidRequest_Mobile_MobileApp::set_app_publisher_id(::google::protobuf
   app_publisher_id_ = value;
 }
 
-// repeated .protocol.baidu.BidRequest.Mobile.MobileApp.AppInteractionType app_interaction_type = 5;
+// repeated .protocol.Baidu.BidRequest.Mobile.MobileApp.AppInteractionType app_interaction_type = 5;
 inline int BidRequest_Mobile_MobileApp::app_interaction_type_size() const {
   return app_interaction_type_.size();
 }
 inline void BidRequest_Mobile_MobileApp::clear_app_interaction_type() {
   app_interaction_type_.Clear();
 }
-inline ::protocol::baidu::BidRequest_Mobile_MobileApp_AppInteractionType BidRequest_Mobile_MobileApp::app_interaction_type(int index) const {
-  return static_cast< ::protocol::baidu::BidRequest_Mobile_MobileApp_AppInteractionType >(app_interaction_type_.Get(index));
+inline ::protocol::Baidu::BidRequest_Mobile_MobileApp_AppInteractionType BidRequest_Mobile_MobileApp::app_interaction_type(int index) const {
+  return static_cast< ::protocol::Baidu::BidRequest_Mobile_MobileApp_AppInteractionType >(app_interaction_type_.Get(index));
 }
-inline void BidRequest_Mobile_MobileApp::set_app_interaction_type(int index, ::protocol::baidu::BidRequest_Mobile_MobileApp_AppInteractionType value) {
-  assert(::protocol::baidu::BidRequest_Mobile_MobileApp_AppInteractionType_IsValid(value));
+inline void BidRequest_Mobile_MobileApp::set_app_interaction_type(int index, ::protocol::Baidu::BidRequest_Mobile_MobileApp_AppInteractionType value) {
+  assert(::protocol::Baidu::BidRequest_Mobile_MobileApp_AppInteractionType_IsValid(value));
   app_interaction_type_.Set(index, value);
 }
-inline void BidRequest_Mobile_MobileApp::add_app_interaction_type(::protocol::baidu::BidRequest_Mobile_MobileApp_AppInteractionType value) {
-  assert(::protocol::baidu::BidRequest_Mobile_MobileApp_AppInteractionType_IsValid(value));
+inline void BidRequest_Mobile_MobileApp::add_app_interaction_type(::protocol::Baidu::BidRequest_Mobile_MobileApp_AppInteractionType value) {
+  assert(::protocol::Baidu::BidRequest_Mobile_MobileApp_AppInteractionType_IsValid(value));
   app_interaction_type_.Add(value);
 }
 inline const ::google::protobuf::RepeatedField<int>&
@@ -3390,7 +3390,7 @@ inline void BidRequest_Mobile::set_allocated_device_id(::std::string* device_id)
   }
 }
 
-// optional .protocol.baidu.BidRequest.Mobile.MobileDeviceType device_type = 2;
+// optional .protocol.Baidu.BidRequest.Mobile.MobileDeviceType device_type = 2;
 inline bool BidRequest_Mobile::has_device_type() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
@@ -3404,16 +3404,16 @@ inline void BidRequest_Mobile::clear_device_type() {
   device_type_ = 0;
   clear_has_device_type();
 }
-inline ::protocol::baidu::BidRequest_Mobile_MobileDeviceType BidRequest_Mobile::device_type() const {
-  return static_cast< ::protocol::baidu::BidRequest_Mobile_MobileDeviceType >(device_type_);
+inline ::protocol::Baidu::BidRequest_Mobile_MobileDeviceType BidRequest_Mobile::device_type() const {
+  return static_cast< ::protocol::Baidu::BidRequest_Mobile_MobileDeviceType >(device_type_);
 }
-inline void BidRequest_Mobile::set_device_type(::protocol::baidu::BidRequest_Mobile_MobileDeviceType value) {
-  assert(::protocol::baidu::BidRequest_Mobile_MobileDeviceType_IsValid(value));
+inline void BidRequest_Mobile::set_device_type(::protocol::Baidu::BidRequest_Mobile_MobileDeviceType value) {
+  assert(::protocol::Baidu::BidRequest_Mobile_MobileDeviceType_IsValid(value));
   set_has_device_type();
   device_type_ = value;
 }
 
-// optional .protocol.baidu.BidRequest.Mobile.OS platform = 3 [default = UNKNOWN_OS];
+// optional .protocol.Baidu.BidRequest.Mobile.OS platform = 3 [default = UNKNOWN_OS];
 inline bool BidRequest_Mobile::has_platform() const {
   return (_has_bits_[0] & 0x00000004u) != 0;
 }
@@ -3427,16 +3427,16 @@ inline void BidRequest_Mobile::clear_platform() {
   platform_ = 0;
   clear_has_platform();
 }
-inline ::protocol::baidu::BidRequest_Mobile_OS BidRequest_Mobile::platform() const {
-  return static_cast< ::protocol::baidu::BidRequest_Mobile_OS >(platform_);
+inline ::protocol::Baidu::BidRequest_Mobile_OS BidRequest_Mobile::platform() const {
+  return static_cast< ::protocol::Baidu::BidRequest_Mobile_OS >(platform_);
 }
-inline void BidRequest_Mobile::set_platform(::protocol::baidu::BidRequest_Mobile_OS value) {
-  assert(::protocol::baidu::BidRequest_Mobile_OS_IsValid(value));
+inline void BidRequest_Mobile::set_platform(::protocol::Baidu::BidRequest_Mobile_OS value) {
+  assert(::protocol::Baidu::BidRequest_Mobile_OS_IsValid(value));
   set_has_platform();
   platform_ = value;
 }
 
-// optional .protocol.baidu.BidRequest.Mobile.DeviceOsVersion os_version = 4;
+// optional .protocol.Baidu.BidRequest.Mobile.DeviceOsVersion os_version = 4;
 inline bool BidRequest_Mobile::has_os_version() const {
   return (_has_bits_[0] & 0x00000008u) != 0;
 }
@@ -3447,24 +3447,24 @@ inline void BidRequest_Mobile::clear_has_os_version() {
   _has_bits_[0] &= ~0x00000008u;
 }
 inline void BidRequest_Mobile::clear_os_version() {
-  if (os_version_ != NULL) os_version_->::protocol::baidu::BidRequest_Mobile_DeviceOsVersion::Clear();
+  if (os_version_ != NULL) os_version_->::protocol::Baidu::BidRequest_Mobile_DeviceOsVersion::Clear();
   clear_has_os_version();
 }
-inline const ::protocol::baidu::BidRequest_Mobile_DeviceOsVersion& BidRequest_Mobile::os_version() const {
+inline const ::protocol::Baidu::BidRequest_Mobile_DeviceOsVersion& BidRequest_Mobile::os_version() const {
   return os_version_ != NULL ? *os_version_ : *default_instance_->os_version_;
 }
-inline ::protocol::baidu::BidRequest_Mobile_DeviceOsVersion* BidRequest_Mobile::mutable_os_version() {
+inline ::protocol::Baidu::BidRequest_Mobile_DeviceOsVersion* BidRequest_Mobile::mutable_os_version() {
   set_has_os_version();
-  if (os_version_ == NULL) os_version_ = new ::protocol::baidu::BidRequest_Mobile_DeviceOsVersion;
+  if (os_version_ == NULL) os_version_ = new ::protocol::Baidu::BidRequest_Mobile_DeviceOsVersion;
   return os_version_;
 }
-inline ::protocol::baidu::BidRequest_Mobile_DeviceOsVersion* BidRequest_Mobile::release_os_version() {
+inline ::protocol::Baidu::BidRequest_Mobile_DeviceOsVersion* BidRequest_Mobile::release_os_version() {
   clear_has_os_version();
-  ::protocol::baidu::BidRequest_Mobile_DeviceOsVersion* temp = os_version_;
+  ::protocol::Baidu::BidRequest_Mobile_DeviceOsVersion* temp = os_version_;
   os_version_ = NULL;
   return temp;
 }
-inline void BidRequest_Mobile::set_allocated_os_version(::protocol::baidu::BidRequest_Mobile_DeviceOsVersion* os_version) {
+inline void BidRequest_Mobile::set_allocated_os_version(::protocol::Baidu::BidRequest_Mobile_DeviceOsVersion* os_version) {
   delete os_version_;
   os_version_ = os_version;
   if (os_version) {
@@ -3680,7 +3680,7 @@ inline void BidRequest_Mobile::set_carrier_id(::google::protobuf::int64 value) {
   carrier_id_ = value;
 }
 
-// optional .protocol.baidu.BidRequest.Mobile.WirelessNetworkType wireless_network_type = 10;
+// optional .protocol.Baidu.BidRequest.Mobile.WirelessNetworkType wireless_network_type = 10;
 inline bool BidRequest_Mobile::has_wireless_network_type() const {
   return (_has_bits_[0] & 0x00000200u) != 0;
 }
@@ -3694,11 +3694,11 @@ inline void BidRequest_Mobile::clear_wireless_network_type() {
   wireless_network_type_ = 0;
   clear_has_wireless_network_type();
 }
-inline ::protocol::baidu::BidRequest_Mobile_WirelessNetworkType BidRequest_Mobile::wireless_network_type() const {
-  return static_cast< ::protocol::baidu::BidRequest_Mobile_WirelessNetworkType >(wireless_network_type_);
+inline ::protocol::Baidu::BidRequest_Mobile_WirelessNetworkType BidRequest_Mobile::wireless_network_type() const {
+  return static_cast< ::protocol::Baidu::BidRequest_Mobile_WirelessNetworkType >(wireless_network_type_);
 }
-inline void BidRequest_Mobile::set_wireless_network_type(::protocol::baidu::BidRequest_Mobile_WirelessNetworkType value) {
-  assert(::protocol::baidu::BidRequest_Mobile_WirelessNetworkType_IsValid(value));
+inline void BidRequest_Mobile::set_wireless_network_type(::protocol::Baidu::BidRequest_Mobile_WirelessNetworkType value) {
+  assert(::protocol::Baidu::BidRequest_Mobile_WirelessNetworkType_IsValid(value));
   set_has_wireless_network_type();
   wireless_network_type_ = value;
 }
@@ -3773,7 +3773,7 @@ inline void BidRequest_Mobile::set_allocated_for_advertising_id(::std::string* f
   }
 }
 
-// optional .protocol.baidu.BidRequest.Mobile.MobileApp mobile_app = 12;
+// optional .protocol.Baidu.BidRequest.Mobile.MobileApp mobile_app = 12;
 inline bool BidRequest_Mobile::has_mobile_app() const {
   return (_has_bits_[0] & 0x00000800u) != 0;
 }
@@ -3784,24 +3784,24 @@ inline void BidRequest_Mobile::clear_has_mobile_app() {
   _has_bits_[0] &= ~0x00000800u;
 }
 inline void BidRequest_Mobile::clear_mobile_app() {
-  if (mobile_app_ != NULL) mobile_app_->::protocol::baidu::BidRequest_Mobile_MobileApp::Clear();
+  if (mobile_app_ != NULL) mobile_app_->::protocol::Baidu::BidRequest_Mobile_MobileApp::Clear();
   clear_has_mobile_app();
 }
-inline const ::protocol::baidu::BidRequest_Mobile_MobileApp& BidRequest_Mobile::mobile_app() const {
+inline const ::protocol::Baidu::BidRequest_Mobile_MobileApp& BidRequest_Mobile::mobile_app() const {
   return mobile_app_ != NULL ? *mobile_app_ : *default_instance_->mobile_app_;
 }
-inline ::protocol::baidu::BidRequest_Mobile_MobileApp* BidRequest_Mobile::mutable_mobile_app() {
+inline ::protocol::Baidu::BidRequest_Mobile_MobileApp* BidRequest_Mobile::mutable_mobile_app() {
   set_has_mobile_app();
-  if (mobile_app_ == NULL) mobile_app_ = new ::protocol::baidu::BidRequest_Mobile_MobileApp;
+  if (mobile_app_ == NULL) mobile_app_ = new ::protocol::Baidu::BidRequest_Mobile_MobileApp;
   return mobile_app_;
 }
-inline ::protocol::baidu::BidRequest_Mobile_MobileApp* BidRequest_Mobile::release_mobile_app() {
+inline ::protocol::Baidu::BidRequest_Mobile_MobileApp* BidRequest_Mobile::release_mobile_app() {
   clear_has_mobile_app();
-  ::protocol::baidu::BidRequest_Mobile_MobileApp* temp = mobile_app_;
+  ::protocol::Baidu::BidRequest_Mobile_MobileApp* temp = mobile_app_;
   mobile_app_ = NULL;
   return temp;
 }
-inline void BidRequest_Mobile::set_allocated_mobile_app(::protocol::baidu::BidRequest_Mobile_MobileApp* mobile_app) {
+inline void BidRequest_Mobile::set_allocated_mobile_app(::protocol::Baidu::BidRequest_Mobile_MobileApp* mobile_app) {
   delete mobile_app_;
   mobile_app_ = mobile_app;
   if (mobile_app) {
@@ -4028,27 +4028,27 @@ inline void BidRequest_AdSlot_PreferredOrderInfo_PreferredOrder::set_fixed_cpm(:
 
 // BidRequest_AdSlot_PreferredOrderInfo
 
-// repeated .protocol.baidu.BidRequest.AdSlot.PreferredOrderInfo.PreferredOrder preferred_orders = 1;
+// repeated .protocol.Baidu.BidRequest.AdSlot.PreferredOrderInfo.PreferredOrder preferred_orders = 1;
 inline int BidRequest_AdSlot_PreferredOrderInfo::preferred_orders_size() const {
   return preferred_orders_.size();
 }
 inline void BidRequest_AdSlot_PreferredOrderInfo::clear_preferred_orders() {
   preferred_orders_.Clear();
 }
-inline const ::protocol::baidu::BidRequest_AdSlot_PreferredOrderInfo_PreferredOrder& BidRequest_AdSlot_PreferredOrderInfo::preferred_orders(int index) const {
+inline const ::protocol::Baidu::BidRequest_AdSlot_PreferredOrderInfo_PreferredOrder& BidRequest_AdSlot_PreferredOrderInfo::preferred_orders(int index) const {
   return preferred_orders_.Get(index);
 }
-inline ::protocol::baidu::BidRequest_AdSlot_PreferredOrderInfo_PreferredOrder* BidRequest_AdSlot_PreferredOrderInfo::mutable_preferred_orders(int index) {
+inline ::protocol::Baidu::BidRequest_AdSlot_PreferredOrderInfo_PreferredOrder* BidRequest_AdSlot_PreferredOrderInfo::mutable_preferred_orders(int index) {
   return preferred_orders_.Mutable(index);
 }
-inline ::protocol::baidu::BidRequest_AdSlot_PreferredOrderInfo_PreferredOrder* BidRequest_AdSlot_PreferredOrderInfo::add_preferred_orders() {
+inline ::protocol::Baidu::BidRequest_AdSlot_PreferredOrderInfo_PreferredOrder* BidRequest_AdSlot_PreferredOrderInfo::add_preferred_orders() {
   return preferred_orders_.Add();
 }
-inline const ::google::protobuf::RepeatedPtrField< ::protocol::baidu::BidRequest_AdSlot_PreferredOrderInfo_PreferredOrder >&
+inline const ::google::protobuf::RepeatedPtrField< ::protocol::Baidu::BidRequest_AdSlot_PreferredOrderInfo_PreferredOrder >&
 BidRequest_AdSlot_PreferredOrderInfo::preferred_orders() const {
   return preferred_orders_;
 }
-inline ::google::protobuf::RepeatedPtrField< ::protocol::baidu::BidRequest_AdSlot_PreferredOrderInfo_PreferredOrder >*
+inline ::google::protobuf::RepeatedPtrField< ::protocol::Baidu::BidRequest_AdSlot_PreferredOrderInfo_PreferredOrder >*
 BidRequest_AdSlot_PreferredOrderInfo::mutable_preferred_orders() {
   return &preferred_orders_;
 }
@@ -4393,7 +4393,7 @@ inline void BidRequest_AdSlot::set_minimum_cpm(::google::protobuf::int32 value) 
   minimum_cpm_ = value;
 }
 
-// optional .protocol.baidu.BidRequest.AdSlot.PreferredOrderInfo preferred_order_info = 13;
+// optional .protocol.Baidu.BidRequest.AdSlot.PreferredOrderInfo preferred_order_info = 13;
 inline bool BidRequest_AdSlot::has_preferred_order_info() const {
   return (_has_bits_[0] & 0x00002000u) != 0;
 }
@@ -4404,24 +4404,24 @@ inline void BidRequest_AdSlot::clear_has_preferred_order_info() {
   _has_bits_[0] &= ~0x00002000u;
 }
 inline void BidRequest_AdSlot::clear_preferred_order_info() {
-  if (preferred_order_info_ != NULL) preferred_order_info_->::protocol::baidu::BidRequest_AdSlot_PreferredOrderInfo::Clear();
+  if (preferred_order_info_ != NULL) preferred_order_info_->::protocol::Baidu::BidRequest_AdSlot_PreferredOrderInfo::Clear();
   clear_has_preferred_order_info();
 }
-inline const ::protocol::baidu::BidRequest_AdSlot_PreferredOrderInfo& BidRequest_AdSlot::preferred_order_info() const {
+inline const ::protocol::Baidu::BidRequest_AdSlot_PreferredOrderInfo& BidRequest_AdSlot::preferred_order_info() const {
   return preferred_order_info_ != NULL ? *preferred_order_info_ : *default_instance_->preferred_order_info_;
 }
-inline ::protocol::baidu::BidRequest_AdSlot_PreferredOrderInfo* BidRequest_AdSlot::mutable_preferred_order_info() {
+inline ::protocol::Baidu::BidRequest_AdSlot_PreferredOrderInfo* BidRequest_AdSlot::mutable_preferred_order_info() {
   set_has_preferred_order_info();
-  if (preferred_order_info_ == NULL) preferred_order_info_ = new ::protocol::baidu::BidRequest_AdSlot_PreferredOrderInfo;
+  if (preferred_order_info_ == NULL) preferred_order_info_ = new ::protocol::Baidu::BidRequest_AdSlot_PreferredOrderInfo;
   return preferred_order_info_;
 }
-inline ::protocol::baidu::BidRequest_AdSlot_PreferredOrderInfo* BidRequest_AdSlot::release_preferred_order_info() {
+inline ::protocol::Baidu::BidRequest_AdSlot_PreferredOrderInfo* BidRequest_AdSlot::release_preferred_order_info() {
   clear_has_preferred_order_info();
-  ::protocol::baidu::BidRequest_AdSlot_PreferredOrderInfo* temp = preferred_order_info_;
+  ::protocol::Baidu::BidRequest_AdSlot_PreferredOrderInfo* temp = preferred_order_info_;
   preferred_order_info_ = NULL;
   return temp;
 }
-inline void BidRequest_AdSlot::set_allocated_preferred_order_info(::protocol::baidu::BidRequest_AdSlot_PreferredOrderInfo* preferred_order_info) {
+inline void BidRequest_AdSlot::set_allocated_preferred_order_info(::protocol::Baidu::BidRequest_AdSlot_PreferredOrderInfo* preferred_order_info) {
   delete preferred_order_info_;
   preferred_order_info_ = preferred_order_info;
   if (preferred_order_info) {
@@ -4737,27 +4737,27 @@ inline void BidRequest::set_baidu_user_id_version(::google::protobuf::int32 valu
   baidu_user_id_version_ = value;
 }
 
-// repeated .protocol.baidu.BidRequest.BaiduId baidu_id_list = 8;
+// repeated .protocol.Baidu.BidRequest.BaiduId baidu_id_list = 8;
 inline int BidRequest::baidu_id_list_size() const {
   return baidu_id_list_.size();
 }
 inline void BidRequest::clear_baidu_id_list() {
   baidu_id_list_.Clear();
 }
-inline const ::protocol::baidu::BidRequest_BaiduId& BidRequest::baidu_id_list(int index) const {
+inline const ::protocol::Baidu::BidRequest_BaiduId& BidRequest::baidu_id_list(int index) const {
   return baidu_id_list_.Get(index);
 }
-inline ::protocol::baidu::BidRequest_BaiduId* BidRequest::mutable_baidu_id_list(int index) {
+inline ::protocol::Baidu::BidRequest_BaiduId* BidRequest::mutable_baidu_id_list(int index) {
   return baidu_id_list_.Mutable(index);
 }
-inline ::protocol::baidu::BidRequest_BaiduId* BidRequest::add_baidu_id_list() {
+inline ::protocol::Baidu::BidRequest_BaiduId* BidRequest::add_baidu_id_list() {
   return baidu_id_list_.Add();
 }
-inline const ::google::protobuf::RepeatedPtrField< ::protocol::baidu::BidRequest_BaiduId >&
+inline const ::google::protobuf::RepeatedPtrField< ::protocol::Baidu::BidRequest_BaiduId >&
 BidRequest::baidu_id_list() const {
   return baidu_id_list_;
 }
-inline ::google::protobuf::RepeatedPtrField< ::protocol::baidu::BidRequest_BaiduId >*
+inline ::google::protobuf::RepeatedPtrField< ::protocol::Baidu::BidRequest_BaiduId >*
 BidRequest::mutable_baidu_id_list() {
   return &baidu_id_list_;
 }
@@ -4787,7 +4787,7 @@ BidRequest::mutable_user_category() {
   return &user_category_;
 }
 
-// optional .protocol.baidu.BidRequest.Gender gender = 7;
+// optional .protocol.Baidu.BidRequest.Gender gender = 7;
 inline bool BidRequest::has_gender() const {
   return (_has_bits_[0] & 0x00000080u) != 0;
 }
@@ -4801,11 +4801,11 @@ inline void BidRequest::clear_gender() {
   gender_ = 0;
   clear_has_gender();
 }
-inline ::protocol::baidu::BidRequest_Gender BidRequest::gender() const {
-  return static_cast< ::protocol::baidu::BidRequest_Gender >(gender_);
+inline ::protocol::Baidu::BidRequest_Gender BidRequest::gender() const {
+  return static_cast< ::protocol::Baidu::BidRequest_Gender >(gender_);
 }
-inline void BidRequest::set_gender(::protocol::baidu::BidRequest_Gender value) {
-  assert(::protocol::baidu::BidRequest_Gender_IsValid(value));
+inline void BidRequest::set_gender(::protocol::Baidu::BidRequest_Gender value) {
+  assert(::protocol::Baidu::BidRequest_Gender_IsValid(value));
   set_has_gender();
   gender_ = value;
 }
@@ -4950,7 +4950,7 @@ inline void BidRequest::set_allocated_flash_version(::std::string* flash_version
   }
 }
 
-// optional .protocol.baidu.BidRequest.Geo user_geo_info = 28;
+// optional .protocol.Baidu.BidRequest.Geo user_geo_info = 28;
 inline bool BidRequest::has_user_geo_info() const {
   return (_has_bits_[0] & 0x00000400u) != 0;
 }
@@ -4961,24 +4961,24 @@ inline void BidRequest::clear_has_user_geo_info() {
   _has_bits_[0] &= ~0x00000400u;
 }
 inline void BidRequest::clear_user_geo_info() {
-  if (user_geo_info_ != NULL) user_geo_info_->::protocol::baidu::BidRequest_Geo::Clear();
+  if (user_geo_info_ != NULL) user_geo_info_->::protocol::Baidu::BidRequest_Geo::Clear();
   clear_has_user_geo_info();
 }
-inline const ::protocol::baidu::BidRequest_Geo& BidRequest::user_geo_info() const {
+inline const ::protocol::Baidu::BidRequest_Geo& BidRequest::user_geo_info() const {
   return user_geo_info_ != NULL ? *user_geo_info_ : *default_instance_->user_geo_info_;
 }
-inline ::protocol::baidu::BidRequest_Geo* BidRequest::mutable_user_geo_info() {
+inline ::protocol::Baidu::BidRequest_Geo* BidRequest::mutable_user_geo_info() {
   set_has_user_geo_info();
-  if (user_geo_info_ == NULL) user_geo_info_ = new ::protocol::baidu::BidRequest_Geo;
+  if (user_geo_info_ == NULL) user_geo_info_ = new ::protocol::Baidu::BidRequest_Geo;
   return user_geo_info_;
 }
-inline ::protocol::baidu::BidRequest_Geo* BidRequest::release_user_geo_info() {
+inline ::protocol::Baidu::BidRequest_Geo* BidRequest::release_user_geo_info() {
   clear_has_user_geo_info();
-  ::protocol::baidu::BidRequest_Geo* temp = user_geo_info_;
+  ::protocol::Baidu::BidRequest_Geo* temp = user_geo_info_;
   user_geo_info_ = NULL;
   return temp;
 }
-inline void BidRequest::set_allocated_user_geo_info(::protocol::baidu::BidRequest_Geo* user_geo_info) {
+inline void BidRequest::set_allocated_user_geo_info(::protocol::Baidu::BidRequest_Geo* user_geo_info) {
   delete user_geo_info_;
   user_geo_info_ = user_geo_info;
   if (user_geo_info) {
@@ -5307,7 +5307,7 @@ BidRequest::mutable_excluded_product_category() {
   return &excluded_product_category_;
 }
 
-// optional .protocol.baidu.BidRequest.Mobile mobile = 29;
+// optional .protocol.Baidu.BidRequest.Mobile mobile = 29;
 inline bool BidRequest::has_mobile() const {
   return (_has_bits_[0] & 0x00100000u) != 0;
 }
@@ -5318,24 +5318,24 @@ inline void BidRequest::clear_has_mobile() {
   _has_bits_[0] &= ~0x00100000u;
 }
 inline void BidRequest::clear_mobile() {
-  if (mobile_ != NULL) mobile_->::protocol::baidu::BidRequest_Mobile::Clear();
+  if (mobile_ != NULL) mobile_->::protocol::Baidu::BidRequest_Mobile::Clear();
   clear_has_mobile();
 }
-inline const ::protocol::baidu::BidRequest_Mobile& BidRequest::mobile() const {
+inline const ::protocol::Baidu::BidRequest_Mobile& BidRequest::mobile() const {
   return mobile_ != NULL ? *mobile_ : *default_instance_->mobile_;
 }
-inline ::protocol::baidu::BidRequest_Mobile* BidRequest::mutable_mobile() {
+inline ::protocol::Baidu::BidRequest_Mobile* BidRequest::mutable_mobile() {
   set_has_mobile();
-  if (mobile_ == NULL) mobile_ = new ::protocol::baidu::BidRequest_Mobile;
+  if (mobile_ == NULL) mobile_ = new ::protocol::Baidu::BidRequest_Mobile;
   return mobile_;
 }
-inline ::protocol::baidu::BidRequest_Mobile* BidRequest::release_mobile() {
+inline ::protocol::Baidu::BidRequest_Mobile* BidRequest::release_mobile() {
   clear_has_mobile();
-  ::protocol::baidu::BidRequest_Mobile* temp = mobile_;
+  ::protocol::Baidu::BidRequest_Mobile* temp = mobile_;
   mobile_ = NULL;
   return temp;
 }
-inline void BidRequest::set_allocated_mobile(::protocol::baidu::BidRequest_Mobile* mobile) {
+inline void BidRequest::set_allocated_mobile(::protocol::Baidu::BidRequest_Mobile* mobile) {
   delete mobile_;
   mobile_ = mobile;
   if (mobile) {
@@ -5345,7 +5345,7 @@ inline void BidRequest::set_allocated_mobile(::protocol::baidu::BidRequest_Mobil
   }
 }
 
-// optional .protocol.baidu.BidRequest.Video video = 30;
+// optional .protocol.Baidu.BidRequest.Video video = 30;
 inline bool BidRequest::has_video() const {
   return (_has_bits_[0] & 0x00200000u) != 0;
 }
@@ -5356,24 +5356,24 @@ inline void BidRequest::clear_has_video() {
   _has_bits_[0] &= ~0x00200000u;
 }
 inline void BidRequest::clear_video() {
-  if (video_ != NULL) video_->::protocol::baidu::BidRequest_Video::Clear();
+  if (video_ != NULL) video_->::protocol::Baidu::BidRequest_Video::Clear();
   clear_has_video();
 }
-inline const ::protocol::baidu::BidRequest_Video& BidRequest::video() const {
+inline const ::protocol::Baidu::BidRequest_Video& BidRequest::video() const {
   return video_ != NULL ? *video_ : *default_instance_->video_;
 }
-inline ::protocol::baidu::BidRequest_Video* BidRequest::mutable_video() {
+inline ::protocol::Baidu::BidRequest_Video* BidRequest::mutable_video() {
   set_has_video();
-  if (video_ == NULL) video_ = new ::protocol::baidu::BidRequest_Video;
+  if (video_ == NULL) video_ = new ::protocol::Baidu::BidRequest_Video;
   return video_;
 }
-inline ::protocol::baidu::BidRequest_Video* BidRequest::release_video() {
+inline ::protocol::Baidu::BidRequest_Video* BidRequest::release_video() {
   clear_has_video();
-  ::protocol::baidu::BidRequest_Video* temp = video_;
+  ::protocol::Baidu::BidRequest_Video* temp = video_;
   video_ = NULL;
   return temp;
 }
-inline void BidRequest::set_allocated_video(::protocol::baidu::BidRequest_Video* video) {
+inline void BidRequest::set_allocated_video(::protocol::Baidu::BidRequest_Video* video) {
   delete video_;
   video_ = video;
   if (video) {
@@ -5383,27 +5383,27 @@ inline void BidRequest::set_allocated_video(::protocol::baidu::BidRequest_Video*
   }
 }
 
-// repeated .protocol.baidu.BidRequest.AdSlot adslot = 20;
+// repeated .protocol.Baidu.BidRequest.AdSlot adslot = 20;
 inline int BidRequest::adslot_size() const {
   return adslot_.size();
 }
 inline void BidRequest::clear_adslot() {
   adslot_.Clear();
 }
-inline const ::protocol::baidu::BidRequest_AdSlot& BidRequest::adslot(int index) const {
+inline const ::protocol::Baidu::BidRequest_AdSlot& BidRequest::adslot(int index) const {
   return adslot_.Get(index);
 }
-inline ::protocol::baidu::BidRequest_AdSlot* BidRequest::mutable_adslot(int index) {
+inline ::protocol::Baidu::BidRequest_AdSlot* BidRequest::mutable_adslot(int index) {
   return adslot_.Mutable(index);
 }
-inline ::protocol::baidu::BidRequest_AdSlot* BidRequest::add_adslot() {
+inline ::protocol::Baidu::BidRequest_AdSlot* BidRequest::add_adslot() {
   return adslot_.Add();
 }
-inline const ::google::protobuf::RepeatedPtrField< ::protocol::baidu::BidRequest_AdSlot >&
+inline const ::google::protobuf::RepeatedPtrField< ::protocol::Baidu::BidRequest_AdSlot >&
 BidRequest::adslot() const {
   return adslot_;
 }
-inline ::google::protobuf::RepeatedPtrField< ::protocol::baidu::BidRequest_AdSlot >*
+inline ::google::protobuf::RepeatedPtrField< ::protocol::Baidu::BidRequest_AdSlot >*
 BidRequest::mutable_adslot() {
   return &adslot_;
 }
@@ -6004,27 +6004,27 @@ inline void BidResponse::set_allocated_id(::std::string* id) {
   }
 }
 
-// repeated .protocol.baidu.BidResponse.Ad ad = 2;
+// repeated .protocol.Baidu.BidResponse.Ad ad = 2;
 inline int BidResponse::ad_size() const {
   return ad_.size();
 }
 inline void BidResponse::clear_ad() {
   ad_.Clear();
 }
-inline const ::protocol::baidu::BidResponse_Ad& BidResponse::ad(int index) const {
+inline const ::protocol::Baidu::BidResponse_Ad& BidResponse::ad(int index) const {
   return ad_.Get(index);
 }
-inline ::protocol::baidu::BidResponse_Ad* BidResponse::mutable_ad(int index) {
+inline ::protocol::Baidu::BidResponse_Ad* BidResponse::mutable_ad(int index) {
   return ad_.Mutable(index);
 }
-inline ::protocol::baidu::BidResponse_Ad* BidResponse::add_ad() {
+inline ::protocol::Baidu::BidResponse_Ad* BidResponse::add_ad() {
   return ad_.Add();
 }
-inline const ::google::protobuf::RepeatedPtrField< ::protocol::baidu::BidResponse_Ad >&
+inline const ::google::protobuf::RepeatedPtrField< ::protocol::Baidu::BidResponse_Ad >&
 BidResponse::ad() const {
   return ad_;
 }
-inline ::google::protobuf::RepeatedPtrField< ::protocol::baidu::BidResponse_Ad >*
+inline ::google::protobuf::RepeatedPtrField< ::protocol::Baidu::BidResponse_Ad >*
 BidResponse::mutable_ad() {
   return &ad_;
 }
@@ -6124,7 +6124,7 @@ inline void BidResponse::set_processing_time_ms(::google::protobuf::int32 value)
 
 // @@protoc_insertion_point(namespace_scope)
 
-}  // namespace baidu
+}  // namespace Baidu
 }  // namespace protocol
 
 #ifndef SWIG
@@ -6132,28 +6132,28 @@ namespace google {
 namespace protobuf {
 
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::protocol::baidu::BidRequest_Geo_Coordinate_Standard>() {
-  return ::protocol::baidu::BidRequest_Geo_Coordinate_Standard_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::protocol::Baidu::BidRequest_Geo_Coordinate_Standard>() {
+  return ::protocol::Baidu::BidRequest_Geo_Coordinate_Standard_descriptor();
 }
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::protocol::baidu::BidRequest_Mobile_MobileApp_AppInteractionType>() {
-  return ::protocol::baidu::BidRequest_Mobile_MobileApp_AppInteractionType_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::protocol::Baidu::BidRequest_Mobile_MobileApp_AppInteractionType>() {
+  return ::protocol::Baidu::BidRequest_Mobile_MobileApp_AppInteractionType_descriptor();
 }
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::protocol::baidu::BidRequest_Mobile_MobileDeviceType>() {
-  return ::protocol::baidu::BidRequest_Mobile_MobileDeviceType_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::protocol::Baidu::BidRequest_Mobile_MobileDeviceType>() {
+  return ::protocol::Baidu::BidRequest_Mobile_MobileDeviceType_descriptor();
 }
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::protocol::baidu::BidRequest_Mobile_OS>() {
-  return ::protocol::baidu::BidRequest_Mobile_OS_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::protocol::Baidu::BidRequest_Mobile_OS>() {
+  return ::protocol::Baidu::BidRequest_Mobile_OS_descriptor();
 }
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::protocol::baidu::BidRequest_Mobile_WirelessNetworkType>() {
-  return ::protocol::baidu::BidRequest_Mobile_WirelessNetworkType_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::protocol::Baidu::BidRequest_Mobile_WirelessNetworkType>() {
+  return ::protocol::Baidu::BidRequest_Mobile_WirelessNetworkType_descriptor();
 }
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::protocol::baidu::BidRequest_Gender>() {
-  return ::protocol::baidu::BidRequest_Gender_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::protocol::Baidu::BidRequest_Gender>() {
+  return ::protocol::Baidu::BidRequest_Gender_descriptor();
 }
 
 }  // namespace google

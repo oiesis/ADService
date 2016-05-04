@@ -92,6 +92,17 @@ namespace adservice{
                     return std::string("0");
                 }
             }
+
+            inline void stringSafeNumber(std::string& input){
+                const char* p = input.c_str();
+                while(*p!='\0'){
+                    if(*p<0x30||*p>0x39){
+                        input = "0";
+                        return;
+                    }
+                    p++;
+                }
+            }
         }
 
     }

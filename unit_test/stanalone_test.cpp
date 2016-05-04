@@ -7,6 +7,7 @@
 #include <iomanip>
 #include <map>
 #include <vector>
+#include <exception>
 #include "common/functions.h"
 #include "common/constants.h"
 #include "utility/url.h"
@@ -82,6 +83,12 @@ struct CacheResult{
 };
 
 int main(int argc,char** argv){
-    DebugMessageWithTime("sizeof CacheResult:",sizeof(CacheResult));
+    try {
+        std::string empty("1");
+        long t = std::stol(empty);
+        DebugMessageWithTime(t);
+    }catch(std::exception& e){
+        DebugMessageWithTime("exception:",e.what());
+    }
     return 0;
 }

@@ -155,16 +155,20 @@ namespace adservice{
         }
 
         void AbstractQueryTask::commonLogic(ParamMap& paramMap,protocol::log::LogItem& log,HttpResponse& resp){
-            getParam(paramMap,data.c_str()+1);
-            filterParamMapSafe(paramMap);
             log.userAgent = userAgent;
             log.logType = currentPhase();
             log.reqMethod = reqMethod();
             log.reqStatus = expectedReqStatus();
             log.timeStamp = utility::time::getCurrentTimeStampUtc();
             log.referer = referer;
-            parseObjectToLogItem(paramMap,log,data.c_str()+1);
             log.ipInfo.proxy=userIp;
+            if(!isPost) { //对于非POST方法传送的Query
+                getParam(paramMap, data.c_str() + 1);
+                filterParamMapSafe(paramMap);
+                parseObjectToLogItem(paramMap,log,data.c_str()+1);
+            }else{ //对于POST方法传送过来的Query
+                getPostParam(paramMap);
+            }
             adservice::types::string userId = extractCookiesParam(COOKIES_MTTY_ID,userCookies);
             bool needNewCookies = false;
             if(userId.empty()||!checkUserCookies(userId)){

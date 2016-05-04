@@ -37,8 +37,11 @@ namespace adservice {
                 userAgent = request.getHeader("User-Agent");
                 userIp = request.getHeader("X-Forwarded-For");
                 referer = request.getHeader("Referer");
+                isPost = request.method()== HttpRequest::Method::kPost;
                 needLog = true;
             }
+
+            virtual ~AbstractQueryTask(){}
 
             /**
              * 过滤安全参数
@@ -65,6 +68,8 @@ namespace adservice {
                 return HttpResponse::k200Ok;
             }
 
+            virtual void getPostParam(ParamMap& paramMap){}
+
             // deal with custom bussiness
             virtual void customLogic(ParamMap& paramMap,protocol::log::LogItem& log,HttpResponse& response) = 0;
 
@@ -80,6 +85,7 @@ namespace adservice {
             adservice::types::string userIp;
             adservice::types::string data;
             adservice::types::string referer;
+            bool isPost;
             bool needLog;
             const TcpConnectionPtr conn;
         };

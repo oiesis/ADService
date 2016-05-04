@@ -17,7 +17,7 @@
 // @@protoc_insertion_point(includes)
 
 namespace protocol {
-namespace baidu {
+namespace Baidu {
 
 namespace {
 
@@ -459,56 +459,56 @@ void protobuf_AddDesc_bidding_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-    "\n\rbidding.proto\022\016protocol.baidu\"\345\027\n\nBidR"
+    "\n\rbidding.proto\022\016protocol.Baidu\"\345\027\n\nBidR"
     "equest\022\n\n\002id\030\001 \002(\t\022\n\n\002ip\030\002 \001(\t\022\022\n\nuser_a"
     "gent\030\003 \001(\t\022\025\n\rbaidu_user_id\030\004 \001(\t\022\035\n\025bai"
     "du_user_id_version\030\005 \001(\005\0229\n\rbaidu_id_lis"
-    "t\030\010 \003(\0132\".protocol.baidu.BidRequest.Baid"
+    "t\030\010 \003(\0132\".protocol.Baidu.BidRequest.Baid"
     "uId\022\025\n\ruser_category\030\006 \003(\003\0221\n\006gender\030\007 \001"
-    "(\0162!.protocol.baidu.BidRequest.Gender\022\031\n"
+    "(\0162!.protocol.Baidu.BidRequest.Gender\022\031\n"
     "\021detected_language\030\t \001(\t\022\025\n\rflash_versio"
     "n\030\n \001(\t\0225\n\ruser_geo_info\030\034 \001(\0132\036.protoco"
-    "l.baidu.BidRequest.Geo\022\013\n\003url\030\013 \001(\t\022\017\n\007r"
+    "l.Baidu.BidRequest.Geo\022\013\n\003url\030\013 \001(\t\022\017\n\007r"
     "eferer\030\014 \001(\t\022\025\n\rsite_category\030\r \001(\005\022\024\n\014s"
     "ite_quality\030\016 \001(\005\022\021\n\tpage_type\030\017 \001(\005\022\024\n\014"
     "page_keyword\030\021 \003(\t\022\024\n\014page_quality\030\022 \001(\005"
     "\022\025\n\rpage_vertical\030\025 \001(\005\022%\n\031excluded_prod"
     "uct_category\030\023 \003(\005B\002\020\001\0221\n\006mobile\030\035 \001(\0132!"
-    ".protocol.baidu.BidRequest.Mobile\022/\n\005vid"
-    "eo\030\036 \001(\0132 .protocol.baidu.BidRequest.Vid"
-    "eo\0221\n\006adslot\030\024 \003(\0132!.protocol.baidu.BidR"
+    ".protocol.Baidu.BidRequest.Mobile\022/\n\005vid"
+    "eo\030\036 \001(\0132 .protocol.Baidu.BidRequest.Vid"
+    "eo\0221\n\006adslot\030\024 \003(\0132!.protocol.Baidu.BidR"
     "equest.AdSlot\022\026\n\007is_test\030\032 \001(\010:\005false\022\026\n"
     "\007is_ping\030\033 \001(\010:\005false\032\?\n\007BaiduId\022\025\n\rbaid"
     "u_user_id\030\001 \001(\t\022\035\n\025baidu_user_id_version"
     "\030\002 \001(\005\032\210\003\n\003Geo\022B\n\017user_coordinate\030\001 \003(\0132"
-    ").protocol.baidu.BidRequest.Geo.Coordina"
-    "te\022B\n\ruser_location\030\002 \001(\0132+.protocol.bai"
+    ").protocol.Baidu.BidRequest.Geo.Coordina"
+    "te\022B\n\ruser_location\030\002 \001(\0132+.protocol.Bai"
     "du.BidRequest.Geo.UserLocation\032\246\001\n\nCoord"
-    "inate\022D\n\010standard\030\001 \001(\01622.protocol.baidu"
+    "inate\022D\n\010standard\030\001 \001(\01622.protocol.Baidu"
     ".BidRequest.Geo.Coordinate.Standard\022\020\n\010l"
     "atitude\030\002 \001(\002\022\021\n\tlongitude\030\003 \001(\002\"-\n\010Stan"
     "dard\022\t\n\005BD_09\020\000\022\n\n\006GCJ_02\020\001\022\n\n\006WGS_84\020\002\032"
     "P\n\014UserLocation\022\020\n\010province\030\001 \001(\t\022\014\n\004cit"
     "y\030\002 \001(\t\022\020\n\010district\030\003 \001(\t\022\016\n\006street\030\004 \001("
     "\t\032\301\010\n\006Mobile\022\021\n\tdevice_id\030\001 \001(\t\022G\n\013devic"
-    "e_type\030\002 \001(\01622.protocol.baidu.BidRequest"
+    "e_type\030\002 \001(\01622.protocol.Baidu.BidRequest"
     ".Mobile.MobileDeviceType\022B\n\010platform\030\003 \001"
-    "(\0162$.protocol.baidu.BidRequest.Mobile.OS"
+    "(\0162$.protocol.Baidu.BidRequest.Mobile.OS"
     ":\nUNKNOWN_OS\022E\n\nos_version\030\004 \001(\01321.proto"
-    "col.baidu.BidRequest.Mobile.DeviceOsVers"
+    "col.Baidu.BidRequest.Mobile.DeviceOsVers"
     "ion\022\r\n\005brand\030\005 \001(\t\022\r\n\005model\030\006 \001(\t\022\024\n\014scr"
     "een_width\030\007 \001(\005\022\025\n\rscreen_height\030\010 \001(\005\022\022"
     "\n\ncarrier_id\030\t \001(\003\022T\n\025wireless_network_t"
-    "ype\030\n \001(\01625.protocol.baidu.BidRequest.Mo"
+    "ype\030\n \001(\01625.protocol.Baidu.BidRequest.Mo"
     "bile.WirelessNetworkType\022\032\n\022for_advertis"
     "ing_id\030\013 \001(\t\022\?\n\nmobile_app\030\014 \001(\0132+.proto"
-    "col.baidu.BidRequest.Mobile.MobileApp\032_\n"
+    "col.Baidu.BidRequest.Mobile.MobileApp\032_\n"
     "\017DeviceOsVersion\022\030\n\020os_version_major\030\001 \001"
     "(\005\022\030\n\020os_version_minor\030\002 \001(\005\022\030\n\020os_versi"
     "on_micro\030\003 \001(\005\032\363\001\n\tMobileApp\022\016\n\006app_id\030\001"
     " \001(\t\022\025\n\rapp_bundle_id\030\002 \001(\t\022\024\n\014app_categ"
     "ory\030\003 \001(\005\022\030\n\020app_publisher_id\030\004 \001(\005\022\\\n\024a"
-    "pp_interaction_type\030\005 \003(\0162>.protocol.bai"
+    "pp_interaction_type\030\005 \003(\0162>.protocol.Bai"
     "du.BidRequest.Mobile.MobileApp.AppIntera"
     "ctionType\"1\n\022AppInteractionType\022\r\n\tTELEP"
     "HONE\020\000\022\014\n\010DOWNLOAD\020\001\"E\n\020MobileDeviceType"
@@ -528,16 +528,16 @@ void protobuf_AddDesc_bidding_2eproto() {
     "e_type\030\007 \003(\005B\002\020\001\022!\n\031excluded_landing_pag"
     "e_url\030\010 \003(\t\022\"\n\032publisher_settings_list_i"
     "d\030\016 \003(\006\022\023\n\013minimum_cpm\030\t \001(\005\022R\n\024preferre"
-    "d_order_info\030\r \001(\01324.protocol.baidu.BidR"
+    "d_order_info\030\r \001(\01324.protocol.Baidu.BidR"
     "equest.AdSlot.PreferredOrderInfo\032\307\001\n\022Pre"
     "ferredOrderInfo\022]\n\020preferred_orders\030\001 \003("
-    "\0132C.protocol.baidu.BidRequest.AdSlot.Pre"
+    "\0132C.protocol.Baidu.BidRequest.AdSlot.Pre"
     "ferredOrderInfo.PreferredOrder\022\033\n\rallow_"
     "auction\030\002 \001(\010:\004true\0325\n\016PreferredOrder\022\020\n"
     "\010order_id\030\001 \001(\003\022\021\n\tfixed_cpm\030\002 \001(\003\"+\n\006Ge"
     "nder\022\013\n\007UNKNOWN\020\000\022\010\n\004MALE\020\001\022\n\n\006FEMALE\020\002\""
     "\230\003\n\013BidResponse\022\n\n\002id\030\001 \002(\t\022*\n\002ad\030\002 \003(\0132"
-    "\036.protocol.baidu.BidResponse.Ad\022\024\n\014debug"
+    "\036.protocol.Baidu.BidResponse.Ad\022\024\n\014debug"
     "_string\030\003 \001(\t\022\032\n\022processing_time_ms\030\004 \001("
     "\005\032\236\002\n\002Ad\022\023\n\013sequence_id\030\001 \001(\005\022\023\n\013creativ"
     "e_id\030\002 \001(\003\022\017\n\007max_cpm\030\003 \001(\005\022\017\n\007extdata\030\005"
@@ -974,7 +974,7 @@ bool BidRequest_Geo_Coordinate::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   while ((tag = input->ReadTag()) != 0) {
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional .protocol.baidu.BidRequest.Geo.Coordinate.Standard standard = 1;
+      // optional .protocol.Baidu.BidRequest.Geo.Coordinate.Standard standard = 1;
       case 1: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
@@ -982,8 +982,8 @@ bool BidRequest_Geo_Coordinate::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
                  input, &value)));
-          if (::protocol::baidu::BidRequest_Geo_Coordinate_Standard_IsValid(value)) {
-            set_standard(static_cast< ::protocol::baidu::BidRequest_Geo_Coordinate_Standard >(value));
+          if (::protocol::Baidu::BidRequest_Geo_Coordinate_Standard_IsValid(value)) {
+            set_standard(static_cast< ::protocol::Baidu::BidRequest_Geo_Coordinate_Standard >(value));
           } else {
             mutable_unknown_fields()->AddVarint(1, value);
           }
@@ -1044,7 +1044,7 @@ bool BidRequest_Geo_Coordinate::MergePartialFromCodedStream(
 
 void BidRequest_Geo_Coordinate::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // optional .protocol.baidu.BidRequest.Geo.Coordinate.Standard standard = 1;
+  // optional .protocol.Baidu.BidRequest.Geo.Coordinate.Standard standard = 1;
   if (has_standard()) {
     ::google::protobuf::internal::WireFormatLite::WriteEnum(
       1, this->standard(), output);
@@ -1068,7 +1068,7 @@ void BidRequest_Geo_Coordinate::SerializeWithCachedSizes(
 
 ::google::protobuf::uint8* BidRequest_Geo_Coordinate::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // optional .protocol.baidu.BidRequest.Geo.Coordinate.Standard standard = 1;
+  // optional .protocol.Baidu.BidRequest.Geo.Coordinate.Standard standard = 1;
   if (has_standard()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
       1, this->standard(), target);
@@ -1095,7 +1095,7 @@ int BidRequest_Geo_Coordinate::ByteSize() const {
   int total_size = 0;
 
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    // optional .protocol.baidu.BidRequest.Geo.Coordinate.Standard standard = 1;
+    // optional .protocol.Baidu.BidRequest.Geo.Coordinate.Standard standard = 1;
     if (has_standard()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::EnumSize(this->standard());
@@ -1597,7 +1597,7 @@ BidRequest_Geo::BidRequest_Geo()
 }
 
 void BidRequest_Geo::InitAsDefaultInstance() {
-  user_location_ = const_cast< ::protocol::baidu::BidRequest_Geo_UserLocation*>(&::protocol::baidu::BidRequest_Geo_UserLocation::default_instance());
+  user_location_ = const_cast< ::protocol::Baidu::BidRequest_Geo_UserLocation*>(&::protocol::Baidu::BidRequest_Geo_UserLocation::default_instance());
 }
 
 BidRequest_Geo::BidRequest_Geo(const BidRequest_Geo& from)
@@ -1646,7 +1646,7 @@ BidRequest_Geo* BidRequest_Geo::New() const {
 void BidRequest_Geo::Clear() {
   if (_has_bits_[1 / 32] & (0xffu << (1 % 32))) {
     if (has_user_location()) {
-      if (user_location_ != NULL) user_location_->::protocol::baidu::BidRequest_Geo_UserLocation::Clear();
+      if (user_location_ != NULL) user_location_->::protocol::Baidu::BidRequest_Geo_UserLocation::Clear();
     }
   }
   user_coordinate_.Clear();
@@ -1660,7 +1660,7 @@ bool BidRequest_Geo::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   while ((tag = input->ReadTag()) != 0) {
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // repeated .protocol.baidu.BidRequest.Geo.Coordinate user_coordinate = 1;
+      // repeated .protocol.Baidu.BidRequest.Geo.Coordinate user_coordinate = 1;
       case 1: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
@@ -1675,7 +1675,7 @@ bool BidRequest_Geo::MergePartialFromCodedStream(
         break;
       }
 
-      // optional .protocol.baidu.BidRequest.Geo.UserLocation user_location = 2;
+      // optional .protocol.Baidu.BidRequest.Geo.UserLocation user_location = 2;
       case 2: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
@@ -1707,13 +1707,13 @@ bool BidRequest_Geo::MergePartialFromCodedStream(
 
 void BidRequest_Geo::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // repeated .protocol.baidu.BidRequest.Geo.Coordinate user_coordinate = 1;
+  // repeated .protocol.Baidu.BidRequest.Geo.Coordinate user_coordinate = 1;
   for (int i = 0; i < this->user_coordinate_size(); i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       1, this->user_coordinate(i), output);
   }
 
-  // optional .protocol.baidu.BidRequest.Geo.UserLocation user_location = 2;
+  // optional .protocol.Baidu.BidRequest.Geo.UserLocation user_location = 2;
   if (has_user_location()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       2, this->user_location(), output);
@@ -1727,14 +1727,14 @@ void BidRequest_Geo::SerializeWithCachedSizes(
 
 ::google::protobuf::uint8* BidRequest_Geo::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // repeated .protocol.baidu.BidRequest.Geo.Coordinate user_coordinate = 1;
+  // repeated .protocol.Baidu.BidRequest.Geo.Coordinate user_coordinate = 1;
   for (int i = 0; i < this->user_coordinate_size(); i++) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
         1, this->user_coordinate(i), target);
   }
 
-  // optional .protocol.baidu.BidRequest.Geo.UserLocation user_location = 2;
+  // optional .protocol.Baidu.BidRequest.Geo.UserLocation user_location = 2;
   if (has_user_location()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
@@ -1752,7 +1752,7 @@ int BidRequest_Geo::ByteSize() const {
   int total_size = 0;
 
   if (_has_bits_[1 / 32] & (0xffu << (1 % 32))) {
-    // optional .protocol.baidu.BidRequest.Geo.UserLocation user_location = 2;
+    // optional .protocol.Baidu.BidRequest.Geo.UserLocation user_location = 2;
     if (has_user_location()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
@@ -1760,7 +1760,7 @@ int BidRequest_Geo::ByteSize() const {
     }
 
   }
-  // repeated .protocol.baidu.BidRequest.Geo.Coordinate user_coordinate = 1;
+  // repeated .protocol.Baidu.BidRequest.Geo.Coordinate user_coordinate = 1;
   total_size += 1 * this->user_coordinate_size();
   for (int i = 0; i < this->user_coordinate_size(); i++) {
     total_size +=
@@ -1796,7 +1796,7 @@ void BidRequest_Geo::MergeFrom(const BidRequest_Geo& from) {
   user_coordinate_.MergeFrom(from.user_coordinate_);
   if (from._has_bits_[1 / 32] & (0xffu << (1 % 32))) {
     if (from.has_user_location()) {
-      mutable_user_location()->::protocol::baidu::BidRequest_Geo_UserLocation::MergeFrom(from.user_location());
+      mutable_user_location()->::protocol::Baidu::BidRequest_Geo_UserLocation::MergeFrom(from.user_location());
     }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
@@ -2382,7 +2382,7 @@ bool BidRequest_Mobile_MobileApp::MergePartialFromCodedStream(
         break;
       }
 
-      // repeated .protocol.baidu.BidRequest.Mobile.MobileApp.AppInteractionType app_interaction_type = 5;
+      // repeated .protocol.Baidu.BidRequest.Mobile.MobileApp.AppInteractionType app_interaction_type = 5;
       case 5: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
@@ -2391,8 +2391,8 @@ bool BidRequest_Mobile_MobileApp::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
                  input, &value)));
-          if (::protocol::baidu::BidRequest_Mobile_MobileApp_AppInteractionType_IsValid(value)) {
-            add_app_interaction_type(static_cast< ::protocol::baidu::BidRequest_Mobile_MobileApp_AppInteractionType >(value));
+          if (::protocol::Baidu::BidRequest_Mobile_MobileApp_AppInteractionType_IsValid(value)) {
+            add_app_interaction_type(static_cast< ::protocol::Baidu::BidRequest_Mobile_MobileApp_AppInteractionType >(value));
           } else {
             mutable_unknown_fields()->AddVarint(5, value);
           }
@@ -2401,7 +2401,7 @@ bool BidRequest_Mobile_MobileApp::MergePartialFromCodedStream(
                       WIRETYPE_LENGTH_DELIMITED) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPackedEnumNoInline(
                  input,
-                 &::protocol::baidu::BidRequest_Mobile_MobileApp_AppInteractionType_IsValid,
+                 &::protocol::Baidu::BidRequest_Mobile_MobileApp_AppInteractionType_IsValid,
                  this->mutable_app_interaction_type())));
         } else {
           goto handle_uninterpreted;
@@ -2457,7 +2457,7 @@ void BidRequest_Mobile_MobileApp::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt32(4, this->app_publisher_id(), output);
   }
 
-  // repeated .protocol.baidu.BidRequest.Mobile.MobileApp.AppInteractionType app_interaction_type = 5;
+  // repeated .protocol.Baidu.BidRequest.Mobile.MobileApp.AppInteractionType app_interaction_type = 5;
   for (int i = 0; i < this->app_interaction_type_size(); i++) {
     ::google::protobuf::internal::WireFormatLite::WriteEnum(
       5, this->app_interaction_type(i), output);
@@ -2501,7 +2501,7 @@ void BidRequest_Mobile_MobileApp::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(4, this->app_publisher_id(), target);
   }
 
-  // repeated .protocol.baidu.BidRequest.Mobile.MobileApp.AppInteractionType app_interaction_type = 5;
+  // repeated .protocol.Baidu.BidRequest.Mobile.MobileApp.AppInteractionType app_interaction_type = 5;
   for (int i = 0; i < this->app_interaction_type_size(); i++) {
     target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
       5, this->app_interaction_type(i), target);
@@ -2547,7 +2547,7 @@ int BidRequest_Mobile_MobileApp::ByteSize() const {
     }
 
   }
-  // repeated .protocol.baidu.BidRequest.Mobile.MobileApp.AppInteractionType app_interaction_type = 5;
+  // repeated .protocol.Baidu.BidRequest.Mobile.MobileApp.AppInteractionType app_interaction_type = 5;
   {
     int data_size = 0;
     for (int i = 0; i < this->app_interaction_type_size(); i++) {
@@ -2662,8 +2662,8 @@ BidRequest_Mobile::BidRequest_Mobile()
 }
 
 void BidRequest_Mobile::InitAsDefaultInstance() {
-  os_version_ = const_cast< ::protocol::baidu::BidRequest_Mobile_DeviceOsVersion*>(&::protocol::baidu::BidRequest_Mobile_DeviceOsVersion::default_instance());
-  mobile_app_ = const_cast< ::protocol::baidu::BidRequest_Mobile_MobileApp*>(&::protocol::baidu::BidRequest_Mobile_MobileApp::default_instance());
+  os_version_ = const_cast< ::protocol::Baidu::BidRequest_Mobile_DeviceOsVersion*>(&::protocol::Baidu::BidRequest_Mobile_DeviceOsVersion::default_instance());
+  mobile_app_ = const_cast< ::protocol::Baidu::BidRequest_Mobile_MobileApp*>(&::protocol::Baidu::BidRequest_Mobile_MobileApp::default_instance());
 }
 
 BidRequest_Mobile::BidRequest_Mobile(const BidRequest_Mobile& from)
@@ -2743,7 +2743,7 @@ void BidRequest_Mobile::Clear() {
     device_type_ = 0;
     platform_ = 0;
     if (has_os_version()) {
-      if (os_version_ != NULL) os_version_->::protocol::baidu::BidRequest_Mobile_DeviceOsVersion::Clear();
+      if (os_version_ != NULL) os_version_->::protocol::Baidu::BidRequest_Mobile_DeviceOsVersion::Clear();
     }
     if (has_brand()) {
       if (brand_ != &::google::protobuf::internal::kEmptyString) {
@@ -2767,7 +2767,7 @@ void BidRequest_Mobile::Clear() {
       }
     }
     if (has_mobile_app()) {
-      if (mobile_app_ != NULL) mobile_app_->::protocol::baidu::BidRequest_Mobile_MobileApp::Clear();
+      if (mobile_app_ != NULL) mobile_app_->::protocol::Baidu::BidRequest_Mobile_MobileApp::Clear();
     }
   }
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
@@ -2796,7 +2796,7 @@ bool BidRequest_Mobile::MergePartialFromCodedStream(
         break;
       }
 
-      // optional .protocol.baidu.BidRequest.Mobile.MobileDeviceType device_type = 2;
+      // optional .protocol.Baidu.BidRequest.Mobile.MobileDeviceType device_type = 2;
       case 2: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
@@ -2805,8 +2805,8 @@ bool BidRequest_Mobile::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
                  input, &value)));
-          if (::protocol::baidu::BidRequest_Mobile_MobileDeviceType_IsValid(value)) {
-            set_device_type(static_cast< ::protocol::baidu::BidRequest_Mobile_MobileDeviceType >(value));
+          if (::protocol::Baidu::BidRequest_Mobile_MobileDeviceType_IsValid(value)) {
+            set_device_type(static_cast< ::protocol::Baidu::BidRequest_Mobile_MobileDeviceType >(value));
           } else {
             mutable_unknown_fields()->AddVarint(2, value);
           }
@@ -2817,7 +2817,7 @@ bool BidRequest_Mobile::MergePartialFromCodedStream(
         break;
       }
 
-      // optional .protocol.baidu.BidRequest.Mobile.OS platform = 3 [default = UNKNOWN_OS];
+      // optional .protocol.Baidu.BidRequest.Mobile.OS platform = 3 [default = UNKNOWN_OS];
       case 3: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
@@ -2826,8 +2826,8 @@ bool BidRequest_Mobile::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
                  input, &value)));
-          if (::protocol::baidu::BidRequest_Mobile_OS_IsValid(value)) {
-            set_platform(static_cast< ::protocol::baidu::BidRequest_Mobile_OS >(value));
+          if (::protocol::Baidu::BidRequest_Mobile_OS_IsValid(value)) {
+            set_platform(static_cast< ::protocol::Baidu::BidRequest_Mobile_OS >(value));
           } else {
             mutable_unknown_fields()->AddVarint(3, value);
           }
@@ -2838,7 +2838,7 @@ bool BidRequest_Mobile::MergePartialFromCodedStream(
         break;
       }
 
-      // optional .protocol.baidu.BidRequest.Mobile.DeviceOsVersion os_version = 4;
+      // optional .protocol.Baidu.BidRequest.Mobile.DeviceOsVersion os_version = 4;
       case 4: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
@@ -2934,7 +2934,7 @@ bool BidRequest_Mobile::MergePartialFromCodedStream(
         break;
       }
 
-      // optional .protocol.baidu.BidRequest.Mobile.WirelessNetworkType wireless_network_type = 10;
+      // optional .protocol.Baidu.BidRequest.Mobile.WirelessNetworkType wireless_network_type = 10;
       case 10: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
@@ -2943,8 +2943,8 @@ bool BidRequest_Mobile::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
                  input, &value)));
-          if (::protocol::baidu::BidRequest_Mobile_WirelessNetworkType_IsValid(value)) {
-            set_wireless_network_type(static_cast< ::protocol::baidu::BidRequest_Mobile_WirelessNetworkType >(value));
+          if (::protocol::Baidu::BidRequest_Mobile_WirelessNetworkType_IsValid(value)) {
+            set_wireless_network_type(static_cast< ::protocol::Baidu::BidRequest_Mobile_WirelessNetworkType >(value));
           } else {
             mutable_unknown_fields()->AddVarint(10, value);
           }
@@ -2972,7 +2972,7 @@ bool BidRequest_Mobile::MergePartialFromCodedStream(
         break;
       }
 
-      // optional .protocol.baidu.BidRequest.Mobile.MobileApp mobile_app = 12;
+      // optional .protocol.Baidu.BidRequest.Mobile.MobileApp mobile_app = 12;
       case 12: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
@@ -3013,19 +3013,19 @@ void BidRequest_Mobile::SerializeWithCachedSizes(
       1, this->device_id(), output);
   }
 
-  // optional .protocol.baidu.BidRequest.Mobile.MobileDeviceType device_type = 2;
+  // optional .protocol.Baidu.BidRequest.Mobile.MobileDeviceType device_type = 2;
   if (has_device_type()) {
     ::google::protobuf::internal::WireFormatLite::WriteEnum(
       2, this->device_type(), output);
   }
 
-  // optional .protocol.baidu.BidRequest.Mobile.OS platform = 3 [default = UNKNOWN_OS];
+  // optional .protocol.Baidu.BidRequest.Mobile.OS platform = 3 [default = UNKNOWN_OS];
   if (has_platform()) {
     ::google::protobuf::internal::WireFormatLite::WriteEnum(
       3, this->platform(), output);
   }
 
-  // optional .protocol.baidu.BidRequest.Mobile.DeviceOsVersion os_version = 4;
+  // optional .protocol.Baidu.BidRequest.Mobile.DeviceOsVersion os_version = 4;
   if (has_os_version()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       4, this->os_version(), output);
@@ -3064,7 +3064,7 @@ void BidRequest_Mobile::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt64(9, this->carrier_id(), output);
   }
 
-  // optional .protocol.baidu.BidRequest.Mobile.WirelessNetworkType wireless_network_type = 10;
+  // optional .protocol.Baidu.BidRequest.Mobile.WirelessNetworkType wireless_network_type = 10;
   if (has_wireless_network_type()) {
     ::google::protobuf::internal::WireFormatLite::WriteEnum(
       10, this->wireless_network_type(), output);
@@ -3079,7 +3079,7 @@ void BidRequest_Mobile::SerializeWithCachedSizes(
       11, this->for_advertising_id(), output);
   }
 
-  // optional .protocol.baidu.BidRequest.Mobile.MobileApp mobile_app = 12;
+  // optional .protocol.Baidu.BidRequest.Mobile.MobileApp mobile_app = 12;
   if (has_mobile_app()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       12, this->mobile_app(), output);
@@ -3103,19 +3103,19 @@ void BidRequest_Mobile::SerializeWithCachedSizes(
         1, this->device_id(), target);
   }
 
-  // optional .protocol.baidu.BidRequest.Mobile.MobileDeviceType device_type = 2;
+  // optional .protocol.Baidu.BidRequest.Mobile.MobileDeviceType device_type = 2;
   if (has_device_type()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
       2, this->device_type(), target);
   }
 
-  // optional .protocol.baidu.BidRequest.Mobile.OS platform = 3 [default = UNKNOWN_OS];
+  // optional .protocol.Baidu.BidRequest.Mobile.OS platform = 3 [default = UNKNOWN_OS];
   if (has_platform()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
       3, this->platform(), target);
   }
 
-  // optional .protocol.baidu.BidRequest.Mobile.DeviceOsVersion os_version = 4;
+  // optional .protocol.Baidu.BidRequest.Mobile.DeviceOsVersion os_version = 4;
   if (has_os_version()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
@@ -3157,7 +3157,7 @@ void BidRequest_Mobile::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(9, this->carrier_id(), target);
   }
 
-  // optional .protocol.baidu.BidRequest.Mobile.WirelessNetworkType wireless_network_type = 10;
+  // optional .protocol.Baidu.BidRequest.Mobile.WirelessNetworkType wireless_network_type = 10;
   if (has_wireless_network_type()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
       10, this->wireless_network_type(), target);
@@ -3173,7 +3173,7 @@ void BidRequest_Mobile::SerializeWithCachedSizes(
         11, this->for_advertising_id(), target);
   }
 
-  // optional .protocol.baidu.BidRequest.Mobile.MobileApp mobile_app = 12;
+  // optional .protocol.Baidu.BidRequest.Mobile.MobileApp mobile_app = 12;
   if (has_mobile_app()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
@@ -3198,19 +3198,19 @@ int BidRequest_Mobile::ByteSize() const {
           this->device_id());
     }
 
-    // optional .protocol.baidu.BidRequest.Mobile.MobileDeviceType device_type = 2;
+    // optional .protocol.Baidu.BidRequest.Mobile.MobileDeviceType device_type = 2;
     if (has_device_type()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::EnumSize(this->device_type());
     }
 
-    // optional .protocol.baidu.BidRequest.Mobile.OS platform = 3 [default = UNKNOWN_OS];
+    // optional .protocol.Baidu.BidRequest.Mobile.OS platform = 3 [default = UNKNOWN_OS];
     if (has_platform()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::EnumSize(this->platform());
     }
 
-    // optional .protocol.baidu.BidRequest.Mobile.DeviceOsVersion os_version = 4;
+    // optional .protocol.Baidu.BidRequest.Mobile.DeviceOsVersion os_version = 4;
     if (has_os_version()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
@@ -3254,7 +3254,7 @@ int BidRequest_Mobile::ByteSize() const {
           this->carrier_id());
     }
 
-    // optional .protocol.baidu.BidRequest.Mobile.WirelessNetworkType wireless_network_type = 10;
+    // optional .protocol.Baidu.BidRequest.Mobile.WirelessNetworkType wireless_network_type = 10;
     if (has_wireless_network_type()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::EnumSize(this->wireless_network_type());
@@ -3267,7 +3267,7 @@ int BidRequest_Mobile::ByteSize() const {
           this->for_advertising_id());
     }
 
-    // optional .protocol.baidu.BidRequest.Mobile.MobileApp mobile_app = 12;
+    // optional .protocol.Baidu.BidRequest.Mobile.MobileApp mobile_app = 12;
     if (has_mobile_app()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
@@ -3311,7 +3311,7 @@ void BidRequest_Mobile::MergeFrom(const BidRequest_Mobile& from) {
       set_platform(from.platform());
     }
     if (from.has_os_version()) {
-      mutable_os_version()->::protocol::baidu::BidRequest_Mobile_DeviceOsVersion::MergeFrom(from.os_version());
+      mutable_os_version()->::protocol::Baidu::BidRequest_Mobile_DeviceOsVersion::MergeFrom(from.os_version());
     }
     if (from.has_brand()) {
       set_brand(from.brand());
@@ -3337,7 +3337,7 @@ void BidRequest_Mobile::MergeFrom(const BidRequest_Mobile& from) {
       set_for_advertising_id(from.for_advertising_id());
     }
     if (from.has_mobile_app()) {
-      mutable_mobile_app()->::protocol::baidu::BidRequest_Mobile_MobileApp::MergeFrom(from.mobile_app());
+      mutable_mobile_app()->::protocol::Baidu::BidRequest_Mobile_MobileApp::MergeFrom(from.mobile_app());
     }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
@@ -4070,7 +4070,7 @@ bool BidRequest_AdSlot_PreferredOrderInfo::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   while ((tag = input->ReadTag()) != 0) {
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // repeated .protocol.baidu.BidRequest.AdSlot.PreferredOrderInfo.PreferredOrder preferred_orders = 1;
+      // repeated .protocol.Baidu.BidRequest.AdSlot.PreferredOrderInfo.PreferredOrder preferred_orders = 1;
       case 1: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
@@ -4119,7 +4119,7 @@ bool BidRequest_AdSlot_PreferredOrderInfo::MergePartialFromCodedStream(
 
 void BidRequest_AdSlot_PreferredOrderInfo::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // repeated .protocol.baidu.BidRequest.AdSlot.PreferredOrderInfo.PreferredOrder preferred_orders = 1;
+  // repeated .protocol.Baidu.BidRequest.AdSlot.PreferredOrderInfo.PreferredOrder preferred_orders = 1;
   for (int i = 0; i < this->preferred_orders_size(); i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       1, this->preferred_orders(i), output);
@@ -4138,7 +4138,7 @@ void BidRequest_AdSlot_PreferredOrderInfo::SerializeWithCachedSizes(
 
 ::google::protobuf::uint8* BidRequest_AdSlot_PreferredOrderInfo::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // repeated .protocol.baidu.BidRequest.AdSlot.PreferredOrderInfo.PreferredOrder preferred_orders = 1;
+  // repeated .protocol.Baidu.BidRequest.AdSlot.PreferredOrderInfo.PreferredOrder preferred_orders = 1;
   for (int i = 0; i < this->preferred_orders_size(); i++) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
@@ -4167,7 +4167,7 @@ int BidRequest_AdSlot_PreferredOrderInfo::ByteSize() const {
     }
 
   }
-  // repeated .protocol.baidu.BidRequest.AdSlot.PreferredOrderInfo.PreferredOrder preferred_orders = 1;
+  // repeated .protocol.Baidu.BidRequest.AdSlot.PreferredOrderInfo.PreferredOrder preferred_orders = 1;
   total_size += 1 * this->preferred_orders_size();
   for (int i = 0; i < this->preferred_orders_size(); i++) {
     total_size +=
@@ -4270,7 +4270,7 @@ BidRequest_AdSlot::BidRequest_AdSlot()
 }
 
 void BidRequest_AdSlot::InitAsDefaultInstance() {
-  preferred_order_info_ = const_cast< ::protocol::baidu::BidRequest_AdSlot_PreferredOrderInfo*>(&::protocol::baidu::BidRequest_AdSlot_PreferredOrderInfo::default_instance());
+  preferred_order_info_ = const_cast< ::protocol::Baidu::BidRequest_AdSlot_PreferredOrderInfo*>(&::protocol::Baidu::BidRequest_AdSlot_PreferredOrderInfo::default_instance());
 }
 
 BidRequest_AdSlot::BidRequest_AdSlot(const BidRequest_AdSlot& from)
@@ -4341,7 +4341,7 @@ void BidRequest_AdSlot::Clear() {
     slot_visibility_ = 0;
     minimum_cpm_ = 0;
     if (has_preferred_order_info()) {
-      if (preferred_order_info_ != NULL) preferred_order_info_->::protocol::baidu::BidRequest_AdSlot_PreferredOrderInfo::Clear();
+      if (preferred_order_info_ != NULL) preferred_order_info_->::protocol::Baidu::BidRequest_AdSlot_PreferredOrderInfo::Clear();
     }
   }
   creative_type_.Clear();
@@ -4556,7 +4556,7 @@ bool BidRequest_AdSlot::MergePartialFromCodedStream(
         break;
       }
 
-      // optional .protocol.baidu.BidRequest.AdSlot.PreferredOrderInfo preferred_order_info = 13;
+      // optional .protocol.Baidu.BidRequest.AdSlot.PreferredOrderInfo preferred_order_info = 13;
       case 13: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
@@ -4679,7 +4679,7 @@ void BidRequest_AdSlot::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt32(12, this->video_start_delay(), output);
   }
 
-  // optional .protocol.baidu.BidRequest.AdSlot.PreferredOrderInfo preferred_order_info = 13;
+  // optional .protocol.Baidu.BidRequest.AdSlot.PreferredOrderInfo preferred_order_info = 13;
   if (has_preferred_order_info()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       13, this->preferred_order_info(), output);
@@ -4772,7 +4772,7 @@ void BidRequest_AdSlot::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(12, this->video_start_delay(), target);
   }
 
-  // optional .protocol.baidu.BidRequest.AdSlot.PreferredOrderInfo preferred_order_info = 13;
+  // optional .protocol.Baidu.BidRequest.AdSlot.PreferredOrderInfo preferred_order_info = 13;
   if (has_preferred_order_info()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
@@ -4868,7 +4868,7 @@ int BidRequest_AdSlot::ByteSize() const {
           this->minimum_cpm());
     }
 
-    // optional .protocol.baidu.BidRequest.AdSlot.PreferredOrderInfo preferred_order_info = 13;
+    // optional .protocol.Baidu.BidRequest.AdSlot.PreferredOrderInfo preferred_order_info = 13;
     if (has_preferred_order_info()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
@@ -4969,7 +4969,7 @@ void BidRequest_AdSlot::MergeFrom(const BidRequest_AdSlot& from) {
       set_minimum_cpm(from.minimum_cpm());
     }
     if (from.has_preferred_order_info()) {
-      mutable_preferred_order_info()->::protocol::baidu::BidRequest_AdSlot_PreferredOrderInfo::MergeFrom(from.preferred_order_info());
+      mutable_preferred_order_info()->::protocol::Baidu::BidRequest_AdSlot_PreferredOrderInfo::MergeFrom(from.preferred_order_info());
     }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
@@ -5059,9 +5059,9 @@ BidRequest::BidRequest()
 }
 
 void BidRequest::InitAsDefaultInstance() {
-  user_geo_info_ = const_cast< ::protocol::baidu::BidRequest_Geo*>(&::protocol::baidu::BidRequest_Geo::default_instance());
-  mobile_ = const_cast< ::protocol::baidu::BidRequest_Mobile*>(&::protocol::baidu::BidRequest_Mobile::default_instance());
-  video_ = const_cast< ::protocol::baidu::BidRequest_Video*>(&::protocol::baidu::BidRequest_Video::default_instance());
+  user_geo_info_ = const_cast< ::protocol::Baidu::BidRequest_Geo*>(&::protocol::Baidu::BidRequest_Geo::default_instance());
+  mobile_ = const_cast< ::protocol::Baidu::BidRequest_Mobile*>(&::protocol::Baidu::BidRequest_Mobile::default_instance());
+  video_ = const_cast< ::protocol::Baidu::BidRequest_Video*>(&::protocol::Baidu::BidRequest_Video::default_instance());
 }
 
 BidRequest::BidRequest(const BidRequest& from)
@@ -5189,7 +5189,7 @@ void BidRequest::Clear() {
       }
     }
     if (has_user_geo_info()) {
-      if (user_geo_info_ != NULL) user_geo_info_->::protocol::baidu::BidRequest_Geo::Clear();
+      if (user_geo_info_ != NULL) user_geo_info_->::protocol::Baidu::BidRequest_Geo::Clear();
     }
     if (has_url()) {
       if (url_ != &::google::protobuf::internal::kEmptyString) {
@@ -5209,10 +5209,10 @@ void BidRequest::Clear() {
     page_quality_ = 0;
     page_vertical_ = 0;
     if (has_mobile()) {
-      if (mobile_ != NULL) mobile_->::protocol::baidu::BidRequest_Mobile::Clear();
+      if (mobile_ != NULL) mobile_->::protocol::Baidu::BidRequest_Mobile::Clear();
     }
     if (has_video()) {
-      if (video_ != NULL) video_->::protocol::baidu::BidRequest_Video::Clear();
+      if (video_ != NULL) video_->::protocol::Baidu::BidRequest_Video::Clear();
     }
     is_test_ = false;
   }
@@ -5339,7 +5339,7 @@ bool BidRequest::MergePartialFromCodedStream(
         break;
       }
 
-      // optional .protocol.baidu.BidRequest.Gender gender = 7;
+      // optional .protocol.Baidu.BidRequest.Gender gender = 7;
       case 7: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
@@ -5348,8 +5348,8 @@ bool BidRequest::MergePartialFromCodedStream(
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
                  input, &value)));
-          if (::protocol::baidu::BidRequest_Gender_IsValid(value)) {
-            set_gender(static_cast< ::protocol::baidu::BidRequest_Gender >(value));
+          if (::protocol::Baidu::BidRequest_Gender_IsValid(value)) {
+            set_gender(static_cast< ::protocol::Baidu::BidRequest_Gender >(value));
           } else {
             mutable_unknown_fields()->AddVarint(7, value);
           }
@@ -5360,7 +5360,7 @@ bool BidRequest::MergePartialFromCodedStream(
         break;
       }
 
-      // repeated .protocol.baidu.BidRequest.BaiduId baidu_id_list = 8;
+      // repeated .protocol.Baidu.BidRequest.BaiduId baidu_id_list = 8;
       case 8: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
@@ -5547,7 +5547,7 @@ bool BidRequest::MergePartialFromCodedStream(
         break;
       }
 
-      // repeated .protocol.baidu.BidRequest.AdSlot adslot = 20;
+      // repeated .protocol.Baidu.BidRequest.AdSlot adslot = 20;
       case 20: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
@@ -5610,7 +5610,7 @@ bool BidRequest::MergePartialFromCodedStream(
         break;
       }
 
-      // optional .protocol.baidu.BidRequest.Geo user_geo_info = 28;
+      // optional .protocol.Baidu.BidRequest.Geo user_geo_info = 28;
       case 28: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
@@ -5624,7 +5624,7 @@ bool BidRequest::MergePartialFromCodedStream(
         break;
       }
 
-      // optional .protocol.baidu.BidRequest.Mobile mobile = 29;
+      // optional .protocol.Baidu.BidRequest.Mobile mobile = 29;
       case 29: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
@@ -5638,7 +5638,7 @@ bool BidRequest::MergePartialFromCodedStream(
         break;
       }
 
-      // optional .protocol.baidu.BidRequest.Video video = 30;
+      // optional .protocol.Baidu.BidRequest.Video video = 30;
       case 30: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
@@ -5717,13 +5717,13 @@ void BidRequest::SerializeWithCachedSizes(
       6, this->user_category(i), output);
   }
 
-  // optional .protocol.baidu.BidRequest.Gender gender = 7;
+  // optional .protocol.Baidu.BidRequest.Gender gender = 7;
   if (has_gender()) {
     ::google::protobuf::internal::WireFormatLite::WriteEnum(
       7, this->gender(), output);
   }
 
-  // repeated .protocol.baidu.BidRequest.BaiduId baidu_id_list = 8;
+  // repeated .protocol.Baidu.BidRequest.BaiduId baidu_id_list = 8;
   for (int i = 0; i < this->baidu_id_list_size(); i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       8, this->baidu_id_list(i), output);
@@ -5804,7 +5804,7 @@ void BidRequest::SerializeWithCachedSizes(
       this->excluded_product_category(i), output);
   }
 
-  // repeated .protocol.baidu.BidRequest.AdSlot adslot = 20;
+  // repeated .protocol.Baidu.BidRequest.AdSlot adslot = 20;
   for (int i = 0; i < this->adslot_size(); i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       20, this->adslot(i), output);
@@ -5825,19 +5825,19 @@ void BidRequest::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteBool(27, this->is_ping(), output);
   }
 
-  // optional .protocol.baidu.BidRequest.Geo user_geo_info = 28;
+  // optional .protocol.Baidu.BidRequest.Geo user_geo_info = 28;
   if (has_user_geo_info()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       28, this->user_geo_info(), output);
   }
 
-  // optional .protocol.baidu.BidRequest.Mobile mobile = 29;
+  // optional .protocol.Baidu.BidRequest.Mobile mobile = 29;
   if (has_mobile()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       29, this->mobile(), output);
   }
 
-  // optional .protocol.baidu.BidRequest.Video video = 30;
+  // optional .protocol.Baidu.BidRequest.Video video = 30;
   if (has_video()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       30, this->video(), output);
@@ -5902,13 +5902,13 @@ void BidRequest::SerializeWithCachedSizes(
       WriteInt64ToArray(6, this->user_category(i), target);
   }
 
-  // optional .protocol.baidu.BidRequest.Gender gender = 7;
+  // optional .protocol.Baidu.BidRequest.Gender gender = 7;
   if (has_gender()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
       7, this->gender(), target);
   }
 
-  // repeated .protocol.baidu.BidRequest.BaiduId baidu_id_list = 8;
+  // repeated .protocol.Baidu.BidRequest.BaiduId baidu_id_list = 8;
   for (int i = 0; i < this->baidu_id_list_size(); i++) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
@@ -5998,7 +5998,7 @@ void BidRequest::SerializeWithCachedSizes(
       WriteInt32NoTagToArray(this->excluded_product_category(i), target);
   }
 
-  // repeated .protocol.baidu.BidRequest.AdSlot adslot = 20;
+  // repeated .protocol.Baidu.BidRequest.AdSlot adslot = 20;
   for (int i = 0; i < this->adslot_size(); i++) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
@@ -6020,21 +6020,21 @@ void BidRequest::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(27, this->is_ping(), target);
   }
 
-  // optional .protocol.baidu.BidRequest.Geo user_geo_info = 28;
+  // optional .protocol.Baidu.BidRequest.Geo user_geo_info = 28;
   if (has_user_geo_info()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
         28, this->user_geo_info(), target);
   }
 
-  // optional .protocol.baidu.BidRequest.Mobile mobile = 29;
+  // optional .protocol.Baidu.BidRequest.Mobile mobile = 29;
   if (has_mobile()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
         29, this->mobile(), target);
   }
 
-  // optional .protocol.baidu.BidRequest.Video video = 30;
+  // optional .protocol.Baidu.BidRequest.Video video = 30;
   if (has_video()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
@@ -6087,7 +6087,7 @@ int BidRequest::ByteSize() const {
           this->baidu_user_id_version());
     }
 
-    // optional .protocol.baidu.BidRequest.Gender gender = 7;
+    // optional .protocol.Baidu.BidRequest.Gender gender = 7;
     if (has_gender()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::EnumSize(this->gender());
@@ -6109,7 +6109,7 @@ int BidRequest::ByteSize() const {
           this->flash_version());
     }
 
-    // optional .protocol.baidu.BidRequest.Geo user_geo_info = 28;
+    // optional .protocol.Baidu.BidRequest.Geo user_geo_info = 28;
     if (has_user_geo_info()) {
       total_size += 2 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
@@ -6167,14 +6167,14 @@ int BidRequest::ByteSize() const {
           this->page_vertical());
     }
 
-    // optional .protocol.baidu.BidRequest.Mobile mobile = 29;
+    // optional .protocol.Baidu.BidRequest.Mobile mobile = 29;
     if (has_mobile()) {
       total_size += 2 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           this->mobile());
     }
 
-    // optional .protocol.baidu.BidRequest.Video video = 30;
+    // optional .protocol.Baidu.BidRequest.Video video = 30;
     if (has_video()) {
       total_size += 2 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
@@ -6194,7 +6194,7 @@ int BidRequest::ByteSize() const {
     }
 
   }
-  // repeated .protocol.baidu.BidRequest.BaiduId baidu_id_list = 8;
+  // repeated .protocol.Baidu.BidRequest.BaiduId baidu_id_list = 8;
   total_size += 1 * this->baidu_id_list_size();
   for (int i = 0; i < this->baidu_id_list_size(); i++) {
     total_size +=
@@ -6236,7 +6236,7 @@ int BidRequest::ByteSize() const {
     total_size += data_size;
   }
 
-  // repeated .protocol.baidu.BidRequest.AdSlot adslot = 20;
+  // repeated .protocol.Baidu.BidRequest.AdSlot adslot = 20;
   total_size += 2 * this->adslot_size();
   for (int i = 0; i < this->adslot_size(); i++) {
     total_size +=
@@ -6302,7 +6302,7 @@ void BidRequest::MergeFrom(const BidRequest& from) {
       set_flash_version(from.flash_version());
     }
     if (from.has_user_geo_info()) {
-      mutable_user_geo_info()->::protocol::baidu::BidRequest_Geo::MergeFrom(from.user_geo_info());
+      mutable_user_geo_info()->::protocol::Baidu::BidRequest_Geo::MergeFrom(from.user_geo_info());
     }
     if (from.has_url()) {
       set_url(from.url());
@@ -6328,10 +6328,10 @@ void BidRequest::MergeFrom(const BidRequest& from) {
       set_page_vertical(from.page_vertical());
     }
     if (from.has_mobile()) {
-      mutable_mobile()->::protocol::baidu::BidRequest_Mobile::MergeFrom(from.mobile());
+      mutable_mobile()->::protocol::Baidu::BidRequest_Mobile::MergeFrom(from.mobile());
     }
     if (from.has_video()) {
-      mutable_video()->::protocol::baidu::BidRequest_Video::MergeFrom(from.video());
+      mutable_video()->::protocol::Baidu::BidRequest_Video::MergeFrom(from.video());
     }
     if (from.has_is_test()) {
       set_is_test(from.is_test());
@@ -7304,7 +7304,7 @@ bool BidResponse::MergePartialFromCodedStream(
         break;
       }
 
-      // repeated .protocol.baidu.BidResponse.Ad ad = 2;
+      // repeated .protocol.Baidu.BidResponse.Ad ad = 2;
       case 2: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
@@ -7379,7 +7379,7 @@ void BidResponse::SerializeWithCachedSizes(
       1, this->id(), output);
   }
 
-  // repeated .protocol.baidu.BidResponse.Ad ad = 2;
+  // repeated .protocol.Baidu.BidResponse.Ad ad = 2;
   for (int i = 0; i < this->ad_size(); i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       2, this->ad(i), output);
@@ -7417,7 +7417,7 @@ void BidResponse::SerializeWithCachedSizes(
         1, this->id(), target);
   }
 
-  // repeated .protocol.baidu.BidResponse.Ad ad = 2;
+  // repeated .protocol.Baidu.BidResponse.Ad ad = 2;
   for (int i = 0; i < this->ad_size(); i++) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
@@ -7472,7 +7472,7 @@ int BidResponse::ByteSize() const {
     }
 
   }
-  // repeated .protocol.baidu.BidResponse.Ad ad = 2;
+  // repeated .protocol.Baidu.BidResponse.Ad ad = 2;
   total_size += 1 * this->ad_size();
   for (int i = 0; i < this->ad_size(); i++) {
     total_size +=
@@ -7561,7 +7561,7 @@ void BidResponse::Swap(BidResponse* other) {
 
 // @@protoc_insertion_point(namespace_scope)
 
-}  // namespace baidu
+}  // namespace Baidu
 }  // namespace protocol
 
 // @@protoc_insertion_point(global_scope)

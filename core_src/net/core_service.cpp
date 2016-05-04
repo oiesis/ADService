@@ -10,6 +10,7 @@
 #include "core_config_manager.h"
 #include "click_query_task.h"
 #include "show_query_task.h"
+#include "bid_query_task.h"
 #include <exception>
 
 extern adservice::corelogic::CoreModule g_coreService;
@@ -99,6 +100,14 @@ namespace adservice{
                 ClickConfig* clickConfig = (ClickConfig*)configManager.get(CONFIG_CLICK);
                 httpThreads = std::max(httpThreads,clickConfig->httpthreads);
                 configManager.registerOnChange(CONFIG_CLICK,std::bind(&onConfigChange,CONFIG_CLICK,_1,_2));
+            }
+            //曝光模块初始化相关
+            if(serverConfig->runShow) {
+                HandleShowQueryTask::loadTemplates();
+            }
+            //竞价模块初始化相关
+            if(serverConfig->runBid){
+                HandleBidQueryTask::init();
             }
             // 初始化 logger
             LogConfig* logConfig = (LogConfig*)configManager.get(CONFIG_LOG);

@@ -145,6 +145,14 @@
 // 百度
 #define ADX_BAIDU                                   6
 
+// 淘宝竞价请求模块名
+#define BID_QUERY_PATH_TANX                         "tanxbid"
+// 优酷竞价请求模块名
+#define BID_QUERY_PATH_YOUKU                        "youkubid"
+// 百度竞价请求模块名
+#define BID_QUERY_PATH_BAIDU                        "besbid"
+
+
 /** elasticsearch 相关参数 */
 // 投放单ID基数
 #define ES_SOLUTION_ID_BASE                         1000000
