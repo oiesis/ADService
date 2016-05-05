@@ -22,6 +22,10 @@ namespace protocol {
             return false;
         }
 
+        void BaiduBiddingHandler::buildBidResult(const SelectResult& result){
+
+        }
+
         void BaiduBiddingHandler::match(HttpResponse &response) {
         }
 

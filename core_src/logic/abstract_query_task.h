@@ -31,7 +31,20 @@ namespace adservice {
          */
         class AbstractQueryTask{
         public:
+            explicit AbstractQueryTask(){}
             explicit AbstractQueryTask(const TcpConnectionPtr& _conn,const HttpRequest& request):conn(_conn){
+                data = request.query();
+                userCookies = request.getHeader("Cookie");
+                userAgent = request.getHeader("User-Agent");
+                userIp = request.getHeader("X-Forwarded-For");
+                referer = request.getHeader("Referer");
+                isPost = request.method()== HttpRequest::Method::kPost;
+                needLog = true;
+            }
+
+            void rebullet(const TcpConnectionPtr& _conn,const HttpRequest& request){
+                conn.reset();
+                conn = _conn;
                 data = request.query();
                 userCookies = request.getHeader("Cookie");
                 userAgent = request.getHeader("User-Agent");
@@ -87,7 +100,7 @@ namespace adservice {
             adservice::types::string referer;
             bool isPost;
             bool needLog;
-            const TcpConnectionPtr conn;
+            TcpConnectionPtr conn;
         };
 
     }

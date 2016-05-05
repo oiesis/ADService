@@ -44,7 +44,7 @@ int64_t youku_price_decode(const std::string& input){
     try {
         char buffer[2048];
         std::string output;
-        urlDecode_f(input,output,buffer);//Maby twice?
+        urlDecode_f(input,output,buffer);//Maybe twice?
         price = decoder.getPrice(output);
     }catch(std::exception& e){
         DebugMessageWithTime("youku_price_decode failed,input:",input);

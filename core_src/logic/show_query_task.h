@@ -21,6 +21,7 @@ namespace adservice{
             //加载模板
             static void loadTemplates();
         public:
+            explicit HandleShowQueryTask(){}
             explicit HandleShowQueryTask(const TcpConnectionPtr& _conn,const HttpRequest& request):AbstractQueryTask(_conn,request){
                 //loadTemplates();
             }

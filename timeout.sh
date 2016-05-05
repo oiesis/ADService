@@ -1,9 +1,16 @@
 #!/bin/bash
 
+lastpid=0
 
 function killPortOwner(){
         pid=`netstat -napt|grep "$1"|grep "LISTEN" |awk -F' ' '{print $7}'|awk -F'/' '{print $1}'`
-        kill $pid
+        if (( $lastpid != $pid ));
+	then
+		lastpid=$pid
+		kill $pid
+	else
+		kill -9 $pid
+	fi
 }
 
 while [ 1 ]

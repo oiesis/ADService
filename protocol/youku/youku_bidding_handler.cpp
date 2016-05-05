@@ -22,6 +22,10 @@ namespace protocol {
             return false;
         }
 
+        void YoukuBiddingHandler::buildBidResult(const SelectResult &result) {
+            
+        }
+
         void YoukuBiddingHandler::match(HttpResponse &response) {
         }
 

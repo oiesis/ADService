@@ -10,13 +10,18 @@
 #include "protocol/log/log.h"
 #include "muduo/net/http/HttpResponse.h"
 #include "common/types.h"
+#include "adselect/ad_select_result.h"
+#include "constants.h"
 
 namespace protocol{
     namespace bidding{
 
         using namespace muduo::net;
+        using namespace adservice::adselect;
 
-        typedef std::function<bool(const std::string&)> BiddingFilterCallback;
+        class AbstractBiddingHandler;
+
+        typedef std::function<bool(AbstractBiddingHandler*,const AdSelectCondition&)> BiddingFilterCallback;
 
         /**
          * BiddingHandler主要处理协议层数据转换,屏蔽各个平台之间输入输出的差异
@@ -44,6 +49,11 @@ namespace protocol{
             virtual bool filter(const BiddingFilterCallback& filterCb){isBidAccepted=false;return false;}
 
             /**
+             * 将匹配结果转换为具体平台的格式的结果
+             */
+            virtual void buildBidResult(const SelectResult& result) = 0;
+
+            /**
              * 当接受流量时装配合适的输出
              */
             virtual void match(INOUT HttpResponse& response) = 0;
@@ -52,6 +62,14 @@ namespace protocol{
              * 不接受ADX的流量请求
              */
             virtual void reject(INOUT HttpResponse& response) = 0;
+
+            inline bool bidFailedReturn(){
+                return (isBidAccepted = false);
+            }
+
+            inline bool bidSuccessReturn(){
+                return (isBidAccepted = true);
+            }
 
         protected:
             //最近一次匹配的结果

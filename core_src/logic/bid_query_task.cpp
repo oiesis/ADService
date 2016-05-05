@@ -103,7 +103,7 @@ namespace adservice{
             if(biddingHandler==NULL){
                 log.reqStatus = 500;
             }else{
-                bool bidResult = biddingHandler->filter([](const std::string& adxpid)->bool{
+                bool bidResult = biddingHandler->filter([](AbstractBiddingHandler* adapter,const AdSelectCondition& condition)->bool{
                     //连接ADSelect
                     AdSelectManager& adselect = AdSelectManager::getInstance();
                     int seqId = 0;
@@ -112,9 +112,10 @@ namespace adservice{
                         seqId = coreModule->getExecutor().getThreadSeqId();
                     }
                     AdSelectLogic adSelectLogic(&adselect);
-                    if(!adSelectLogic.selectByPid(seqId,adxpid,true)){
+                    if(!adSelectLogic.selectByPid(seqId,condition.pid,true)){
                         return false;
                     }
+                    adapter->buildBidResult(adSelectLogic.getResult());
                    return true;
                 });
                 if(bidResult){

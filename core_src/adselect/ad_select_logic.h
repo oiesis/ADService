@@ -5,25 +5,13 @@
 #ifndef ADCORE_AD_SELECT_LOGIC_H
 #define ADCORE_AD_SELECT_LOGIC_H
 
-#include "utility/json.h"
+
+#include "ad_select_result.h"
 #include "core_adselect_manager.h"
 
 
 namespace adservice{
     namespace adselect{
-
-        struct SelectResult{
-            rapidjson::Value* finalSolution;
-            rapidjson::Value* banner;
-            rapidjson::Value* adplace;
-            int bidPrice;
-            SelectResult(){
-                finalSolution = NULL;
-                banner = NULL;
-                adplace = NULL;
-                bidPrice = 0;
-            }
-        };
 
         class AdSelectLogic{
         public:

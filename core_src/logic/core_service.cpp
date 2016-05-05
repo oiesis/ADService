@@ -126,29 +126,42 @@ namespace adservice{
 
 
         void doClick(CoreService* service,const TcpConnectionPtr& conn,const HttpRequest& req,bool isClose){
+#ifndef NOUSE_QUERY_EXECUTOR_QUEUE
+            service->getExecutor().run(std::bind(HandleClickQueryTask(conn,req)));
+#else
             try {
-                //DebugMessage("in request c,query=", req.query());
-                service->getExecutor().run(std::bind(HandleClickQueryTask(conn,req)));
+                HandleClickQueryTask clickTask(conn,req);
+                clickTask();
             }catch(std::exception &e){
                 LOG_ERROR<<"error occured in CoreService doClick"<<e.what();
             }
+#endif
         }
 
         void doShow(CoreService* service,const TcpConnectionPtr& conn,const HttpRequest& req,bool isClose){
+#ifndef NOUSE_QUERY_EXECUTOR_QUEUE
+            service->getExecutor().run(std::bind(HandleShowQueryTask(conn,req)));
+#else
             try{
-                //DebugMessage("in request v,query=",req.query());
-                service->getExecutor().run(std::bind(HandleShowQueryTask(conn,req)));
+                HandleShowQueryTask showTask(conn,req);
+                showTask();
             }catch(std::exception &e){
                 LOG_ERROR<<"error occured in CoreService doShow"<<e.what();
             }
+#endif
         }
 
         void doBid(CoreService* service,const TcpConnectionPtr& conn,const HttpRequest& req,bool isClose){
+#ifndef NOUSE_QUERY_EXECUTOR_QUEUE
+            service->getExecutor().run(std::bind(HandleBidQueryTask(conn,req)));
+#else
             try{
-                service->getExecutor().run(std::bind(HandleBidQueryTask(conn,req)));
+                HandleBidQueryTask bidTask(conn,req);
+                bidTask();
             }catch(std::exception &e){
                 LOG_ERROR<<"error occured in CoreService doBid"<<e.what();
             }
+#endif
         }
 
         void CoreService::onRequest(const TcpConnectionPtr& conn,const HttpRequest& req, bool isClose) {

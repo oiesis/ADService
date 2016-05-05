@@ -1,5 +1,11 @@
 #!/bin/bash
 
+function killPortOwner(){
+        pid=`netstat -napt|grep "$1"|grep "LISTEN" |awk -F' ' '{print $7}'|awk -F'/' '{print $1}'`
+        kill $pid
+}
+
+
 LOGROTATE_CONFIG=$(pwd)/service_log/service.log
 LOGROTATE_CONFIG+=$(cat <<'HEREDOC'
 {
@@ -19,7 +25,8 @@ then
 	if [[ $1 == "stop" ]];
 	then
 		mainPid=$(cat adservice.pid)
-		kill ${mainPid}	
+		kill ${mainPid}
+		#killPortOwner 1922
 	elif [[ $1 == "log" ]];
 	then
 		more service_log/service.log
