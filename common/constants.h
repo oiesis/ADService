@@ -37,6 +37,8 @@
 #define HTTP_REQUEST_GET                            1
 // HTTP POST请求
 #define HTTP_REQUEST_POST                           0
+// HTTP连接最长空闲时间
+#define HTTP_IDLE_MAX_SECOND                        5
 
 /**时间相关常量**/
 #define DAY_SECOND                                  86440
@@ -50,6 +52,8 @@
 #define CONFIG_LOG                                  "LogConfig"
 // ADSelect组件配置
 #define CONFIG_ADSELECT                             "ADSelectConfig"
+// DEBUG配置
+#define CONFIG_DEBUG                                "DebugConfig"
 
 /**配置文件路径常量**/
 // 服务配置文件
@@ -60,6 +64,8 @@
 #define CONFIG_LOG_PATH                             "conf/log.conf"
 // ADSelect相关配置文件
 #define CONFIG_ADSELECT_PATH                        "conf/adselect.conf"
+// DEBUG相关配置文件
+#define CONFIG_DEBUG_PATH                           "conf/debug.conf"
 
 /**核心逻辑模块常量**/
 // 点击逻辑服务屏蔽字
@@ -113,6 +119,8 @@
 #define URL_SSP_PID                                 "pid"
 // adxpid,ssp曝光url中的adx广告位Id
 #define URL_SSP_ADX_PID                             "adxpid"
+// youku deal标记,PMP结算方式
+#define URL_YOUKU_DEAL                              "w"
 
 // 广告主花费系数
 #define AD_OWNER_COST_FACTOR                        1.54
@@ -144,6 +152,8 @@
 #define ADX_YOUKU                                   5
 // 百度
 #define ADX_BAIDU                                   6
+// 腾讯
+#define ADX_TENCENT_GDT                             13
 
 // 淘宝竞价请求模块名
 #define BID_QUERY_PATH_TANX                         "tanxbid"
@@ -151,6 +161,8 @@
 #define BID_QUERY_PATH_YOUKU                        "youkubid"
 // 百度竞价请求模块名
 #define BID_QUERY_PATH_BAIDU                        "besbid"
+// 腾讯竞价请求模块名
+#define BID_QUERY_PATH_GDT                          "gdtbid"
 
 
 /** elasticsearch 相关参数 */
@@ -159,7 +171,7 @@
 // 创意ID基数
 #define ES_BANNER_ID_BASE                           5000000
 // ES中的索引名
-#define ES_INDEX_SOLUTIONS                          "solutions"
+#define ES_INDEX_SOLUTIONS                          "mtsolutions"
 // ES中的投放类型表
 #define ES_DOCUMENT_SOLUTION                        "solution"
 // ES中的创意类型表
@@ -188,6 +200,8 @@
 // ES中按根据广告位条件查询广告信息
 #define  ES_QUERY_ADINFO_BY_CONDITION               "elasticsearch/dsl/query_adinfo_by_condition.dsl"
 
+// ES中Banner表的json字段名
+#define  ES_BANNER_FILED_JSON                       "json"
 
 // 投放单中的计费方式
 #define PRICETYPE_CPD                               0

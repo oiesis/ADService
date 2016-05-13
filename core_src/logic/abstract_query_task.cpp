@@ -6,13 +6,28 @@
 #include "protocol/baidu/baidu_price.h"
 #include "protocol/tanx/tanx_price.h"
 #include "protocol/youku/youku_price.h"
+#include "protocol/tencent_gdt/tencent_gdt_price.h"
+#include "spinlock.h"
 
 namespace adservice{
     namespace corelogic{
 
+        static int threadSeqId = 0;
+        struct spinlock slock = {0};
+
+        void TaskThreadLocal::updateSeqId() {
+            if(seqId>=0){
+                return;
+            }
+            spinlock_lock(&slock);
+            seqId = threadSeqId++;
+            spinlock_unlock(&slock);
+            DebugMessageWithTime("seqId:",seqId);
+        }
+
         /**
-             * 对ADX成交价进行解密
-             */
+         * 对ADX成交价进行解密
+         */
         int decodeAdxExchangePrice(int adx,const std::string& input){
             if(input.empty())
                 return 0;
@@ -23,8 +38,20 @@ namespace adservice{
                     return youku_price_decode(input);
                 case ADX_BAIDU:
                     return baidu_price_decode(input);
+                case ADX_TENCENT_GDT:
+                    return gdt_price_decode(input);
                 default:
                     return 0;
+            }
+        }
+
+        void calcPrice(int adx,bool isYoukuDeal,int decodePrice,int& cost,int& bidPrice){
+            if(adx == ADX_YOUKU && isYoukuDeal){
+                cost = 0;
+                bidPrice = decodePrice ;
+            }else{
+                cost = decodePrice;
+                bidPrice = decodePrice * AD_OWNER_COST_FACTOR;
             }
         }
 
@@ -100,9 +127,11 @@ namespace adservice{
                 }
                 if ((iter=paramMap.find(URL_EXCHANGE_PRICE)) != paramMap.end()){ //成交价格
                     adservice::types::string &price = iter->second;//paramMap[URL_EXCHANGE_PRICE];
-                    //urlDecode_f(price,output,buffer);
-                    log.adInfo.cost = decodeAdxExchangePrice(log.adInfo.adxid,price);
-                    log.adInfo.bidPrice = (int)(log.adInfo.cost * AD_OWNER_COST_FACTOR);
+                    //log.adInfo.cost = decodeAdxExchangePrice(log.adInfo.adxid,price);
+                    //log.adInfo.bidPrice = (int)(log.adInfo.cost * AD_OWNER_COST_FACTOR);
+                    int decodePrice = decodeAdxExchangePrice(log.adInfo.adxid,price);
+                    bool isYoukuDeal = paramMap.find(URL_YOUKU_DEAL)!=paramMap.end();
+                    calcPrice(log.adInfo.adxid,isYoukuDeal,decodePrice,log.adInfo.cost,log.adInfo.bidPrice);
                 }
             }catch(std::exception& e){
                 log.reqStatus = 500;
@@ -146,6 +175,16 @@ namespace adservice{
                 return false;
             }
             return true;
+        }
+
+        void AbstractQueryTask::updateThreadData() {
+            pthread_t thread = pthread_self();
+            threadData = (TaskThreadLocal*)ThreadLocalManager::getInstance().get(thread);
+            if(threadData==NULL){
+                threadData = new TaskThreadLocal;
+                threadData->updateSeqId();
+                ThreadLocalManager::getInstance().put(thread,threadData,&TaskThreadLocal::destructor);
+            }
         }
 
         void AbstractQueryTask::filterParamMapSafe(ParamMap& paramMap){

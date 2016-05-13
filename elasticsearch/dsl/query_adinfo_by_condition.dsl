@@ -39,7 +39,7 @@
                                                       {"term": {"_type":"banner"}},
                                                       {"term": {"width":%d}},
                                                       {"term": {"height":%d}},
-                                                      {"terms":{"banner_type":[%s]}}
+                                                      {"terms":{"bannertype":[%s]}}
                                                    ]
                                                 }
                                             }
@@ -54,7 +54,7 @@
                                      {"term": {"_type":"banner"}},
                                      {"term": {"width":%d}},
                                      {"term": {"height":%d}},
-                                     {"terms":{"banner_type":[%s]}},
+                                     {"terms":{"bannertype":[%s]}},
                                      {
                                        "has_parent":{
                                            "type":"banner_group",

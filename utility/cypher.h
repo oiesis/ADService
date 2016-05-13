@@ -37,6 +37,8 @@ namespace adservice{
 
             void aes_ecbdecode(const uchar_t* key,const std::string& input,std::string& output);
 
+            void aes_ecbdecode_nopadding(const uchar_t* key,const std::string& input,std::string& output);
+
             std::string randomId(int field);
 
             /**

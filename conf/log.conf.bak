@@ -1,0 +1,12 @@
+{
+    "logger_threads": "3",
+    "log_remote": "false",
+    "kafka_broker": "192.168.31.235",
+    "kafka_topic": "mt-log",
+    "kafka_key": "click",
+    "kafka_mqmaxsize": "10000",
+    "aliyun_producer_id": "PID_mtty001",
+    "aliyun_topic": "adlog",
+    "aliyun_access_key": "5jaQzkjjARFVFUrE",
+    "aliyun_secret_key": "SbFRrY6y1cnSKcdC0QpK1Vkv0QMmTw"
+}

@@ -6,9 +6,7 @@
 #define ADCORE_BID_QUERY_TASK_H
 
 #include "abstract_query_task.h"
-#include "protocol/baidu/baidu_bidding_handler.h"
-#include "protocol/tanx/tanx_bidding_handler.h"
-#include "protocol/youku/youku_bidding_handler.h"
+#include "protocol/base/abstract_bidding_handler.h"
 #include <initializer_list>
 
 namespace adservice{
@@ -33,27 +31,6 @@ namespace adservice{
             }
         };
 
-        typedef std::map<int,AbstractBiddingHandler*> BiddingHandlerMap;
-
-        struct BidThreadLocal{
-            BiddingHandlerMap biddingHandlers;
-            BidThreadLocal(){}
-            ~BidThreadLocal(){
-                if(!biddingHandlers.empty()){
-                    typedef BiddingHandlerMap::iterator Iter;
-                    for(Iter iter=biddingHandlers.begin();iter!=biddingHandlers.end();iter++){
-                        if(iter->second)
-                            delete iter->second;
-                    }
-                }
-            }
-            static void destructor(void* ptr){
-                if(ptr){
-                    delete ((BidThreadLocal*)ptr);
-                }
-            }
-
-        };
 
         /**
          * 处理竞价模块逻辑的类

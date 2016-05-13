@@ -14,12 +14,12 @@
 #ifdef UNIT_TEST
 
 template<typename T>
-inline void DebugMessage(T& obj){
+inline void DebugMessage(const T& obj){
     std::cout<<obj<<std::endl;
 }
 
 template<typename T,typename ...Args>
-inline void DebugMessage(T& obj,Args... args){
+inline void DebugMessage(const T& obj,Args... args){
    std::cout<<obj;
    DebugMessage(args...);
 };
@@ -27,13 +27,13 @@ inline void DebugMessage(T& obj,Args... args){
 #include "utility/mttytime.h"
 
 template<typename T>
-inline void DebugMessageWithTime(T& obj){
+inline void DebugMessageWithTime(const T& obj){
     using namespace adservice::utility::time;
     std::cout<<getCurrentTimeUtcString()<<" "<<obj<<std::endl;
 }
 
 template<typename T,typename ...Args>
-inline void DebugMessageWithTime(T& obj,Args... args){
+inline void DebugMessageWithTime(const T& obj,Args... args){
     using namespace adservice::utility::time;
     std::cout<<getCurrentTimeUtcString()<<" "<<obj;
     DebugMessage(args...);

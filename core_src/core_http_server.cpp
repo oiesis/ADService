@@ -4,6 +4,7 @@
 
 #include <functional>
 #include <boost/shared_array.hpp>
+#include <vector>
 #include "core_http_server.h"
 #include "muduo/base/Timestamp.h"
 #include "muduo/base/Types.h"
@@ -125,9 +126,53 @@ namespace adservice{
         {
             if (conn->connected())
             {
-                conn->setContext(HttpContext());
-//                HttpContext *context = boost::any_cast<HttpContext>(conn->getMutableContext());
-//                context->setRequestParser(std::bind(&requestParser, context, _1, _2));
+                HttpContext httpContext;
+                muduo::Timestamp currentTimestamp = muduo::Timestamp::now();
+                httpContext.setLastActiveTime((long)currentTimestamp.secondsSinceEpoch());
+                conn->setContext(httpContext);
+                //HttpContext *context = boost::any_cast<HttpContext>(conn->getMutableContext());
+                // context->setRequestParser(std::bind(&requestParser, context, _1, _2));
+                if(idleCheck)
+                {
+                    ConcurrentWeakMapAccessor acc;
+                    weakConnMap.insert(acc,conn->name());
+                    acc->second = WeakTcpConnectionPtr(conn);
+                    acc.release();
+                }
+            }
+        }
+
+        void CoreHttpServer::onTimer() {
+            if(!idleCheck)
+                return;
+            muduo::Timestamp currentTimestamp = muduo::Timestamp::now();
+            long currentTimeSecond = (long)currentTimestamp.secondsSinceEpoch();
+            std::vector<muduo::string> toRemoves;
+            for(ConcurrentWeakConnMap::iterator iter = weakConnMap.begin();iter !=weakConnMap.end();iter++){
+                const WeakTcpConnectionPtr& conn = iter->second;
+                TcpConnectionPtr shareConn = conn.lock();
+                if(shareConn){
+                    HttpContext *context = boost::any_cast<HttpContext>(shareConn->getMutableContext());
+                    long lastActiveTime = context->getLastActiveTime();
+                    if(currentTimeSecond - lastActiveTime >= maxIdleSecond){ //idle timeout,shutdown
+                        if (shareConn->connected())
+                        {
+                            DebugMessageWithTime("IDLE Connection detected,conn name:",shareConn->name(),",currentTime:",currentTimeSecond,",lastActive",lastActiveTime);
+                            shareConn->shutdown();
+                            shareConn->forceCloseWithDelay(3.5);
+                        }else{
+                            //
+                            DebugMessageWithTime("IDLE Connection detected,Maybe Leak,tcpInfo:",shareConn->getTcpInfoString(),"conn name:",shareConn->name());
+                            shareConn->shutdown();
+                            shareConn->forceCloseWithDelay(3.5);
+                        }
+                    }
+                }else{
+                    toRemoves.push_back(iter->first);
+                }
+            }
+            for(std::vector<muduo::string>::iterator iter = toRemoves.begin();iter!=toRemoves.end();iter++){
+                weakConnMap.erase(*iter);
             }
         }
 

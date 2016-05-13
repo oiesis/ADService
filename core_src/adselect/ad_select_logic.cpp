@@ -40,7 +40,7 @@ namespace adservice{
                     idx[idxCnt++] = i;
                 }
             }
-            int r = rng::randomInt()%idxCnt;
+            int r = std::abs(rng::randomInt())%idxCnt;
             return *(banners[r]);
         }
 
@@ -154,7 +154,7 @@ namespace adservice{
                     ctr+=(*superPricer)["ctr"].GetDouble();
                 }
                 int bgid = solution["bgid"].GetInt();
-                rapidjson::Value& banner = bestBannerFromBannerGroup(bannerMap,bgid);
+                rapidjson::Value& banner = bestBannerFromBannerGroup(bannerMap,bgid);//advId?
                 offerprice += banner["offerprice"].GetDouble();
                 ctr += banner["ctr"].GetDouble();
                 double ecpm = offerprice * ctr * hourPercent;
@@ -192,7 +192,7 @@ namespace adservice{
             rapidjson::Value& banner = bestBannerFromBannerGroup(bannerMap,finalSolution["bgid"].GetInt());
             selectResult.banner = &banner;
             //筛选出最后结果
-            if(!banner.HasMember("html")){ //SSP没刷出广告,属于错误的情况
+            if(!banner.HasMember(ES_BANNER_FILED_JSON)){ //SSP没刷出广告,属于错误的情况
                 return false;
             }
             selectResult.adplace = &adplace;

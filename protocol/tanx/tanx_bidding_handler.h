@@ -6,12 +6,11 @@
 #define ADCORE_TANX_BIDDING_HANDLER_H
 
 #include "protocol/base/abstract_bidding_handler.h"
-#include "protocol/tanx/bidding.pb.h"
+#include "protocol/tanx/tanx_bidding.pb.h"
 
 namespace protocol{
     namespace bidding{
 
-        using namespace protocol::Tanx;
 
         class TanxBiddingHandler : public AbstractBiddingHandler {
         public:
@@ -47,8 +46,8 @@ namespace protocol{
             void reject(INOUT HttpResponse& response);
 
         private:
-            BidRequest bidRequest;
-            BidResponse bidResponse;
+            protocol::Tanx::BidRequest bidRequest;
+            protocol::Tanx::BidResponse bidResponse;
             protocol::log::AdInfo adInfo;
         };
 

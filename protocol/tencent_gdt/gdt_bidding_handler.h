@@ -1,18 +1,18 @@
 //
-// Created by guoze.lin on 16/5/3.
+// Created by guoze.lin on 16/5/11.
 //
 
-#ifndef ADCORE_BAIDU_BIDDING_HANDLER_H
-#define ADCORE_BAIDU_BIDDING_HANDLER_H
+#ifndef ADCORE_GDT_BIDDING_HANDLER_H
+#define ADCORE_GDT_BIDDING_HANDLER_H
 
 #include "protocol/base/abstract_bidding_handler.h"
-#include "protocol/baidu/baidu_bidding.pb.h"
+#include "protocol/tencent_gdt/gdt.pb.h"
 
 namespace protocol{
     namespace bidding{
 
 
-        class BaiduBiddingHandler : public AbstractBiddingHandler {
+        class GdtBiddingHandler : public AbstractBiddingHandler {
         public:
             /**
              * 从Adx Bid Post请求数据中获取具体的请求信息
@@ -44,13 +44,14 @@ namespace protocol{
              * 不接受ADX的流量请求
              */
             void reject(INOUT HttpResponse& response);
+
         private:
-            protocol::Baidu::BidRequest bidRequest;
-            protocol::Baidu::BidResponse bidResponse;
+            protocol::gdt::adx::BidRequest bidRequest;
+            protocol::gdt::adx::BidResponse bidResponse;
             protocol::log::AdInfo adInfo;
         };
 
     }
 }
 
-#endif //ADCORE_BAIDU_BIDDING_HANDLER_H
+#endif //ADCORE_GDT_BIDDING_HANDLER_H

@@ -36,36 +36,29 @@ void paramTest(){
     DebugMessage("after decoded,l:",output);
 }
 
+
+#define MakeStringValue(s) rapidjson::Value().SetString(s.c_str(),s.length())
+
+#define MakeStringConstValue(s) rapidjson::Value().SetString(s)
 void jsontest(){
-    const char* input="{\n"
-            "   \"took\": 3,\n"
-            "   \"hits\": {\n"
-            "      \"total\": 1,\n"
-            "      \"hits\": [\n"
-            "         {\n"
-            "            \"_index\": \"solutions\",\n"
-            "            \"_type\": \"banner\",\n"
-            "            \"_id\": \"5002588\",\n"
-            "            \"_score\": 7.1737857,\n"
-            "            \"_routing\": \"185\",\n"
-            "            \"_parent\": \"185\",\n"
-            "            \"_source\": {\n"
-            "               \"banner_type\": 1,\n"
-            "               \"bgid\": 185,\n"
-            "               \"bid\": 2588,\n"
-            "               \"ctr\": 0,\n"
-            "               \"height\": 90,\n"
-            "               \"html\": \"{pid:\\\\'%s\\\\',width:\\\\'960\\\\',height:\\\\'90\\\\',impid:\\\\'%s\\\\',advid:\\\\'40\\\\',unid:\\\\'%s\\\\',plid:\\\\'%s\\\\',gpid:\\\\'%s\\\\',cid:\\\\'2588\\\\',arid:\\\\'%s\\\\',ctype:\\\\'1\\\\',xcurl:\\\\'%s\\\\',of:\\\\'0\\\\',tview:\\\\'\\\\',mtls: [{p0: \\\\'http://material.mtty.com/201603/17/Fi8K7Z.jpg\\\\',p1: \\\\'http://jump.ztcadx.com/diy?target=http%3A%2F%2Fhuishanmy.tmall.com%2F%3Fkid%3D34095_207194_970488_1436040%26shop_id%3D116953304\\\\',p2: \\\\'000\\\\',p3: \\\\'960\\\\',p4: \\\\'90\\\\',p5:\\\\'\\\\',p6:\\\\'\\\\',p7:\\\\'\\\\',p8:\\\\'\\\\',p9:\\\\'\\\\'}]}\",\n"
-            "               \"offerprice\": 0,\n"
-            "               \"width\": 960\n"
-            "            }\n"
-            "         }\n"
-            "      ]\n"
-            "   }\n"
-            "}";
-    rapidjson::Document doc;
-    parseJson(input,doc);
-    DebugMessageWithTime("doc.a:",doc["a"].GetString());
+    const char* pjson= "{\"advid\":\"8\",\"cid\":\"2\",\"ctype\":\"1\",\"formatid\":\"5\",\"gpid\":\"\",\"height\":\"\",\"impid\":\"\",\"mtls\":[{\"p0\":\"/201604/28/VXTsDM.swf\",\"p1\":\"http://www.mtty.com\",\"p10\":\"\",\"p11\":\"\",\"p3\":\"160\",\"p4\":\"600\",\"p5\":\"\",\"p6\":\"\",\"p7\":\"\",\"p8\":\"\",\"p9\":\"\"}],\"of\":\"\",\"pid\":\"\",\"plid\":\"\",\"tview\":\"\",\"unid\":\"\",\"width\":\"\",\"xcurl\":\"\"}";
+    rapidjson::Document mtAdInfo;
+    parseJson(pjson,mtAdInfo);
+    ParamMap paramMap;
+    paramMap[URL_ADPLACE_ID] = "123";
+    paramMap[URL_EXPOSE_ID] = "afasfaf";
+    paramMap[URL_ADX_ID] = "21";
+    paramMap[URL_EXEC_ID] = "12";
+    paramMap[URL_AREA_ID] = "0086-010-11";
+    mtAdInfo["pid"] = MakeStringValue(paramMap[URL_ADPLACE_ID]);
+    mtAdInfo["impid"] = MakeStringValue(paramMap[URL_EXPOSE_ID]);
+    mtAdInfo["unid"] = MakeStringValue(paramMap[URL_ADX_ID]);
+    mtAdInfo["plid"] = MakeStringConstValue("");
+    mtAdInfo["gpid"] = MakeStringValue(paramMap[URL_EXEC_ID]);
+    mtAdInfo.AddMember("arid",MakeStringValue(paramMap[URL_AREA_ID]),mtAdInfo.GetAllocator());
+    mtAdInfo["xcurl"] = MakeStringConstValue("");
+    std::string jsonResult = toJson(mtAdInfo);
+    DebugMessageWithTime(jsonResult);
 }
 
 void hash_test(){
@@ -74,11 +67,18 @@ void hash_test(){
     DebugMessageWithTime("hash:",h);
 }
 
+
+#include "protocol/tencent_gdt/tencent_gdt_price.h"
+
+void price_test(){
+    std::string input = "VwSSFElLxs3wWy0LMsTy5Q==";
+    int price = gdt_price_decode(input);
+    DebugMessageWithTime("price:",price);
+}
+
 int main(int argc,char** argv){
     try {
-        char buffer[8196];
-        long t = sizeof(buffer);
-        DebugMessageWithTime(t);
+        price_test();
     }catch(std::exception& e){
         DebugMessageWithTime("exception:",e.what());
     }

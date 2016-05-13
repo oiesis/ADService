@@ -9,6 +9,7 @@
 #include "utility/utility.h"
 #include "protocol/log/log.h"
 #include "common/types.h"
+#include "task_thread_data.h"
 #ifdef USE_ENCODING_GZIP
 #include "muduo/net/ZlibStream.h"
 #endif
@@ -26,12 +27,15 @@ namespace adservice {
         using namespace adservice::utility::hash;
         using namespace adservice::utility::file;
 
+
         /**
          * 处理请求的抽象逻辑
          */
         class AbstractQueryTask{
         public:
-            explicit AbstractQueryTask(){}
+            explicit AbstractQueryTask(){
+                updateThreadData();
+            }
             explicit AbstractQueryTask(const TcpConnectionPtr& _conn,const HttpRequest& request):conn(_conn){
                 data = request.query();
                 userCookies = request.getHeader("Cookie");
@@ -40,6 +44,7 @@ namespace adservice {
                 referer = request.getHeader("Referer");
                 isPost = request.method()== HttpRequest::Method::kPost;
                 needLog = true;
+                updateThreadData();
             }
 
             void rebullet(const TcpConnectionPtr& _conn,const HttpRequest& request){
@@ -53,6 +58,8 @@ namespace adservice {
                 isPost = request.method()== HttpRequest::Method::kPost;
                 needLog = true;
             }
+
+            void updateThreadData();
 
             virtual ~AbstractQueryTask(){}
 
@@ -101,6 +108,7 @@ namespace adservice {
             bool isPost;
             bool needLog;
             TcpConnectionPtr conn;
+            TaskThreadLocal* threadData;
         };
 
     }

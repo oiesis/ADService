@@ -21,10 +21,12 @@ namespace adservice{
             bool runBid;
             bool runView;
             bool runTrack;
+            bool checkIdleConnection;
             bool isDaemon;
             int corePort;
             int coreHttpThreads;
             int loggingLevel;
+            int idleConnectionTimeout;
             static void* parse(const MessageWraper& mw,void* data){
                 data = data==NULL? (new ServerConfig):data;
                 ServerConfig* c = (ServerConfig*)data;
@@ -37,6 +39,8 @@ namespace adservice{
                 c->coreHttpThreads = mw.getInt("core_http_threads",24);
                 c->isDaemon = mw.getBoolean("isDaemon",true);
                 c->loggingLevel = mw.getInt("logging_level",4);
+                c->checkIdleConnection = mw.getBoolean("check_idle_connection",false);
+                c->idleConnectionTimeout = mw.getInt("idle_connection_timeout",HTTP_IDLE_MAX_SECOND);
                 return data;
             }
             static void destruct(void* data){
@@ -109,7 +113,20 @@ namespace adservice{
             }
         };
 
-
+        struct DebugConfig{
+            int dynamicLogLevel;
+            int version;
+            static void* parse(const MessageWraper& mw,void* data){
+                data = data==NULL? (new DebugConfig):data;
+                DebugConfig* c = (DebugConfig*)data;
+                c->dynamicLogLevel = mw.getInt("dynamic_log_level",3);
+                c->version = mw.getInt("version",0);
+                return data;
+            }
+            static void destruct(void* data){
+                delete ((DebugConfig*)data);
+            }
+        };
     }
 }
 

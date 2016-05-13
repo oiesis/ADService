@@ -34,7 +34,7 @@ namespace adservice{
             std::string message;
         };
 
-        static const int ADSELECT_MAX_CONNECTION = 24;
+        static const int ADSELECT_MAX_CONNECTION = 48;
 
         class AdSelectManager{
         public:
@@ -98,8 +98,10 @@ namespace adservice{
             }
         public:
             ElasticSearch& getAvailableConnection(int seqId) const{
-                if(seqId<0||seqId>=ADSELECT_MAX_CONNECTION)
-                    throw AdSelectException("in getAvailableConnection,seqId invalid",seqId);
+                if(seqId<0||seqId>=ADSELECT_MAX_CONNECTION) {
+                    throw AdSelectException("in getAvailableConnection,seqId invalid", seqId);
+                    //seqId = seqId%ADSELECT_MAX_CONNECTION;
+                }
                 return *(agents[seqId]);
             }
 

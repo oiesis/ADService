@@ -8,6 +8,7 @@
 namespace protocol {
     namespace bidding {
 
+        using namespace protocol::Tanx;
         using namespace adservice::utility::serialize;
 
         inline int max(const int& a,const int& b){
@@ -15,6 +16,7 @@ namespace protocol {
         }
 
         bool TanxBiddingHandler::parseRequestData(const std::string& data){
+            bidRequest.Clear();
             return getProtoBufObject(bidRequest,data);
         }
 
@@ -38,6 +40,7 @@ namespace protocol {
                 logItem.adInfo.cid = adInfo.cid;
                 logItem.adInfo.mid = adInfo.mid;
                 logItem.adInfo.cpid = adInfo.cpid;
+                logItem.adInfo.offerPrice = adInfo.offerPrice;
             }
         }
 
@@ -58,6 +61,7 @@ namespace protocol {
         }
 
         void TanxBiddingHandler::buildBidResult(const SelectResult &result) {
+            bidResponse.Clear();
             bidResponse.set_version(bidRequest.version());
             bidResponse.set_bid(bidRequest.bid());
             bidResponse.clear_ads();
@@ -85,6 +89,7 @@ namespace protocol {
             adInfo.cid = adplace["cid"].GetInt();
             adInfo.mid = adplace["mid"].GetInt();
             adInfo.cpid = adInfo.advId;
+            adInfo.offerPrice = maxCpmPrice;
         }
 
         void TanxBiddingHandler::match(HttpResponse &response) {
@@ -99,8 +104,7 @@ namespace protocol {
         }
 
         void TanxBiddingHandler::reject(HttpResponse &response) {
-            bidResponse.clear_ads();
-            bidResponse.clear_is_recognized_user();
+            bidResponse.Clear();
             bidResponse.set_version(bidRequest.version());
             bidResponse.set_bid(bidRequest.bid());
             std::string result;
@@ -111,6 +115,5 @@ namespace protocol {
             response.setStatusCode(HttpResponse::k200Ok);
             response.setBody(result);
         }
-
     }
 }

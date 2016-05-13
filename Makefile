@@ -14,7 +14,7 @@ CCFlags+= -DUSE_SHORT_CONN
 #CCFlags+= -DUSE_ALIYUN_LOG
 #CCFlags+= -DNOUSE_QUERY_EXECUTOR_QUEUE
 #CCFlags+= -DUSE_TBB_HASHMAP
-#LOAD_LIB+= -ltbb
+LOAD_LIB+= -ltbb
 LOAD_LIB+= -lrdkafka++ -lz
 
 prerun:
@@ -23,7 +23,7 @@ ifeq ($(OS),Linux)
 CCFlags+= -Dlinux
 LOAD_LIB += -lrt -ldl
 LINK_DYNAMIC ?= -rdynamic
-LD_LIBRARY_PATH?= /usr/lib/:/usr/lib64/:/usr/local/lib/:/usr/local/lib64/:/usr/lib/x86_64-linux-gnu/:/usr/local/ssl/lib/
+LD_LIBRARY_PATH?= /usr/lib/:/usr/lib64/:/usr/local/lib/:/usr/local/lib64/:/usr/lib/x86_64-linux-gnu/:/usr/local/ssl/lib/:$(THIRD_LIB_PATH)
 else ifeq ($(OS),Darwin)
 CCFlags+= -D__MACH__
 else
@@ -108,6 +108,8 @@ PLATFORM_SOURCE+= $(wildcard $(PLATFORM_FOLDER)/tanx/*.cpp)
 PLATFORM_SOURCE+= $(wildcard $(PLATFORM_FOLDER)/tanx/*.cc)
 PLATFORM_SOURCE+= $(wildcard $(PLATFORM_FOLDER)/youku/*.cpp)
 PLATFORM_SOURCE+= $(wildcard $(PLATFORM_FOLDER)/youku/*.cc)
+PLATFORM_SOURCE+= $(wildcard $(PLATFORM_FOLDER)/tencent_gdt/*.cpp)
+PLATFORM_SOURCE+= $(wildcard $(PLATFORM_FOLDER)/tencent_gdt/*.cc)
 PLATFORM_SOURCE+= $(wildcard $(PLATFORM_FOLDER)/base/*.cpp)
 platform.o:
 	cd $(PLATFORM_FOLDER) && \

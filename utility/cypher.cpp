@@ -183,6 +183,16 @@ namespace adservice {
                 }
             }
 
+            void aes_ecbdecode_nopadding(const uchar_t* key,const std::string& input,std::string& output){
+                try {
+                    CryptoPP::ECB_Mode<CryptoPP::AES>::Decryption d;
+                    d.SetKey(key, 16);
+                    CryptoPP::StringSource(input, true,new CryptoPP::StreamTransformationFilter(d,new CryptoPP::StringSink(output),CryptoPP::BlockPaddingSchemeDef::NO_PADDING));
+                }catch(CryptoPP::Exception& e){
+                    DebugMessageWithTime("aes_ecbdecode failed,e:",e.what());
+                }
+            }
+
             CypherMapGenerator::CypherMapGenerator(bool isInit){
                 if(!isInit){
                     return;

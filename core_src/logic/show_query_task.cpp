@@ -47,6 +47,17 @@ namespace adservice{
             *p1='\0';
         }
 
+        void tripslash2(char* str){
+            char* p1 = str,*p2=p1;
+            while(*p2!='\0'){
+                if(*p2=='\\'&&p2[1]=='\"'){
+                    p2++;
+                }
+                *p1++ = *p2++;
+            }
+            *p1='\0';
+        }
+
         /**
          * 判断曝光的类型
          * of=0 DSP,此为默认的情况
@@ -101,6 +112,73 @@ namespace adservice{
 #define MakeDoubleValue(d) rapidjson::Value().SetDouble(d)
 
 #define MakeBooleanValue(b) rapidjson::Value().SetBool(b)
+
+        int buildResponseForDsp(rapidjson::Value& banner,ParamMap& paramMap,const char* json,const char* templateFmt,char* buffer,int bufferSize){
+            char pjson[2048]={'\0'};
+            strncat(pjson,json,sizeof(pjson));
+            tripslash2(pjson);
+            rapidjson::Document mtAdInfo;
+            utility::json::parseJson(pjson,mtAdInfo);
+            //准备ADX宏
+            char adxbuffer[1024];
+            std::string adxMacro;
+            urlDecode_f(paramMap[URL_ADX_MACRO],adxMacro,adxbuffer);
+            adxMacro+=ADX_MACRO_SUFFIX;
+            //填充JSON对象
+            auto &allocator = mtAdInfo.GetAllocator();
+            mtAdInfo.AddMember("pid",MakeStringValue(paramMap[URL_ADPLACE_ID]),allocator);
+            mtAdInfo.AddMember("impid",MakeStringValue(paramMap[URL_EXPOSE_ID]),allocator);
+            mtAdInfo.AddMember("unid",MakeStringValue(paramMap[URL_ADX_ID]),allocator);
+            mtAdInfo.AddMember("plid",MakeStringConstValue(""),allocator);
+            mtAdInfo.AddMember("gpid",MakeStringValue(paramMap[URL_EXEC_ID]),allocator);
+            mtAdInfo.AddMember("arid",MakeStringValue(paramMap[URL_AREA_ID]),allocator);
+            mtAdInfo.AddMember("xcurl",MakeStringValue(adxMacro),allocator);
+            mtAdInfo.AddMember("of",MakeStringConstValue(OF_DSP),allocator);
+            std::string width = to_string(banner["width"].GetInt());
+            std::string height = to_string(banner["height"].GetInt());
+            mtAdInfo.AddMember("width",MakeStringValue(width),allocator);
+            mtAdInfo.AddMember("height",MakeStringValue(height),allocator);
+            std::string jsonResult = utility::json::toJson(mtAdInfo);
+            int len = snprintf(buffer,bufferSize-1,templateFmt,jsonResult.c_str());
+            //DebugMessageWithTime("result:",buffer);
+            if(len>=bufferSize){
+                DebugMessageWithTime("[Warning]in buildResponseForDsp buffer overflow,length:",len);
+                return bufferSize;
+            }
+            return len;
+        }
+
+        int buildResponseForSsp(rapidjson::Value& solution,rapidjson::Value& adplace,rapidjson::Value& banner,ParamMap& paramMap,
+                                const char* json,const char* templateFmt,char* buffer,int bufferSize){
+            char pjson[2048]={'\0'};
+            strncat(pjson,json,sizeof(pjson));
+            tripslash2(pjson);
+            rapidjson::Document mtAdInfo;
+            utility::json::parseJson(pjson,mtAdInfo);
+            auto &allocator = mtAdInfo.GetAllocator();
+            std::string pid = to_string(adplace["pid"].GetInt());
+            mtAdInfo.AddMember("pid",MakeStringValue(pid),allocator);
+            std::string impid = cypher::randomId(5);
+            mtAdInfo.AddMember("impid",MakeStringValue(impid),allocator);
+            std::string adxid = to_string(adplace["adxid"].GetInt());
+            mtAdInfo.AddMember("unid",MakeStringValue(adxid),allocator);
+            mtAdInfo.AddMember("plid",MakeStringConstValue(""),allocator);
+            std::string sid = to_string(solution["sid"].GetInt());
+            mtAdInfo.AddMember("gpid",MakeStringValue(sid),allocator);
+            mtAdInfo.AddMember("arid",MakeStringConstValue("0086-ffff-ffff"),allocator);
+            mtAdInfo.AddMember("xcurl",MakeStringConstValue(""),allocator);
+            std::string width = to_string(banner["width"].GetInt());
+            std::string height = to_string(banner["height"].GetInt());
+            mtAdInfo.AddMember("width",MakeStringValue(width),allocator);
+            mtAdInfo.AddMember("height",MakeStringValue(height),allocator);
+            std::string jsonResult = utility::json::toJson(mtAdInfo);
+            int len = snprintf(buffer,bufferSize-1,templateFmt,paramMap["callback"].c_str(),jsonResult.c_str());
+            if(len>=bufferSize){
+                DebugMessageWithTime("[Warning]in buildResponseForSsp buffer overflow,length:",len);
+                return bufferSize;
+            }
+            return len;
+        }
 
         /**
          * 使用生成JSON对象的方法,为前端准备DSP曝光内容
@@ -276,10 +354,14 @@ namespace adservice{
             //连接ADSelect
             AdSelectManager& adselect = AdSelectManager::getInstance();
             int seqId = 0;
+#ifndef NOUSE_QUERY_EXECUTOR_QUEUE
             CoreModule coreModule = CoreService::getInstance();
             if(coreModule.use_count()>0){
                 seqId = coreModule->getExecutor().getThreadSeqId();
             }
+#else
+            seqId = threadData->seqId;
+#endif
             std::string respBody;
             if(isSSP){//SSP
                 std::string& queryPid = paramMap[URL_SSP_PID];
@@ -312,25 +394,27 @@ namespace adservice{
                 log.adInfo.cid = adplace["cid"].GetInt();
                 log.adInfo.bidPrice = selectResult.bidPrice;
                 log.adInfo.cost = adplace["costprice"].GetInt();
-                const char* tmp = banner["html"].GetString();
+                const char* tmp = banner[ES_BANNER_FILED_JSON].GetString();
                 //返回结果
                 char buffer[8192];
-                int len = fillHtmlFixedParam(finalSolution,adplace,banner,paramMap,tmp,templateFmt,buffer,sizeof(buffer));
+                //int len = fillHtmlFixedParam(finalSolution,adplace,banner,paramMap,tmp,templateFmt,buffer,sizeof(buffer));
+                int len = buildResponseForSsp(finalSolution,adplace,banner,paramMap,tmp,templateFmt,buffer,sizeof(buffer));
                 respBody = std::string(buffer,buffer+len);
             }else {//DSP of=0,of=2,of=3
                 bool showCreative = true;
                 dspSetParam(paramMap,showCreative,needLog);
                 rapidjson::Document esResp(rapidjson::kObjectType);
                 rapidjson::Value &result = adselect.queryCreativeByIdCache(seqId, paramMap[URL_CREATIVE_ID], esResp);
-                if (!result.HasMember("html")) {
+                if (!result.HasMember(ES_BANNER_FILED_JSON)) {
                     log.adInfo.bannerId = 0;
                     log.reqStatus = HttpResponse::k500ServerError;
                     return;
                 }
                 if(showCreative) { //需要显示创意
-                    const char *tmp = result["html"].GetString();
+                    const char *tmp = result[ES_BANNER_FILED_JSON].GetString();
                     char buffer[8192];
-                    int len = fillHtmlFixedParam(paramMap, tmp, templateFmt, buffer,sizeof(buffer));
+                    //int len = fillHtmlFixedParam(paramMap, tmp, templateFmt, buffer,sizeof(buffer));
+                    int len = buildResponseForDsp(result,paramMap,tmp,templateFmt,buffer,sizeof(buffer));
                     respBody = std::string(buffer, buffer + len);
                 }
             }
@@ -343,6 +427,7 @@ namespace adservice{
 #else
             response.setBody(respBody);
 #endif
+            response.setContentType("text/html; charset=utf-8");
             response.addHeader("Pragma", "no-cache");
             response.addHeader("Cache-Control", "no-cache,no-store;must-revalidate");
             response.addHeader("P3p",

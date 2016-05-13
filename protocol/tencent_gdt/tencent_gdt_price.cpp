@@ -1,31 +1,30 @@
 //
-// Created by guoze.lin on 16/4/8.
+// Created by guoze.lin on 16/5/11.
 //
 
+#include "tencent_gdt_price.h"
 #include <exception>
-#include "youku_price.h"
 #include "utility.h"
 #include "functions.h"
 
 using namespace adservice::utility::cypher;
 using namespace adservice::utility::url;
 
-static const char* TOKEN = "c28dc5ce331840668de6d1ac9be0b0a8";
-//const char* TOKEN = "e48c06fe0da2403db2de26e2fcfe14d5";
+static const char* TOKEN = "NDAzMzY3LDE0MjI4";
 
-
-class YoukuPriceDecoder{
+class GdtPriceDecoder{
 public:
-    YoukuPriceDecoder(const char* token){
-        keySize = 32;
-        fromLittleEndiumHex(token,strlen(token),key,keySize,false);
+    GdtPriceDecoder(const char* token){
+        keySize = strlen(TOKEN);
+        memcpy(key,TOKEN,keySize);
+        key[keySize] = 0;
     }
     int getPrice(const std::string& input){
         std::string result;
         std::string base64decode;
         std::string paddingString = input+padding[input.length()%4];
-        urlsafe_base64decode(paddingString,base64decode);
-        aes_ecbdecode(key,base64decode,result);
+        urlsafe_base64decode(input,base64decode);
+        aes_ecbdecode_nopadding(key,base64decode,result);
         return std::stoi(result);
     }
 private:
@@ -35,11 +34,11 @@ private:
     static std::string padding[4];
 };
 
-std::string YoukuPriceDecoder::padding[4]={"","===","==","="};
+std::string GdtPriceDecoder::padding[4]={"","===","==","="};
 
-static YoukuPriceDecoder decoder(TOKEN);
+static GdtPriceDecoder decoder(TOKEN);
 
-int64_t youku_price_decode(const std::string& input){
+int gdt_price_decode(const std::string& input){
     int price = 0;
     try {
         char buffer[2048];
@@ -47,8 +46,7 @@ int64_t youku_price_decode(const std::string& input){
         urlDecode_f(input,output,buffer);//Maybe twice?
         price = decoder.getPrice(output);
     }catch(std::exception& e){
-        DebugMessageWithTime("youku_price_decode failed,input:",input);
+        DebugMessageWithTime("gdt_price_decode failed,input:",input);
     }
     return price;
 }
-

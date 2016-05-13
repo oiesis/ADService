@@ -3,7 +3,7 @@
 
 if [[ $# != 1 ]];
 then
-        echo "usage $0 [timespan]"
+	cat service_log/service.log|grep "handleShow"|tail -n 10
         exit
 fi
 

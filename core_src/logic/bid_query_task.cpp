@@ -5,6 +5,10 @@
 #include "bid_query_task.h"
 #include "adselect/core_adselect_manager.h"
 #include "adselect/ad_select_logic.h"
+#include "protocol/baidu/baidu_bidding_handler.h"
+#include "protocol/tanx/tanx_bidding_handler.h"
+#include "protocol/youku/youku_bidding_handler.h"
+#include "protocol/tencent_gdt/gdt_bidding_handler.h"
 
 namespace adservice{
     namespace corelogic{
@@ -31,6 +35,8 @@ namespace adservice{
             ADD_MODULE_ENTRY(BID_QUERY_PATH_TANX,ADX_TANX);
             //优酷ADX
             ADD_MODULE_ENTRY(BID_QUERY_PATH_YOUKU,ADX_YOUKU);
+            //腾讯ADX
+            ADD_MODULE_ENTRY(BID_QUERY_PATH_GDT,ADX_TENCENT_GDT);
 
             std::sort<int*>(moduleIdx,moduleIdx+moduleCnt,[moduleAdx](const int& a,const int& b)->bool{
                 return moduleAdx[a].moduleHash<moduleAdx[b].moduleHash;
@@ -64,6 +70,8 @@ namespace adservice{
                     return new YoukuBiddingHandler();
                 case ADX_BAIDU:
                     return new BaiduBiddingHandler();
+                case ADX_TENCENT_GDT:
+                    return new GdtBiddingHandler();
                 default:
                     return NULL;
             }
@@ -71,16 +79,11 @@ namespace adservice{
 
         void HandleBidQueryTask::updateBiddingHandler() {
             if(biddingHandler==NULL){
-                pthread_t thread = pthread_self();
-                BidThreadLocal* data = (BidThreadLocal*)ThreadLocalManager::getInstance().get(thread);
-                if(data==NULL){
-                    data = new BidThreadLocal;
-                    ThreadLocalManager::getInstance().put(thread,data,&BidThreadLocal::destructor);
-                }
+                BidThreadLocal& bidData = threadData->bidData;
                 BiddingHandlerMap::iterator iter;
-                if((iter=data->biddingHandlers.find(adxId))==data->biddingHandlers.end()){
+                if((iter=bidData.biddingHandlers.find(adxId))==bidData.biddingHandlers.end()){
                     biddingHandler = getBiddingHandler(adxId);
-                    data->biddingHandlers.insert(std::make_pair(adxId,biddingHandler));
+                    bidData.biddingHandlers.insert(std::make_pair(adxId,biddingHandler));
                 }else{
                     biddingHandler = iter->second;
                 }
@@ -103,14 +106,19 @@ namespace adservice{
             if(biddingHandler==NULL){
                 log.reqStatus = 500;
             }else{
-                bool bidResult = biddingHandler->filter([](AbstractBiddingHandler* adapter,const AdSelectCondition& condition)->bool{
+                TaskThreadLocal* localData = threadData;
+                bool bidResult = biddingHandler->filter([localData](AbstractBiddingHandler* adapter,const AdSelectCondition& condition)->bool{
                     //连接ADSelect
                     AdSelectManager& adselect = AdSelectManager::getInstance();
                     int seqId = 0;
+#ifndef NOUSE_QUERY_EXECUTOR_QUEUE
                     CoreModule coreModule = CoreService::getInstance();
                     if(coreModule.use_count()>0){
                         seqId = coreModule->getExecutor().getThreadSeqId();
                     }
+#else
+                    seqId = localData->seqId;
+#endif
                     AdSelectLogic adSelectLogic(&adselect);
                     if(!adSelectLogic.selectByPid(seqId,condition.pid,true)){
                         return false;

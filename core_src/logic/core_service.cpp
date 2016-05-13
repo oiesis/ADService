@@ -89,6 +89,18 @@ namespace adservice{
             g_coreService->stop();
         }
 
+        void onDebugConfigChange(const std::string& type,void* newData,void* oldData){
+            DebugMessageWithTime("DebugConfig modified");
+            if(g_coreService.use_count()==0)
+                return;
+            DebugConfig* oldDebugConfig = (DebugConfig*)oldData;
+            DebugConfig* newDebugConfig = (DebugConfig*)newData;
+            // debug dynamic log level
+            if(newDebugConfig->dynamicLogLevel!=oldDebugConfig->dynamicLogLevel){
+                setLogLevel(newDebugConfig->dynamicLogLevel);
+            }
+        }
+
         void CoreService::init() {
             ConfigManager& configManager = ConfigManager::getInstance();
             ServerConfig* serverConfig = (ServerConfig*)configManager.get(CONFIG_SERVICE);
@@ -116,12 +128,14 @@ namespace adservice{
                                                                !logConfig->logRemote);
             // 初始化http server
             muduo::net::InetAddress addr(static_cast<uint16_t>(port));
-            server = std::make_shared<CoreHttpServer>(&loop,addr,"mtty::core_service");
+            server = std::make_shared<CoreHttpServer>(&loop,addr,"mtty::core_service",serverConfig->checkIdleConnection,
+                                                    serverConfig->idleConnectionTimeout);
             server->setHttpCallback(std::bind(&CoreService::onRequest,this,_1,_2,_3));
             server->setThreadNum(httpThreads);
             configManager.registerOnChange(CONFIG_SERVICE,std::bind(&onConfigChange,CONFIG_SERVICE,_1,_2));
             configManager.registerOnChange(CONFIG_LOG,std::bind(&onConfigChange,CONFIG_LOG,_1,_2));
             configManager.registerOnChange(CONFIG_ADSELECT,std::bind(&onConfigChange,CONFIG_ADSELECT,_1,_2));
+            configManager.registerOnChange(CONFIG_DEBUG,std::bind(&onDebugConfigChange,CONFIG_DEBUG,_1,_2));
         }
 
 
