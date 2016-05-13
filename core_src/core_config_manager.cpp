@@ -62,15 +62,19 @@ namespace adservice{
                         LOG_ERROR<<"ConfigManager:parser of "<<iter->first<<" not assigned";
                         continue;
                     }
-                    data = parser(mw,data);
+                    data = parser(mw,NULL);
                     configValue.version = lastModified;
                     ConfigChangeCallback& onChange = configValue.onChange;
                     if(onChange){
                         try {
-                            onChange(data,configValue.data);
+                            if(configValue.data!=NULL)
+                                onChange(data,configValue.data);
                         }catch(std::exception& e){
                             LOG_ERROR<<"exception occur on config change,"<<filePath<<","<<e.what();
                         }
+                    }
+                    if(configValue.data!=NULL){
+                        configValue.dataDestructor(configValue.data);
                     }
                     configValue.data = data;
                 }

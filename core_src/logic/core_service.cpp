@@ -97,8 +97,15 @@ namespace adservice{
             DebugConfig* newDebugConfig = (DebugConfig*)newData;
             // debug dynamic log level
             if(newDebugConfig->dynamicLogLevel!=oldDebugConfig->dynamicLogLevel){
+                DebugMessageWithTime("logging level change,old level:",oldDebugConfig->dynamicLogLevel,",new level:",newDebugConfig->dynamicLogLevel);
                 setLogLevel(newDebugConfig->dynamicLogLevel);
             }
+            // verbose version,if different print debug info
+            if(newDebugConfig->verboseVersion!=oldDebugConfig->verboseVersion){
+                DebugMessageWithTime("Verbose Debug Info:");
+                DebugMessageWithTime("current log level:",(int)muduo::Logger::logLevel());
+            }
+
         }
 
         void CoreService::init() {
