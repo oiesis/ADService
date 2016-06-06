@@ -27,6 +27,8 @@ namespace adservice{
 
 #define MakeBooleanValue(b) rapidjson::Value().SetBool(b)
 
+            void tripslash2(char* str);
+
             class JSONException : public std::exception{
             public:
                 JSONException() _GLIBCXX_USE_NOEXCEPT {}

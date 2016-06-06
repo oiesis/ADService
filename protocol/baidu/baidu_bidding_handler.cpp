@@ -11,6 +11,10 @@ namespace protocol {
         using namespace protocol::Baidu;
         using namespace adservice::utility::serialize;
 
+#define AD_BD_CLICK_MACRO  "%%CLICK_URL_ESC%%"
+#define AD_BD_PRICE_MACRO  "%%PRICE%%"
+#define AD_COOKIEMAPPING_BAIDU		""
+
         inline int max(const int& a,const int& b){
             return a>b?a:b;
         }
@@ -20,15 +24,41 @@ namespace protocol {
             return getProtoBufObject(bidRequest,data);
         }
 
+        std::string BaiduBiddingHandler::baiduHtmlSnippet() {
+            char extShowBuf[1024];
+            const std::string& bid = bidRequest.id();
+            const BidRequest_AdSlot& adSlot = bidRequest.adslot(0);
+            int width = adSlot.width();
+            int height = adSlot.height();
+            int len = snprintf(extShowBuf,sizeof(extShowBuf),"p=%s&l=%s&",AD_BD_PRICE_MACRO,AD_BD_CLICK_MACRO);
+            if(len>=sizeof(extShowBuf)){
+                DebugMessageWithTime("BaiduBiddingHandler::baiduHtmlSnippet,extShowBuf buffer size not enough,needed:",len);
+            }
+            return generateHtmlSnippet(bid,width,height,extShowBuf);
+        }
+
+        std::string BaiduBiddingHandler::baiduHtmlScript() {
+            char extParam[1024];
+            const std::string& bid = bidRequest.id();
+            const BidRequest_AdSlot& adSlot = bidRequest.adslot(0);
+            int width = adSlot.width();
+            int height = adSlot.height();
+            int len = snprintf(extParam,sizeof(extParam),"p=%s",AD_BD_PRICE_MACRO);
+            const std::string sHtml = "";
+            return generateScript(bid,width,height,sHtml.data(),AD_BD_CLICK_MACRO,extParam);
+        }
+
         void BaiduBiddingHandler::fillLogItem(protocol::log::LogItem &logItem) {
             logItem.reqStatus = 200;
             logItem.userAgent = bidRequest.user_agent();
             logItem.ipInfo.proxy = bidRequest.ip();
+            logItem.adInfo.adxid = ADX_BAIDU;
             if(isBidAccepted){
                 if(bidRequest.has_mobile()){
                     const BidRequest_Mobile& mobile = bidRequest.mobile();
                     logItem.deviceInfo = mobile.DebugString();
                 }
+                logItem.adInfo.sid = adInfo.sid;
                 logItem.adInfo.advId = adInfo.advId;
                 logItem.adInfo.adxid = adInfo.adxid;
                 logItem.adInfo.adxpid = adInfo.adxpid;
@@ -49,12 +79,12 @@ namespace protocol {
             const BidRequest_AdSlot& adSlot = bidRequest.adslot(0);
             long pid = adSlot.ad_block_key();
             AdSelectCondition queryCondition;
-            queryCondition.pid = std::to_string(pid);
+            queryCondition.adxpid = std::to_string(pid);
+            queryCondition.ip = bidRequest.ip();
             if(!filterCb(this,queryCondition)){
                 return bidFailedReturn();
             }
-            isBidAccepted = false;
-            return false;
+            return isBidAccepted = true;
         }
 
         void BaiduBiddingHandler::buildBidResult(const SelectResult &result) {
@@ -76,14 +106,16 @@ namespace protocol {
             adResult->set_sequence_id(adSlot.sequence_id());
             //缓存最终广告结果
             adInfo.advId = advId;
+            adInfo.sid = finalSolution["sid"].GetInt64();
             adInfo.adxid = ADX_BAIDU;
-            adInfo.adxpid = adplace["adxpid"].GetInt();
+            adInfo.adxpid = adplace["adxpid"].GetString();
             adInfo.adxuid = bidRequest.baidu_user_id();
             adInfo.bannerId = banner["bid"].GetInt();
             adInfo.cid = adplace["cid"].GetInt();
             adInfo.mid = adplace["mid"].GetInt();
             adInfo.cpid = adInfo.advId;
             adInfo.offerPrice = maxCpmPrice;
+            adResult->set_html_snippet(baiduHtmlSnippet());
         }
 
         void BaiduBiddingHandler::match(HttpResponse &response) {

@@ -24,11 +24,13 @@ namespace protocol {
         void GdtBiddingHandler::fillLogItem(protocol::log::LogItem &logItem) {
             logItem.reqStatus = 200;
             logItem.ipInfo.proxy = bidRequest.ip();
+            logItem.adInfo.adxid = ADX_TENCENT_GDT;
             if(isBidAccepted){
                 if(bidRequest.has_device()){
                     const BidRequest_Device& device = bidRequest.device();
                     logItem.deviceInfo = device.DebugString();
                 }
+                logItem.adInfo.sid = adInfo.sid;
                 logItem.adInfo.advId = adInfo.advId;
                 logItem.adInfo.adxid = adInfo.adxid;
                 logItem.adInfo.adxpid = adInfo.adxpid;
@@ -50,12 +52,12 @@ namespace protocol {
             const BidRequest_Impression& adzInfo = bidRequest.impressions(0);
             long pid = adzInfo.placement_id();
             AdSelectCondition queryCondition;
-            queryCondition.pid = std::to_string(pid);
+            queryCondition.adxpid = std::to_string(pid);
+            queryCondition.ip = bidRequest.ip();
             if(!filterCb(this,queryCondition)){
                 return bidFailedReturn();
             }
-            isBidAccepted = false;
-            return false;
+            return isBidAccepted = true;
         }
 
         void GdtBiddingHandler::buildBidResult(const SelectResult &result) {
@@ -75,14 +77,23 @@ namespace protocol {
             adResult->set_creative_id(std::to_string(banner["bid"].GetInt()));
             //缓存最终广告结果
             adInfo.advId = finalSolution["advId"].GetInt();
-            adInfo.adxid = ADX_TANX;
-            adInfo.adxpid = adplace["adxpid"].GetInt();
+            adInfo.sid = finalSolution["sid"].GetInt64();
+            adInfo.adxid = ADX_TENCENT_GDT;
+            adInfo.adxpid = adplace["adxpid"].GetString();
             adInfo.adxuid = bidRequest.user().id();
             adInfo.bannerId = banner["bid"].GetInt();
             adInfo.cid = adplace["cid"].GetInt();
             adInfo.mid = adplace["mid"].GetInt();
             adInfo.cpid = adInfo.advId;
             adInfo.offerPrice = maxCpmPrice;
+
+            //html snippet相关
+            char showParam[2048];
+            httpsnippet(bidRequest.id(),showParam,sizeof(showParam),NULL,0);
+            char buffer[2048];
+            snprintf(buffer,sizeof(buffer),"of=3&%s",showParam);
+            adResult->set_click_param(buffer);
+            adResult->set_impression_param(buffer);
         }
 
         void GdtBiddingHandler::match(HttpResponse &response) {

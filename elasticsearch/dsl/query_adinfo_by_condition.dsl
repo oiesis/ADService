@@ -27,6 +27,7 @@
                                     {"terms": {"d_displaynumber":["0","%d"]}},
                                     {"terms": {"d_flowtype":["0","%d"]}},
                                     {"terms": {"d_hour":["0","%s"]}},
+                                    {"term": {"solutionstatus":{"value":20}}},
                                     {"range": {"starttime": {"lte": "now"}}},
                                     {"range": {"endtime":{"gte":"now"}}},
                                     {"has_parent": {
@@ -70,6 +71,7 @@
                                                                 {"terms": {"d_displaynumber":["0","%d"]}},
                                                                 {"terms": {"d_flowtype":["0","%d"]}},
                                                                 {"terms": {"d_hour":["0","%s"]}},
+                                                                {"term": {"solutionstatus":{"value":20}}},
                                                                 {"range": {"starttime": {"lte": "now"}}},
                                                                 {"range": {"endtime":{"gte":"now"}}}
                                                             ]

@@ -88,28 +88,88 @@ namespace adservice{
          * 计算花费
          * 参见http://redmine.mtty.com/redmine/issues/22
          */
-        double calcBidPrice(int priceType,double ecpm1,double ecpm2,double basePrice,double offerPrice){
+        double calcBidPrice(int priceType,double ecpm1OfferPrice,double ecpm2OfferPrice,double basePrice,double offerPrice,bool fromSSP){
             switch(priceType){
                 case PRICETYPE_CPD:
                 case PRICETYPE_CPM:
                 case PRICETYPE_CPC:
                     return 0;
-                case PRICETYPE_RCPC: //offerprice
+                case PRICETYPE_RCPC: //offerprice,定价采购流量
                     return std::max(offerPrice,basePrice);
                 case PRICETYPE_RTB:
                 case PRICETYPE_RRTB_CPM:
-                case PRICETYPE_RRTB_CPC:
-                    if(ecpm2<0){ //只有一个出价
-                        return std::max(ecpm1,basePrice);
-                    }else{ // 第二高价加一毛钱
-                        return std::max(ecpm2+0.1,basePrice);
+                    if(!fromSSP){ //ADX
+                        ecpm1OfferPrice *= AD_RTB_BIDOFFERPRICE_FACTOR;
+                        ecpm1OfferPrice=ecpm1OfferPrice<1.0?1.0:ecpm1OfferPrice;
+                        return std::max(ecpm1OfferPrice,basePrice);
+                    }else {//SSP
+                        if (ecpm2OfferPrice < 0) { //只有一个出价
+                            return std::max(ecpm1OfferPrice, basePrice);
+                        } else { // SSP流量,第二高价加一分钱
+                            return std::max(ecpm2OfferPrice + 1, basePrice);
+                        }
                     }
+                case PRICETYPE_RRTB_CPC:
+                    return 0;
             }
             return 0;
         }
 
-        bool AdSelectLogic::selectByPid(int seqId,const std::string& queryPid,bool isAdxPid){
-            rapidjson::Value& result = adselect->queryAdInfoByPid(seqId,queryPid,esResp,isAdxPid);
+        bool filterSolutionIp(const rapidjson::Value& solution,const std::string ip){
+            std::string dIp = solution["d_ip"].IsNull()?"":solution["d_ip"].GetString();
+            if(dIp.empty()||dIp=="0"||ip.empty()){
+                return true;
+            }
+            if(dIp.find(ip)!=std::string::npos){
+                return true;
+            }
+            return false;
+        }
+
+        /**
+         * 根据定向类型对基本出价和ctr进行加成
+         */
+        void addupPricer(const rapidjson::Value& solution,double& offerPrice,double& ctr){
+
+        }
+
+        void split(const char* str,int len,const char** index,int& size){
+            index[0] = str;
+            int i =0,j=1;
+            for(;i<len&&j<size;i++){
+                if(str[i]=='|'){
+                    index[j]=str+i+1;
+                    j++;
+                }
+            }
+            if(j<size)
+                size = j+1;
+            if(size%3!=0){
+                DebugMessageWithTime("error in split,size not times of 3,input:",str);
+            }
+        }
+
+        double getHourPercent(const rapidjson::Value& solution,std::string& dHour){
+            if(dHour.empty()){
+                DebugMessageWithTime("input dHour is empty");
+                return 1.0;
+            }
+            std::string hour = solution["d_hour"].GetString();
+            if(hour=="0")
+                return 1.0;
+            const char* index[100];
+            int size = sizeof(index)/sizeof(char*);
+            split(hour.data(),hour.length(),index,size);
+            for(int i=0;i<size;i+=3){
+                if(!strncmp(index[i],dHour.data(),dHour.length())){
+                    return atof(index[i+1]);
+                }
+            }
+            return 1.0;
+        }
+
+        bool AdSelectLogic::selectByCondition(int seqId, AdSelectCondition &condition, bool isAdxPid,bool fromSSP) {
+            rapidjson::Value& result = adselect->queryAdInfoByCondition(seqId,condition,esResp,isAdxPid);
             if(!result.IsArray()||result.Empty()){ //正常情况下应该刷出solution和banner以及相应的高级出价器列表
                 return false;
             }
@@ -122,7 +182,10 @@ namespace adservice{
             for(int i=0;i<result.Size();i++){
                 const char* type = result[i]["_type"].GetString();
                 if(!strcmp(type,ES_DOCUMENT_SOLUTION)){ //投放单
-                    solutions[solCnt++]=&(result[i]["_source"]);
+                    solutions[solCnt]=&(result[i]["_source"]);
+                    if(filterSolutionIp(*(solutions[solCnt]),condition.ip)){
+                        solCnt++;
+                    }
                 }else if(!strcmp(type,ES_DOCUMENT_BANNER)){ // 创意
                     rapidjson::Value& banner = result[i]["_source"];
                     int bgid = banner["bgid"].GetInt();
@@ -143,7 +206,7 @@ namespace adservice{
             double finalOfferPrice[100];
             double solScore[100];
             double top1Ecpm = -1,top2Ecpm = -1;
-            double hourPercent = getCurrentHourPercent();
+            double top1EcpmOfferPrice = -1.0,top2EcpmOfferPrice = -1.0;
             for(int i=0;i<solCnt;i++){
                 solIdx[i] = i;
                 rapidjson::Value& solution = *(solutions[i]);
@@ -157,13 +220,16 @@ namespace adservice{
                 rapidjson::Value& banner = bestBannerFromBannerGroup(bannerMap,bgid);//advId?
                 offerprice += banner["offerprice"].GetDouble();
                 ctr += banner["ctr"].GetDouble();
-                double ecpm = offerprice * ctr * hourPercent;
-                finalOfferPrice[i] = offerprice;
                 int priceType = solution["pricetype"].GetInt();
+                double hourPercent = getHourPercent(solution,condition.dHour);
+                double ecpm = offerprice * (priceType == PRICETYPE_RRTB_CPC ?ctr: 1.0) * hourPercent;
+                finalOfferPrice[i] = offerprice;
                 solScore[i] = calcSolutionScore(priceType,ecpm);
                 if(ecpm>top1Ecpm){
-                    top1Ecpm = ecpm;
                     top2Ecpm = top1Ecpm;
+                    top1Ecpm = ecpm;
+                    top2EcpmOfferPrice = top1EcpmOfferPrice;
+                    top1EcpmOfferPrice = offerprice;
                 }
             }
             sortSolutionScore(solIdx,solScore,solCnt);
@@ -199,8 +265,19 @@ namespace adservice{
             double offerPrice = finalOfferPrice[solIdx[finalSolutionIdx]];
             int finalPriceType = finalSolution["pricetype"].GetInt();
             double basePrice = adplace["baseprice"].GetDouble();
-            selectResult.bidPrice = (int)calcBidPrice(finalPriceType,top1Ecpm,top2Ecpm,basePrice,offerPrice);
+            selectResult.bidPrice = (int)calcBidPrice(finalPriceType,top1EcpmOfferPrice,top2EcpmOfferPrice,basePrice,offerPrice,fromSSP);
+            selectResult.esResp = &esResp;
             return true;
+        }
+
+        bool AdSelectLogic::selectByPid(int seqId,const std::string& queryPid,bool isAdxPid,bool fromSSP){
+            AdSelectCondition condition;
+            if(isAdxPid){
+                condition.adxpid = queryPid;
+            }else{
+                condition.mttyPid = queryPid;
+            }
+            return selectByCondition(seqId,condition,isAdxPid,fromSSP);
         }
 
     }

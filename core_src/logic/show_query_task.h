@@ -21,13 +21,18 @@ namespace adservice{
             //加载模板
             static void loadTemplates();
         public:
-            explicit HandleShowQueryTask(){}
-            explicit HandleShowQueryTask(const TcpConnectionPtr& _conn,const HttpRequest& request):AbstractQueryTask(_conn,request){
+            explicit HandleShowQueryTask(const HttpRequest& request,HttpResponse& response):AbstractQueryTask(request,response){
                 //loadTemplates();
             }
 
+            virtual ~HandleShowQueryTask(){}
+
             protocol::log::LogPhaseType currentPhase(){
                 return protocol::log::LogPhaseType::SHOW;
+            }
+
+            virtual int reqMethod(){
+                return HTTP_REQUEST_POST;
             }
 
             /**

@@ -13,6 +13,7 @@
 #include "atomic.h"
 #include "core_config_manager.h"
 #include "core_cache_manager.h"
+#include "ad_select_result.h"
 
 namespace adservice{
     namespace adselect{
@@ -76,14 +77,19 @@ namespace adservice{
             rapidjson::Value& queryAdInfoByPid(int seqId,const std::string& pid,rapidjson::Document& result,bool isAdxPid = false);
 
             /**
+             * 根据多条件查询广告信息
+             */
+            rapidjson::Value& queryAdInfoByCondition(int seqId, AdSelectCondition& condition,rapidjson::Document& result,bool isAdxPid = false);
+
+            /**
              * 根据Mtty PID找到合适的广告信息
              */
-            rapidjson::Value& queryAdInfoByMttyPid(int seqId,const std::string& mttyPid,rapidjson::Document& result);
+            rapidjson::Value& queryAdInfoByMttyPid(int seqId,AdSelectCondition& selectCondition,rapidjson::Document& result);
 
             /**
              * 根据ADX PID找到合适的广告信息
              */
-            rapidjson::Value& queryAdInfoByAdxPid(int seqId,const std::string& adxPid,rapidjson::Document& result);
+            rapidjson::Value& queryAdInfoByAdxPid(int seqId, AdSelectCondition& selectCondition,rapidjson::Document& result);
 
         private:
             AdSelectManager(const std::string& node,const std::string& auth = std::string()){

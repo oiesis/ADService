@@ -17,6 +17,7 @@
 #include <tuple>
 #include <exception>
 #include "common/types.h"
+#include "muduo/net/http/HttpRequest.h"
 
 namespace adservice{
     namespace utility{
@@ -29,9 +30,22 @@ namespace adservice{
             std::string urlDecode(const std::string &input);
 
             /**
+             * 快速url encode
+             */
+            void urlEncode_f(const char* in,int len,std::string& output,char* buffer);
+
+            inline void urlEncode_f(const std::string& input,std::string& output,char* buffer){
+                urlEncode_f(input.data(),input.length(),output,buffer);
+            }
+
+            /**
              * 快速url decode
              */
-            void urlDecode_f(const adservice::types::string &input,adservice::types::string &output,char* buffer);
+            void urlDecode_f(const char* in,int len,std::string& output,char* buffer);
+
+            inline void urlDecode_f(const std::string &input,std::string &output,char* buffer){
+                urlDecode_f(input.data(),input.length(),output,buffer);
+            }
 
             typedef std::map<adservice::types::string,adservice::types::string> ParamMap;
 
@@ -40,7 +54,11 @@ namespace adservice{
              */
             void getParam(ParamMap &m,const char* buffer,char seperator='&');
 
+            void getParamv2(ParamMap &m,const char* buffer,char seperator = '&');
+
             void getParam(ParamMap& m,const adservice::types::string& input);
+
+            void getParamv2(ParamMap& m,const adservice::types::string& input);
 
             /**
              * 从cookies中获取所有参数
@@ -61,6 +79,8 @@ namespace adservice{
              * 从xxx-xxx-xxx形式的字符串提取国家,省,市
              */
             void extractAreaInfo(const char* input,int& country,int& province,int& city);
+
+            bool parseHttpRequest(muduo::net::HttpRequest& request,const char* buffer,int size);
 
             /**
              * 提取不超过指定长度的字符串

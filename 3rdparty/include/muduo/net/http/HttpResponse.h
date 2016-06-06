@@ -29,6 +29,7 @@ class HttpResponse : public muduo::copyable
   {
     kUnknown,
     k200Ok = 200,
+    k204OkNoContent = 204,
     k301MovedPermanently = 301,
     k302Redirect = 302,
     k400BadRequest = 400,

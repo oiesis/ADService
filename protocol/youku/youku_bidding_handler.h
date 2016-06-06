@@ -6,11 +6,16 @@
 #define ADCORE_YOUKU_BIDDING_HANDLER_H
 
 #include "protocol/base/abstract_bidding_handler.h"
+#include "utility/json.h"
 
 
 namespace protocol{
     namespace bidding{
 
+
+        /**
+         * http://api.sandbox.yes.youku.com/adx_dsp_api.html
+         */
         class YoukuBiddingHandler : public AbstractBiddingHandler {
         public:
             /**
@@ -43,6 +48,10 @@ namespace protocol{
              * 不接受ADX的流量请求
              */
             void reject(INOUT HttpResponse& response);
+        private:
+
+            rapidjson::Document bidRequest;
+            rapidjson::Document bidResponse;
         };
 
     }

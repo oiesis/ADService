@@ -116,11 +116,13 @@ namespace adservice{
         struct DebugConfig{
             int dynamicLogLevel;
             int verboseVersion;
+            int fd;
             static void* parse(const MessageWraper& mw,void* data){
                 data = data==NULL? (new DebugConfig):data;
                 DebugConfig* c = (DebugConfig*)data;
                 c->dynamicLogLevel = mw.getInt("dynamic_log_level",3);
                 c->verboseVersion = mw.getInt("verbose_version",0);
+                c->fd = mw.getInt("debug_fd",-1);
                 return data;
             }
             static void destruct(void* data){

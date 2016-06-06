@@ -9,14 +9,20 @@
 #include "protocol/tanx/tanx_bidding_handler.h"
 #include "protocol/youku/youku_bidding_handler.h"
 #include "protocol/tencent_gdt/gdt_bidding_handler.h"
+#include "utility/utility.h"
 
 namespace adservice{
     namespace corelogic{
+
+        using namespace adservice::utility;
 
         int HandleBidQueryTask::initialized = 0;
         int HandleBidQueryTask::moduleCnt = 0;
         int HandleBidQueryTask::moduleIdx[BID_MAX_MODULES];
         struct ModuleIndex HandleBidQueryTask::moduleAdx[BID_MAX_MODULES];
+
+        static int handleBidRequests = 0;
+        static int updateBidRequestsTime = 0;
 
 #define ADD_MODULE_ENTRY(name,adxid) {moduleIdx[moduleCnt] = moduleCnt; \
         moduleAdx[moduleCnt++] = {fnv_hash(name,strlen(name)),adxid}; \
@@ -107,20 +113,17 @@ namespace adservice{
                 log.reqStatus = 500;
             }else{
                 TaskThreadLocal* localData = threadData;
-                bool bidResult = biddingHandler->filter([localData](AbstractBiddingHandler* adapter,const AdSelectCondition& condition)->bool{
+                bool bidResult = biddingHandler->filter([localData](AbstractBiddingHandler* adapter,AdSelectCondition& condition)->bool{
                     //连接ADSelect
                     AdSelectManager& adselect = AdSelectManager::getInstance();
                     int seqId = 0;
-#ifndef NOUSE_QUERY_EXECUTOR_QUEUE
-                    CoreModule coreModule = CoreService::getInstance();
-                    if(coreModule.use_count()>0){
-                        seqId = coreModule->getExecutor().getThreadSeqId();
-                    }
-#else
                     seqId = localData->seqId;
-#endif
                     AdSelectLogic adSelectLogic(&adselect);
-                    if(!adSelectLogic.selectByPid(seqId,condition.pid,true)){
+                    //todo:pid黑名单逻辑接入
+                    //http://redmine.mtty.com/redmine/issues/96
+                    //todo:cookies mapping 接入,人群标签获取
+                    // ...
+                    if(!adSelectLogic.selectByCondition(seqId,condition,true,false)){
                         return false;
                     }
                     adapter->buildBidResult(adSelectLogic.getResult());
@@ -132,6 +135,16 @@ namespace adservice{
                     biddingHandler->reject(resp);
                 }
                 biddingHandler->fillLogItem(log);
+            }
+            handleBidRequests++;
+            if (handleBidRequests % 10000 == 1) {
+                int64_t todayStartTime = time::getTodayStartTime();
+                if (updateBidRequestsTime < todayStartTime) {
+                    handleBidRequests = 1;
+                    updateBidRequestsTime = todayStartTime;
+                } else {
+                    DebugMessageWithTime("handleBidRequests:", handleBidRequests);
+                }
             }
         }
 

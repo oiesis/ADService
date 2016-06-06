@@ -14,87 +14,92 @@
 #include <muduo/base/copyable.h>
 
 #include <muduo/net/http/HttpRequest.h>
-
+#include <muduo/net/Buffer.h>
 #include <boost/shared_array.hpp>
 #include <boost/function.hpp>
 
+
 namespace muduo
 {
-namespace net
-{
+    namespace net
+    {
 
-class Buffer;
+        class Buffer;
 
-class HttpContext : public muduo::copyable
-{
- public:
-  typedef boost::function<bool(Buffer*,Timestamp)> RequestParser;
+        class HttpContext : public muduo::copyable
+        {
+        public:
+            typedef boost::function<bool(Buffer*,Timestamp)> RequestParser;
 
-  enum HttpRequestParseState
-  {
-    kExpectRequestLine,
-    kExpectHeaders,
-    kExpectBody,
-    kGotAll,
-  };
+            enum HttpRequestParseState
+            {
+                kExpectRequestLine,
+                kExpectHeaders,
+                kExpectBody,
+                kGotAll,
+            };
 
-  HttpContext()
-    : state_(kExpectRequestLine),postdata_(),lastActiveTime(0)
-  {
-  }
+            HttpContext()
+                    : state_(kExpectRequestLine),lastActiveTime(0)
+            {
+            }
 
-  // default copy-ctor, dtor and assignment are fine
-  virtual ~HttpContext(){}
+            // default copy-ctor, dtor and assignment are fine
+            virtual ~HttpContext(){}
 
-  // return false if any error
-  bool parseRequest(Buffer* buf, Timestamp receiveTime);
+            // return false if any error
+            bool parseRequest(Buffer* buf, Timestamp receiveTime);
 
-  bool gotAll() const
-  { return state_ == kGotAll; }
+            bool gotAll() const
+            { return state_ == kGotAll; }
 
-  void reset()
-  {
-    state_ = kExpectRequestLine;
-    HttpRequest dummy;
-    request_.swap(dummy);
-  }
+            void reset()
+            {
+              state_ = kExpectRequestLine;
+              HttpRequest dummy;
+              request_.swap(dummy);
+              Buffer dummyBuffer;
+              postBuffer.swap(dummyBuffer);
+            }
 
-  const HttpRequest& request() const
-  { return request_; }
+            const HttpRequest& request() const
+            { return request_; }
 
-  HttpRequest& request()
-  { return request_; }
+            HttpRequest& request()
+            { return request_; }
 
-  void setRequestParser(const RequestParser& parser){
-    requestParser_ = parser;
-  }
-  const RequestParser& getRequestParser() const{
-    return requestParser_;
-  }
-  HttpRequestParseState& getState(){
-    return state_;
-  }
-  boost::shared_array<char>& getPostData(){
-    return postdata_;
-  }
-    void setLastActiveTime(long t){
-      lastActiveTime = t;
+//            void setRequestParser(const RequestParser& parser){
+//              requestParser_ = parser;
+//            }
+//            const RequestParser& getRequestParser() const{
+//              return requestParser_;
+//            }
+            HttpRequestParseState& getState(){
+              return state_;
+            }
+
+            Buffer& getPostBuffer(){
+              return postBuffer;
+            }
+
+            bool processRequestLine(const char* begin, const char* end);
+
+            void setLastActiveTime(long t){
+              lastActiveTime = t;
+            }
+
+            long getLastActiveTime() const{
+              return lastActiveTime;
+            }
+        private:
+            HttpRequestParseState state_;
+            HttpRequest request_;
+            Buffer postBuffer;
+        //    RequestParser requestParser_;
+            long lastActiveTime;
+        };
+
     }
-
-  long getLastActiveTime() const{
-    return lastActiveTime;
-  }
-
-  bool processRequestLine(const char* begin, const char* end);
-private:
-  HttpRequestParseState state_;
-  HttpRequest request_;
-  boost::shared_array<char> postdata_; // 如果希望深拷贝,这里将出现问题;也就是多个处理线程间不应该共享HttpContext,如果要支持,设置成线程局部变量
-  RequestParser requestParser_;
-    long lastActiveTime;
-};
-
-}
 }
 
 #endif  // MUDUO_NET_HTTP_HTTPCONTEXT_H

@@ -21,7 +21,12 @@ namespace adservice{
             /**
              * 根据广告位进行的广告选择逻辑
              */
-            bool selectByPid(int seqId,const std::string& queryPid,bool isAdxPid);
+            bool selectByPid(int seqId,const std::string& queryPid,bool isAdxPid,bool fromSSP = false);
+
+            /**
+             * 根据多个过滤条件进行的过滤选择
+             */
+            bool selectByCondition(int seqId,AdSelectCondition& condition,bool isAdxPid,bool fromSSP = false);
 
             inline const SelectResult& getResult() const{
                 return selectResult;

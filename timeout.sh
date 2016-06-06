@@ -16,7 +16,7 @@ function killPortOwner(){
 while [ 1 ]
 do
         CLOSEWAIT=`netstat -napt|grep "1922"|grep "CLOSE_WAIT"|wc -l`
-        if (( $CLOSEWAIT > 1000 ));
+        if (( $CLOSEWAIT > 20000 ));
         then
                 triggerTime=`date`
                 echo "${triggerTime}:${CLOSEWAIT} close_wait, dangerous condition detected,trigger hedge"

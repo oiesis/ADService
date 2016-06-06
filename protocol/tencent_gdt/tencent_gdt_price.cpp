@@ -10,7 +10,8 @@
 using namespace adservice::utility::cypher;
 using namespace adservice::utility::url;
 
-static const char* TOKEN = "NDAzMzY3LDE0MjI4";
+//static const char* TOKEN = "NDAzMzY3LDE0MjI4";
+static const char* TOKEN = "MTI3NzU4MywxNDUz";
 
 class GdtPriceDecoder{
 public:
@@ -45,6 +46,7 @@ int gdt_price_decode(const std::string& input){
         std::string output;
         urlDecode_f(input,output,buffer);//Maybe twice?
         price = decoder.getPrice(output);
+        //DebugMessageWithTime("gdt price input:",input,",price:",price);
     }catch(std::exception& e){
         DebugMessageWithTime("gdt_price_decode failed,input:",input);
     }

@@ -20,7 +20,7 @@ namespace adservice{
         using namespace adservice::utility::time;
         using namespace muduo;
 
-        static const        int MEMORY_ALLOC_UNIT               = 2048;
+        static const        int MEMORY_ALLOC_UNIT               = 4096;
         static const        int MEMORY_ALLOC_UNIT_CNT           = 1024;
         static constexpr    int DEFAULT_MEMORY_ALLOC_SIZE       = MEMORY_ALLOC_UNIT * ((MEMORY_ALLOC_UNIT_CNT<<1)+1);
         static constexpr    int DEFAULT_POOL_UNIT_CNT           = (MEMORY_ALLOC_UNIT_CNT<<1)+1;
@@ -109,6 +109,7 @@ namespace adservice{
             }
             void init(int size = DEFAULT_MEMORY_ALLOC_SIZE,int unit = MEMORY_ALLOC_UNIT){
                 memory = new uchar_t[size];
+                totalSize = size;
                 unitSize = unit;
                 memStategy.setAux(aux);
                 memStategy.init();
@@ -128,8 +129,15 @@ namespace adservice{
             int getUnitSize(){
                 return unitSize;
             }
+            int getTotalSize(){
+                return totalSize;
+            }
+            bool isValidAddr(void* addr){
+                return (reinterpret_cast<long>(addr)- reinterpret_cast<long>(memory))<totalSize;
+            }
         private:
             int unitSize;
+            int totalSize;
             uchar_t* memory;
             int aux[DEFAULT_POOL_UNIT_CNT];
             MemoryManageStategy memStategy;

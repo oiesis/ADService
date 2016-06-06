@@ -107,6 +107,7 @@ namespace adservice{
             }
             ConfigValue& configValue = iter->second;
             if(configValue.data==NULL){
+                //tofix:concurrent access
                 const std::string& filePath = configValue.filePath;
                 MessageWraper mw;
                 bool bSuccess = parseJsonFile(filePath.c_str(),mw);

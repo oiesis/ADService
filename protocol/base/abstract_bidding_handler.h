@@ -12,6 +12,7 @@
 #include "common/types.h"
 #include "adselect/ad_select_result.h"
 #include "constants.h"
+#include "functions.h"
 
 namespace protocol{
     namespace bidding{
@@ -21,7 +22,7 @@ namespace protocol{
 
         class AbstractBiddingHandler;
 
-        typedef std::function<bool(AbstractBiddingHandler*,const AdSelectCondition&)> BiddingFilterCallback;
+        typedef std::function<bool(AbstractBiddingHandler*,AdSelectCondition&)> BiddingFilterCallback;
 
         /**
          * BiddingHandler主要处理协议层数据转换,屏蔽各个平台之间输入输出的差异
@@ -63,6 +64,14 @@ namespace protocol{
              */
             virtual void reject(INOUT HttpResponse& response) = 0;
 
+            /**
+             * 产生htmlsnippet
+             */
+            virtual std::string generateHtmlSnippet(const std::string &bid, int width, int height, char *extShowBuf,
+                                                    const char *cookieMappingUrl = "");
+
+            virtual std::string generateScript(const std::string &bid,int width,int height,const char* scriptUrl,const char* clickMacro,const char* extParam);
+
             inline bool bidFailedReturn(){
                 return (isBidAccepted = false);
             }
@@ -70,10 +79,12 @@ namespace protocol{
             inline bool bidSuccessReturn(){
                 return (isBidAccepted = true);
             }
-
+        protected:
+            void httpsnippet(const std::string& bid,char* showParamBuf,int showBufSize,char* clickParamBuf,int clickBufSize);
         protected:
             //最近一次匹配的结果
             bool isBidAccepted;
+            protocol::log::AdInfo adInfo;
         };
 
     }

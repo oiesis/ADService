@@ -41,11 +41,23 @@ namespace adservice{
                 DebugMessageWithTime("memory pool ran out!!");
                 return NULL;
             }
-            return memory+memId*unitSize;
+            int retAddr = memId*unitSize;
+//            if(retAddr<0||retAddr>=totalSize||memId<0||memId>=DEFAULT_POOL_UNIT_CNT){
+//                DebugMessageWithTime("MemoryPool::alloc failed,finalAddr:,",(memory+retAddr),"retAddr:",retAddr,",memory:",
+//                                     reinterpret_cast<long>(memory),",memId:",memId,",unitSize:",unitSize);
+//            }
+            return memory+retAddr;
         }
 
         void MemoryPool::free(void* p){
+//            if(!isValidAddr(p)){
+//                DebugMessageWithTime("MemoryPool::free invalid addr", reinterpret_cast<long>(p));
+//            }
             int memId = ((long)p-(long)memory)/unitSize;
+//            if(memId>=DEFAULT_POOL_UNIT_CNT){
+//                DebugMessageWithTime("MemoryPool::free invalid memId:",memId,",addr:", reinterpret_cast<long>(p),",memory:",
+//                                     reinterpret_cast<long>(memory),",unitSize:",unitSize);
+//            }
             memStategy.free(memId);
         }
 
@@ -56,9 +68,9 @@ namespace adservice{
 
         int CacheManager::hash(const char* key){
             if(hashFunc){
-                return hashFunc(key);
+                return std::abs(hashFunc(key));
             }else{
-                return fnv_hash(key,strlen(key));
+                return std::abs(fnv_hash(key,strlen(key)));
             }
         }
 
@@ -108,10 +120,14 @@ namespace adservice{
                     result = slot.caches[h];
                     pre = &(slot.caches[h]);
                     while (result) {
+//                        if(!cacheResultSpare.isValidAddr(result)){
+//                            DebugMessageWithTime("invalid cacheresult address:", reinterpret_cast<long>(result));
+//                        }
                         if (result->expired(currentTime)) { //过期
                             *pre = result->next;
-                            if(result->data!=NULL)
+                            if(result->data!=NULL) {
                                 memPools[level].free(result->data);
+                            }
                             cacheResultSpare.free(result);
                             result = *pre;
                         } else if (strcmp(result->key, key) == 0) { //cache hit

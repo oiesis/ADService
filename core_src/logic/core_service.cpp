@@ -60,6 +60,9 @@ namespace adservice{
 
         void setLogLevel(int logLevel){
             switch(logLevel){
+                case 0:
+                    muduo::Logger::setLogLevel(muduo::Logger::LogLevel::TRACE);
+                    break;
                 case 1:
                     muduo::Logger::setLogLevel(muduo::Logger::LogLevel::DEBUG);
                     break;
@@ -146,78 +149,54 @@ namespace adservice{
         }
 
 
-        void doClick(CoreService* service,const TcpConnectionPtr& conn,const HttpRequest& req,bool isClose){
-#ifndef NOUSE_QUERY_EXECUTOR_QUEUE
-            service->getExecutor().run(std::bind(HandleClickQueryTask(conn,req)));
-#else
+        void doClick(CoreService* service,const HttpRequest& req,HttpResponse& response){
             try {
-                HandleClickQueryTask clickTask(conn,req);
+                HandleClickQueryTask clickTask(req,response);
                 clickTask();
             }catch(std::exception &e){
                 LOG_ERROR<<"error occured in CoreService doClick"<<e.what();
             }
-#endif
         }
 
-        void doShow(CoreService* service,const TcpConnectionPtr& conn,const HttpRequest& req,bool isClose){
-#ifndef NOUSE_QUERY_EXECUTOR_QUEUE
-            service->getExecutor().run(std::bind(HandleShowQueryTask(conn,req)));
-#else
+        void doShow(CoreService* service,const HttpRequest& req,HttpResponse& response){
             try{
-                HandleShowQueryTask showTask(conn,req);
+                HandleShowQueryTask showTask(req,response);
                 showTask();
             }catch(std::exception &e){
                 LOG_ERROR<<"error occured in CoreService doShow"<<e.what();
             }
-#endif
         }
 
-        void doBid(CoreService* service,const TcpConnectionPtr& conn,const HttpRequest& req,bool isClose){
-#ifndef NOUSE_QUERY_EXECUTOR_QUEUE
-            service->getExecutor().run(std::bind(HandleBidQueryTask(conn,req)));
-#else
+        void doBid(CoreService* service,const HttpRequest& req,HttpResponse& response){
             try{
-                HandleBidQueryTask bidTask(conn,req);
+                HandleBidQueryTask bidTask(req,response);
                 bidTask();
             }catch(std::exception &e){
                 LOG_ERROR<<"error occured in CoreService doBid"<<e.what();
             }
-#endif
         }
 
-        void CoreService::onRequest(const TcpConnectionPtr& conn,const HttpRequest& req, bool isClose) {
+        void CoreService::onRequest(const TcpConnectionPtr& conn,const HttpRequest& req, HttpResponse* resp) {
             //todo:改成table dispatcher
             if(req.path().length()>URL_LONG_REQUEST_THRESH){
                 DebugMessage("Received Long Request,",req.path().length(),",input:",req.path());
             }
             if (req.path() == "/v" || req.path() == "/s") { //show
-                doShow(this,conn,req,isClose);
+                doShow(this,req,*resp);
             } else if(req.path().find("bid")!=std::string::npos){
-                doBid(this,conn,req,isClose);
+                doBid(this,req,*resp);
             } else if(req.path() == "/c"){ //click
-                doClick(this,conn,req,isClose);
+                doClick(this,req,*resp);
             } else if(req.path() == "/jt.html"){ //http健康检查
-                HttpResponse resp(false);
-                resp.setStatusCode(HttpResponse::k200Ok);
-                Buffer buf;
-                resp.appendToBuffer(&buf);
-                conn->send(&buf);
-#ifdef USE_SHORT_CONN
-                conn->shutdown();
-#endif
+                resp->setCloseConnection(true);
+                resp->setStatusCode(HttpResponse::k200Ok);
             }
             else // 404
             {
                 DebugMessage("req.path() not match target!",req.path());
-                HttpResponse resp(isClose);
-                resp.setStatusCode(HttpResponse::k404NotFound);
-                resp.setStatusMessage("Not Found");
-                Buffer buf;
-                resp.appendToBuffer(&buf);
-                conn->send(&buf);
-#ifdef USE_SHORT_CONN
-                conn->shutdown();
-#endif
+                resp->setCloseConnection(true);
+                resp->setStatusCode(HttpResponse::k404NotFound);
+                resp->setStatusMessage("Not Found");
             }
 
         }

@@ -22,13 +22,12 @@ namespace adservice{
 
         typedef boost::weak_ptr<muduo::net::TcpConnection> WeakTcpConnectionPtr;
 
-        typedef tbb::concurrent_hash_map<muduo::string,WeakTcpConnectionPtr> ConcurrentWeakConnMap;
-        typedef tbb::concurrent_hash_map<muduo::string,WeakTcpConnectionPtr>::accessor ConcurrentWeakMapAccessor;
+        typedef tbb::concurrent_hash_map<int,WeakTcpConnectionPtr> ConcurrentWeakConnMap;
+        typedef tbb::concurrent_hash_map<int,WeakTcpConnectionPtr>::accessor ConcurrentWeakMapAccessor;
 
         class CoreHttpServer : public HttpServer{
         public:
-            typedef std::function<void(const TcpConnectionPtr&,const HttpRequest&,
-                                       bool isClose)> HttpCallback;
+            typedef std::function<void(const TcpConnectionPtr&,const HttpRequest&,HttpResponse*)> HttpCallback;
             CoreHttpServer(EventLoop* loop,
                            const InetAddress& listenAddr,
                            const muduo::string& name,

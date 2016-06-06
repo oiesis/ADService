@@ -45,8 +45,7 @@ namespace adservice{
             static int getAdxId(const std::string& path);
             static AbstractBiddingHandler* getBiddingHandler(int adxId);
         public:
-            explicit HandleBidQueryTask(){}
-            explicit HandleBidQueryTask(const TcpConnectionPtr& _conn,const HttpRequest& request):AbstractQueryTask(_conn,request){
+            explicit HandleBidQueryTask(const HttpRequest& request,HttpResponse& response):AbstractQueryTask(request,response){
                 adxId = getAdxId(request.path());
                 biddingHandler = NULL;
             }

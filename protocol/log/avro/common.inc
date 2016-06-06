@@ -54,6 +54,8 @@ record AdInfo{
     string adxuid;
     // 竞价模块返回给ADX的出价
     int offerPrice;
+    // 竞价模块请求的广告size
+    string bidSize;
 }
 
 @namespace("com.mtty.protocol")

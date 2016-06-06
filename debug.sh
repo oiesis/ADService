@@ -10,4 +10,5 @@ echo "process info:"
 echo -e "  pid\tppid\tpgid\tsid"
 ps xao pid,ppid,pgid,sid,command |grep "\\brun.sh"
 ps xao pid,ppid,pgid,sid,command |grep "\\badservice"
+ps xao pid,ppid,pgid,sid,command |grep "\\bstart_http_server.sh"
 

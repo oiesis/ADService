@@ -48,7 +48,6 @@ namespace protocol{
         private:
             protocol::gdt::adx::BidRequest bidRequest;
             protocol::gdt::adx::BidResponse bidResponse;
-            protocol::log::AdInfo adInfo;
         };
 
     }

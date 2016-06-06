@@ -55,7 +55,7 @@ namespace adservice{
                 ConfigManager::exit();
             }
 
-            virtual void onRequest(const TcpConnectionPtr& conn,const HttpRequest& req, bool isClose);
+            virtual void onRequest(const TcpConnectionPtr& conn,const HttpRequest& req, HttpResponse* resp);
 
 
             void init();

@@ -375,7 +375,13 @@ namespace adservice{
                     isAdxPid = true;
                 }
                 AdSelectLogic adSelectLogic(&adselect);
-                if(!adSelectLogic.selectByPid(seqId,queryPid,isAdxPid)){
+                AdSelectCondition condition;
+                if(isAdxPid)
+                    condition.adxpid = queryPid;
+                else
+                    condition.mttyPid = queryPid;
+                condition.ip = log.ipInfo.proxy;
+                if(!adSelectLogic.selectByCondition(seqId,condition,isAdxPid,true)){
                     log.adInfo.pid = isAdxPid?"0":queryPid;
                     log.adInfo.adxpid = isAdxPid?queryPid:"0";
                     log.reqStatus = 500;

@@ -11,6 +11,17 @@ namespace adservice{
     namespace utility{
         namespace json{
 
+            void tripslash2(char* str){
+                char* p1 = str,*p2=p1;
+                while(*p2!='\0'){
+                    if(*p2=='\\'&&p2[1]=='\"'){
+                        p2++;
+                    }
+                    *p1++ = *p2++;
+                }
+                *p1='\0';
+            }
+
             std::string toString(double value){
                 char t[100];
                 char* middle=t+49,*p1=middle,*p2=p1;
@@ -111,11 +122,16 @@ namespace adservice{
             }
 
             std::string toJson(rapidjson::Document& doc){
-                rapidjson::StringBuffer buffer;
-                buffer.Clear();
-                rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
-                doc.Accept(writer);
-                return std::string(buffer.GetString());
+                try {
+                    rapidjson::StringBuffer buffer;
+                    buffer.Clear();
+                    rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+                    doc.Accept(writer);
+                    return std::string(buffer.GetString());
+                }catch(std::exception& e){
+                    DebugMessageWithTime("toJson exception:",e.what());
+                    return "";
+                }
             }
 
             const MessageWraper& MessageWraper::getObject(const std::string& key) const{

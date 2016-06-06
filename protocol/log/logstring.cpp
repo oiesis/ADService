@@ -63,6 +63,7 @@ void printLogAdInfo(std::stringstream& ss,protocol::log::AdInfo& adInfo){
     ss<<"\tofferPrice:"<<adInfo.offerPrice<<endl;
     ss<<"\tcost:"<<adInfo.cost<<endl;
     ss<<"\tadxuid:"<<adInfo.adxuid<<endl;
+    ss<<"\tbidSize:"<<adInfo.bidSize<<endl;
 }
 
 void printLogGeoInfo(std::stringstream& ss,protocol::log::GeoInfo& geoInfo){

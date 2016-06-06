@@ -46,9 +46,14 @@ namespace protocol{
             void reject(INOUT HttpResponse& response);
 
         private:
+            /**
+             * 产生tanx的html snippet
+             */
+            std::string tanxHtmlSnippet();
+
+        private:
             protocol::Tanx::BidRequest bidRequest;
             protocol::Tanx::BidResponse bidResponse;
-            protocol::log::AdInfo adInfo;
         };
 
     }

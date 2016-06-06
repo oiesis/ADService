@@ -124,6 +124,8 @@
 
 // 广告主花费系数
 #define AD_OWNER_COST_FACTOR                        1.54
+// 竞价模块CPM模式出价系数
+#define AD_RTB_BIDOFFERPRICE_FACTOR                 0.65
 
 #define ADX_MACRO_SUFFIX                            "http%3A%2F%2Fmtty-cdn.mtty.com%2F1x1.gif"
 
@@ -156,14 +158,21 @@
 #define ADX_TENCENT_GDT                             13
 
 // 淘宝竞价请求模块名
-#define BID_QUERY_PATH_TANX                         "tanxbid"
+#define BID_QUERY_PATH_TANX                         "/tanxbid"
 // 优酷竞价请求模块名
-#define BID_QUERY_PATH_YOUKU                        "youkubid"
+#define BID_QUERY_PATH_YOUKU                        "/youkubid"
 // 百度竞价请求模块名
-#define BID_QUERY_PATH_BAIDU                        "besbid"
+#define BID_QUERY_PATH_BAIDU                        "/besbid"
 // 腾讯竞价请求模块名
-#define BID_QUERY_PATH_GDT                          "gdtbid"
+#define BID_QUERY_PATH_GDT                          "/gdtbid"
 
+// snippet 中的 曝光URL
+#define SNIPPET_SHOW_URL                            "http://show.mtty.com/v"
+
+// snippet 中的 frame
+#define SNIPPET_IFRAME                              "<iframe width=\"%d\" height=\"%d\" frameborder=\"0\" scrolling=\"no\" src=\"%s?%s%s\"></iframe><img src=\"%s&\"/>"
+// snippet 中的 script
+#define SNIPPET_SCRIPT                              "<style type=\"text/css\">*{margin:0px; padding:0px;}</style><script type=\"text/javascript\"> document.write(\'<iframe width=\"%s\" height=\"%s\" frameborder=\"0\" scrolling=\"no\" src=\"%s?%s&gc=%s&pid=%s&%s&bdclick=\'+encodeURIComponent(\"%s\") +\'\"></iframe>\');</script>"
 
 /** elasticsearch 相关参数 */
 // 投放单ID基数
@@ -185,7 +194,7 @@
 // ES中查询格式参数
 #define ES_FILTER_FORMAT                            "?pretty&filter_path=hits.total,hits.hits._source"
 // ES中的查询结果格式
-#define ES_FILTER_FORMAT2                            "?pretty&filter_path=hits.total,hits.hits"
+#define ES_FILTER_FORMAT2                           "?pretty&filter_path=hits.total,hits.hits"
 
 // ES中查询创意的DSL文件路径
 #define  ES_QUERY_CREATIVE                          "elasticsearch/dsl/query_banner.dsl"

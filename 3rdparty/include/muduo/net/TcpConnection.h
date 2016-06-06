@@ -114,6 +114,8 @@ class TcpConnection : boost::noncopyable,
   // called when TcpServer has removed me from its map
   void connectDestroyed();  // should be called only once
 
+    int getFd();
+
  private:
   enum StateE { kDisconnected, kConnecting, kConnected, kDisconnecting };
   void handleRead(Timestamp receiveTime);

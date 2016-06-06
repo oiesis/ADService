@@ -44,10 +44,16 @@ namespace protocol{
              * 不接受ADX的流量请求
              */
             void reject(INOUT HttpResponse& response);
+
+        private:
+
+            std::string baiduHtmlSnippet();
+
+            std::string baiduHtmlScript();
+
         private:
             protocol::Baidu::BidRequest bidRequest;
             protocol::Baidu::BidResponse bidResponse;
-            protocol::log::AdInfo adInfo;
         };
 
     }

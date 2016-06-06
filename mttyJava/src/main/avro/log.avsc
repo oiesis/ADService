@@ -79,6 +79,9 @@
     }, {
       "name" : "offerPrice",
       "type" : "int"
+    }, {
+      "name" : "bidSize",
+      "type" : "string"
     } ]
   }, {
     "type" : "enum",

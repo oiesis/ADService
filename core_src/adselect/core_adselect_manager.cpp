@@ -104,21 +104,39 @@ namespace adservice{
 
 
         rapidjson::Value& AdSelectManager::queryAdInfoByPid(int seqId,const std::string& pid,rapidjson::Document& result,bool isAdxPid){
+            AdSelectCondition condition;
             if(isAdxPid){
-                return queryAdInfoByAdxPid(seqId,pid,result);
+                condition.adxpid = pid;
+                return queryAdInfoByAdxPid(seqId,condition,result);
             }else{
-                return queryAdInfoByMttyPid(seqId,pid,result);
+                condition.mttyPid = pid;
+                return queryAdInfoByMttyPid(seqId,condition,result);
             }
+        }
+
+        rapidjson::Value& AdSelectManager::queryAdInfoByCondition(int seqId, AdSelectCondition &condition,
+                                                                  rapidjson::Document &result, bool isAdxPid) {
+            if(isAdxPid){
+                return queryAdInfoByAdxPid(seqId,condition,result);
+            }else{
+                return queryAdInfoByMttyPid(seqId,condition,result);
+            }
+
         }
 
         /**
          * 进行条件参数绑定
          */
-        void bindSelectCondition(rapidjson::Value& adplaceInfo,const char* cTemplate,INOUT char* output,const char* pid){
+        void bindSelectCondition(rapidjson::Value& adplaceInfo,AdSelectCondition& bindCondition,const char* cTemplate,INOUT char* output,const char* pid){
             //创意支持类型过滤
             const char* supportBanner = adplaceInfo["supportbanner"].IsNull()?DEFAULT_SUPPORT_BANNERTYPE:adplaceInfo["supportbanner"].GetString();
+            bindCondition.mediaType = adplaceInfo["media_type"].GetInt();
+            bindCondition.adplaceType = adplaceInfo["adplacetype"].GetInt();
+            bindCondition.displayNumber = adplaceInfo["displaynumber"].GetInt();
+            bindCondition.flowType = adplaceInfo["flowtype"].GetInt();
             //时间定点过滤
             std::string dHour = adSelectTimeCodeUtc();
+            bindCondition.dHour = dHour;
             sprintf(output,cTemplate,pid,
                     adplaceInfo["media_type"].GetInt(),
                     pid,
@@ -141,12 +159,13 @@ namespace adservice{
             );
         }
 
-        rapidjson::Value& AdSelectManager::queryAdInfoByMttyPid(int seqId,const std::string& mttyPid,rapidjson::Document& result){
+        rapidjson::Value& AdSelectManager::queryAdInfoByMttyPid(int seqId,AdSelectCondition& selectCondition,rapidjson::Document& result){
             try{
+                const std::string& mttyPid = selectCondition.mttyPid;
                 ElasticSearch& agent = getAvailableConnection(seqId);
                 char key[DEFAULT_KEY_LENGTH];
                 snprintf(key,DEFAULT_KEY_LENGTH,"adinfo_pid_%s",mttyPid.c_str());
-                CacheResult* cacheResult = cacheManager.get(key,CACHE_LEVEL_3_SIZE,[&mttyPid,this,&agent,&result](CacheResult& newCache){
+                CacheResult* cacheResult = cacheManager.get(key,CACHE_LEVEL_3_SIZE,[&mttyPid,this,&agent,&result,&selectCondition](CacheResult& newCache){
                     try {
                         char buffer[LARGE_BUFFER_SIZE];
                         snprintf(buffer,LARGE_BUFFER_SIZE,this->dsl_query_adplace_pid, mttyPid.c_str());
@@ -157,7 +176,7 @@ namespace adservice{
                             return false;
                         rapidjson::Value& adplaceInfo = adplace["hits"]["hits"][0]["_source"];
                         //过滤条件绑定
-                        bindSelectCondition(adplaceInfo,this->dsl_query_adinfo_condition,buffer,mttyPid.c_str());
+                        bindSelectCondition(adplaceInfo,selectCondition,this->dsl_query_adinfo_condition,buffer,mttyPid.c_str());
                         cnt = agent.search(ES_INDEX_SOLUTIONS,ES_DOCUMENT_SOLBANADPLACE,ES_FILTER_FORMAT2,buffer,result);
                         if(cnt<2)
                             return false;
@@ -190,12 +209,13 @@ namespace adservice{
             return result["hits"]["hits"];
         }
 
-        rapidjson::Value& AdSelectManager::queryAdInfoByAdxPid(int seqId,const std::string& adxPid,rapidjson::Document& result){
+        rapidjson::Value& AdSelectManager::queryAdInfoByAdxPid(int seqId,AdSelectCondition& selectCondition,rapidjson::Document& result){
             try{
+                const std::string& adxPid = selectCondition.adxpid;
                 ElasticSearch& agent = getAvailableConnection(seqId);
                 char key[DEFAULT_KEY_LENGTH];
                 snprintf(key,DEFAULT_KEY_LENGTH,"adinfo_adxpid_%s",adxPid.c_str());
-                CacheResult* cacheResult = cacheManager.get(key,CACHE_LEVEL_3_SIZE,[&adxPid,this,&agent,&result](CacheResult& newCache){
+                CacheResult* cacheResult = cacheManager.get(key,CACHE_LEVEL_3_SIZE,[&adxPid,this,&agent,&result,&selectCondition](CacheResult& newCache){
                    try {
                        char buffer[LARGE_BUFFER_SIZE];
                        snprintf(buffer,LARGE_BUFFER_SIZE,this->dsl_query_adplace_adxpid, adxPid.c_str());
@@ -207,7 +227,7 @@ namespace adservice{
                        rapidjson::Value& adplaceInfo = adplace["hits"]["hits"][0]["_source"];
                        std::string pid = to_string(adplaceInfo["pid"].GetInt());
                        //过滤条件绑定
-                       bindSelectCondition(adplaceInfo,this->dsl_query_adinfo_condition,buffer,pid.c_str());
+                       bindSelectCondition(adplaceInfo,selectCondition,this->dsl_query_adinfo_condition,buffer,pid.c_str());
                        cnt = agent.search(ES_INDEX_SOLUTIONS,ES_DOCUMENT_SOLBANADPLACE,ES_FILTER_FORMAT2,buffer,result);
                        if(cnt<2)
                            return false;

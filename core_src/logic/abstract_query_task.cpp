@@ -45,15 +45,25 @@ namespace adservice{
             }
         }
 
-        void calcPrice(int adx,bool isYoukuDeal,int decodePrice,int& cost,int& bidPrice){
+        void calcPrice(int adx,bool isYoukuDeal,int decodePrice,int offerPrice,int& cost,int& bidPrice){
             if(adx == ADX_YOUKU && isYoukuDeal){
-                cost = 0;
-                bidPrice = decodePrice ;
+                cost = decodePrice;
+                bidPrice = offerPrice == 0 ? cost:offerPrice;
             }else{
                 cost = decodePrice;
                 bidPrice = decodePrice * AD_OWNER_COST_FACTOR;
             }
         }
+
+        int decodeOfferPrice(const std::string& input){
+            try{
+                return std::stoi(input);
+            }catch(std::exception& e){
+                DebugMessageWithTime("in decodeOfferPrice,",e.what(),",",input);
+            }
+            return 0;
+        }
+
 
         /**
          * 将请求参数按需求转换为Log对象
@@ -130,8 +140,9 @@ namespace adservice{
                     //log.adInfo.cost = decodeAdxExchangePrice(log.adInfo.adxid,price);
                     //log.adInfo.bidPrice = (int)(log.adInfo.cost * AD_OWNER_COST_FACTOR);
                     int decodePrice = decodeAdxExchangePrice(log.adInfo.adxid,price);
-                    bool isYoukuDeal = paramMap.find(URL_YOUKU_DEAL)!=paramMap.end();
-                    calcPrice(log.adInfo.adxid,isYoukuDeal,decodePrice,log.adInfo.cost,log.adInfo.bidPrice);
+                    bool isYoukuDeal = paramMap.find(URL_YOUKU_DEAL)!=paramMap.end() && !paramMap[URL_YOUKU_DEAL].empty();
+                    int offerPrice = paramMap.find(URL_BID_PRICE)!=paramMap.end()?decodeOfferPrice(paramMap[URL_BID_PRICE]):0;
+                    calcPrice(log.adInfo.adxid,isYoukuDeal,decodePrice,offerPrice,log.adInfo.cost,log.adInfo.bidPrice);
                 }
             }catch(std::exception& e){
                 log.reqStatus = 500;
@@ -202,7 +213,7 @@ namespace adservice{
             log.referer = referer;
             log.ipInfo.proxy=userIp;
             if(!isPost) { //对于非POST方法传送的Query
-                getParam(paramMap, data.c_str() + 1);
+                getParamv2(paramMap, data.c_str() + 1);
                 filterParamMapSafe(paramMap);
                 parseObjectToLogItem(paramMap,log,data.c_str()+1);
             }else{ //对于POST方法传送过来的Query
@@ -239,34 +250,26 @@ namespace adservice{
             CoreModule coreModule = CoreService::getInstance();
             if (coreModule.use_count() > 0)
                 coreModule->getLogger()->push(logString);
+            else if(serviceLogger.use_count()>0){
+                serviceLogger->push(logString);
+            }
         }
 
         void AbstractQueryTask::operator()(){
             try{
                 ParamMap paramMap;
                 protocol::log::LogItem log;
-                HttpResponse resp(false);
                 resp.setStatusCode(expectedReqStatus());
                 commonLogic(paramMap,log,resp);
                 customLogic(paramMap,log,resp);
                 if(needLog)
                     doLog(log);
-                Buffer buf;
-                resp.appendToBuffer(&buf);
-                conn->send(&buf); //这里将异步调用IO线程,进行数据回写
-#ifdef USE_SHORT_CONN
-                conn->shutdown(); //假定都是短链接
-#endif
             }catch(std::exception& e){
-                HttpResponse resp(false);
                 resp.setStatusCode(HttpResponse::k500ServerError);
                 resp.setStatusMessage("error");
                 resp.setContentType("text/html");
                 onError(e,resp);
-                Buffer buf;
-                resp.appendToBuffer(&buf);
-                conn->send(&buf);
-                conn->shutdown();
+                resp.setCloseConnection(true);
             }
         }
 

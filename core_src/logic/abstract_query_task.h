@@ -10,6 +10,7 @@
 #include "protocol/log/log.h"
 #include "common/types.h"
 #include "task_thread_data.h"
+#include "logpusher/log_pusher.h"
 #ifdef USE_ENCODING_GZIP
 #include "muduo/net/ZlibStream.h"
 #endif
@@ -33,10 +34,7 @@ namespace adservice {
          */
         class AbstractQueryTask{
         public:
-            explicit AbstractQueryTask(){
-                updateThreadData();
-            }
-            explicit AbstractQueryTask(const TcpConnectionPtr& _conn,const HttpRequest& request):conn(_conn){
+            explicit AbstractQueryTask(const HttpRequest& request,HttpResponse& response):resp(response){
                 data = request.query();
                 userCookies = request.getHeader("Cookie");
                 userAgent = request.getHeader("User-Agent");
@@ -45,23 +43,13 @@ namespace adservice {
                 isPost = request.method()== HttpRequest::Method::kPost;
                 needLog = true;
                 updateThreadData();
-            }
-
-            void rebullet(const TcpConnectionPtr& _conn,const HttpRequest& request){
-                conn.reset();
-                conn = _conn;
-                data = request.query();
-                userCookies = request.getHeader("Cookie");
-                userAgent = request.getHeader("User-Agent");
-                userIp = request.getHeader("X-Forwarded-For");
-                referer = request.getHeader("Referer");
-                isPost = request.method()== HttpRequest::Method::kPost;
-                needLog = true;
             }
 
             void updateThreadData();
 
-            virtual ~AbstractQueryTask(){}
+            virtual ~AbstractQueryTask(){
+                conn.reset();
+            }
 
             /**
              * 过滤安全参数
@@ -96,6 +84,10 @@ namespace adservice {
             // set error detail to response body
             virtual void onError(std::exception& e,HttpResponse& response) = 0;
 
+            void setLogger(const adservice::log::LogPusherPtr& logger){
+                serviceLogger = logger;
+            }
+
             void doLog(protocol::log::LogItem& log);
 
             void operator()();
@@ -107,8 +99,10 @@ namespace adservice {
             adservice::types::string referer;
             bool isPost;
             bool needLog;
+            HttpResponse& resp;
             TcpConnectionPtr conn;
             TaskThreadLocal* threadData;
+            adservice::log::LogPusherPtr serviceLogger;
         };
 
     }

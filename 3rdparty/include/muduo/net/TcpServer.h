@@ -19,9 +19,7 @@
 #include <boost/noncopyable.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
-#ifdef USE_TBB_HASHMAP
-#include <muduo/base/tbb/concurrent_hash_map.h>
-#endif
+
 
 namespace muduo
 {
@@ -105,10 +103,7 @@ class TcpServer : boost::noncopyable
   void removeConnectionInLoop(const TcpConnectionPtr& conn);
 
   typedef std::map<string, TcpConnectionPtr> ConnectionMap;
-#ifdef USE_TBB_HASHMAP
-  typedef tbb::concurrent_hash_map<string,TcpConnectionPtr> ConcurrentConnMap;
-  typedef tbb::concurrent_hash_map<string,TcpConnectionPtr>::accessor ConcurrentMapAccessor;
-#endif
+
   EventLoop* loop_;  // the acceptor loop
   const string ipPort_;
   const string name_;
@@ -122,9 +117,7 @@ class TcpServer : boost::noncopyable
   // always in loop thread
   int nextConnId_;
   ConnectionMap connections_;
-#ifdef USE_TBB_HASHMAP
-  ConcurrentConnMap connMap_;
-#endif
+
 };
 
 }
