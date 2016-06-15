@@ -73,13 +73,13 @@ $(BUILD_PATH)/utility.o:utility.o
 
 $(BUILD_PATH)/platform.o:platform.o
 
-HTTP_TEST_SRC:= http_server_test.cpp
+HTTP_MUDUO_SRC:= http_server_muduo.cpp
 
-http_server_test:prerun init $(BUILD_PATH)/utility.o $(BUILD_PATH)/core.o
+http_server_muduo:prerun init $(BUILD_PATH)/utility.o $(BUILD_PATH)/core.o
 	cd $(UNIT_TEST_FOLDER) && \
-	$(CC) -c $(CCFlags) $(INCLUDE_PATH) $(HTTP_TEST_SRC) -o $(BUILD_PATH)/http_server.o
-	$(MAKE) http_server_test.final
-http_server_test.final:	
+	$(CC) -c $(CCFlags) $(INCLUDE_PATH) $(HTTP_MUDUO_SRC) -o $(BUILD_PATH)/http_server.o
+	$(MAKE) http_server_muduo.final
+http_server_muduo.final:	
 	cd $(BUILD_PATH) && \
 	$(CC) $(CCFlags) $(MUDUO_CCFLAGS) $(ALL_OBJS) http_server.o -o ../adservice $(MUDUO_LDFLAGS) $(LIB_FLAGS)
 
