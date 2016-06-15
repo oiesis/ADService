@@ -20,10 +20,12 @@ namespace adservice{
             paramMap["pid"] = paramMap[URL_ADPLACE_ID];
             paramMap["bid"] = paramMap[URL_CREATIVE_ID];
             paramMap["sid"] = paramMap[URL_EXEC_ID];
-            char buffer[1024];
+            char buffer[1024] = {'\0'};
             char result[1024];
             std::string output;
-            urlDecode_f(logItem.adInfo.landingUrl, output, buffer);
+            //urlDecode_f(logItem.adInfo.landingUrl, output, buffer);
+            memcpy(buffer,logItem.adInfo.landingUrl.data(),logItem.adInfo.landingUrl.length());
+            buffer[logItem.adInfo.landingUrl.length()]='\0';
             char* p1 = buffer, *p = result;
             while(*p1!='\0'){
                 while(*p1!='{' && *p1!='\0')*p++=*p1++;

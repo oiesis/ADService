@@ -17,9 +17,9 @@ namespace adservice{
         using namespace adservice::utility::escape;
 
         struct spinlock LogPusher::lock={0};
-        std::map<std::string,LogPusherPtr> LogPusher::logMap;
+        LogPusherMap LogPusher::logMap;
 
-        LogProducer* LogProducerFactory::createProducer(LogProducerType type,const std::string& loggerName) {
+        LogProducer* LogProducerFactory::createProducer(LogProducerType type,const std::string& loggerName,const std::string& logConfigKey) {
             switch(type){
                 case LOG_ALIYUN:
                     DebugMessage("using aliyun log");
@@ -27,7 +27,7 @@ namespace adservice{
                     break;
                 case LOG_KAFKA:
                     DebugMessage("using kafka log");
-                    return new KafkaLogProducer(loggerName);
+                    return new KafkaLogProducer(loggerName,logConfigKey);
                     break;
                 default:
                     DebugMessage("using local log");
@@ -145,23 +145,21 @@ namespace adservice{
         };
 
 
-        LogPusherPtr LogPusher::getLogger(const std::string& name,int ifnodefineThreads,bool logLocal){ //fixme: std::map is not thread-safe,risk still holds
-            LogPusherPtr log = logMap[name];
-            if(log.use_count()==0){
+        LogPusherPtr LogPusher::getLogger(const std::string& name,int ifnodefineThreads,bool logLocal,const std::string& logConfigKey){ //fixme: std::map is not thread-safe,risk still holds
+            LogPusherMapAccessor acc;
+            if(!logMap.find(acc,name)){
                 spinlock_lock(&lock);
-                if((log=logMap[name]).use_count()==0) {
-                    log = std::make_shared<LogPusher>(name.c_str(),ifnodefineThreads,logLocal);
-                    logMap[name] = log;
+                if(!logMap.find(acc,name)) {
+                    logMap.insert(acc,name);
+                    acc->second = std::make_shared<LogPusher>(name.c_str(), ifnodefineThreads, logLocal,logConfigKey);
                 }
                 spinlock_unlock(&lock);
             }
-            return log;
+            return acc->second;
         }
 
         void LogPusher::removeLogger(const std::string& name){
-            spinlock_lock(&lock);
             logMap.erase(name);
-            spinlock_unlock(&lock);
         }
 
         void LogPusher::push(std::shared_ptr<adservice::types::string>& logstring){

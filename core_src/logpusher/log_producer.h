@@ -7,6 +7,7 @@
 
 #include <string>
 #include "functions.h"
+#include "constants.h"
 #if defined(USE_ALIYUN_LOG)
 #include "alibaba/SendResultONS.h"
 #include "alibaba/Message.h"
@@ -83,7 +84,7 @@ namespace adservice{
 
         class LogProducerFactory{
         public:
-            static LogProducer* createProducer(LogProducerType type,const std::string& loggerName);
+            static LogProducer* createProducer(LogProducerType type,const std::string& loggerName,const std::string& logConfigKey = CONFIG_LOG);
         };
 
     }

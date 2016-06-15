@@ -5,6 +5,7 @@
 #ifndef ADCORE_KAFKA_LOG_PRODUCER_H
 #define ADCORE_KAFKA_LOG_PRODUCER_H
 
+#include "constants.h"
 #include "log_producer.h"
 #include "functions.h"
 #include "librdkafka/rdkafkacpp.h"
@@ -38,7 +39,8 @@ namespace adservice{
 
         class KafkaLogProducer : public LogProducer{
         public:
-            KafkaLogProducer(const std::string& name):myName(name){
+            KafkaLogProducer(const std::string& name,const std::string& configKey = CONFIG_LOG):myName(name),logConfigKey(configKey)
+            {
               configure();
             }
             ~KafkaLogProducer(){
@@ -54,6 +56,7 @@ namespace adservice{
             void setErrorCallback(const LogEventCb&& cb){eventCb = cb;}
         private:
             std::string myName;
+            std::string logConfigKey;
             RdKafka::Producer* producer;
             Topic* topic;
             std::string topicName;

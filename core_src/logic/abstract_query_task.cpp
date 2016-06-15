@@ -247,11 +247,13 @@ namespace adservice{
             checkAliEscapeSafe(log,*(logString.get()));
 #endif
             // 将日志对象推送到日志队列
-            CoreModule coreModule = CoreService::getInstance();
-            if (coreModule.use_count() > 0)
-                coreModule->getLogger()->push(logString);
-            else if(serviceLogger.use_count()>0){
+            if(serviceLogger.use_count()>0){
                 serviceLogger->push(logString);
+            }else {
+                std::string loggerName = usedLoggerName();
+                adservice::log::LogPusherPtr logPusher = adservice::log::LogPusher::getLogger(loggerName);
+                if(logPusher.use_count()>0)
+                    logPusher->push(logString);
             }
         }
 

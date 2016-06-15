@@ -136,7 +136,7 @@ namespace adservice{
                 }
             }
             if(j<size)
-                size = j+1;
+                size = j;
             if(size%3!=0){
                 DebugMessageWithTime("error in split,size not times of 3,input:",str);
             }

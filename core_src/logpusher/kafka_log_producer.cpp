@@ -54,7 +54,7 @@ namespace adservice{
         void KafkaLogProducer::configure(){
             //todo: modified with configmanager
             ConfigManager& configManager = ConfigManager::getInstance();
-            LogConfig* logConfig = (LogConfig*)configManager.get(CONFIG_LOG);
+            LogConfig* logConfig = (LogConfig*)configManager.get(logConfigKey);
             topicName = logConfig->kafkaTopic;
             logKey = logConfig->kafkaKey;
             std::string brokers = logConfig->kafkaBroker;

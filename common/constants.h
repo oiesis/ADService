@@ -8,6 +8,8 @@
 /**日志类别相关常量**/
 // 点击日志生成器名
 #define MTTY_SERVICE_LOGGER                        "MttyServiceLog"
+// 跟踪日志生成器名
+#define MTTY_TRACK_LOGGER                          "MttyTrackLog"
 
 /**日志引擎相关默认参数*/
 #define DEFAULT_KAFKA_BROKER                        "192.168.31.147"
@@ -50,6 +52,8 @@
 #define CONFIG_CLICK                                "ClickConfig"
 // 日志相关的配置键
 #define CONFIG_LOG                                  "LogConfig"
+// 跟踪日志相关配置
+#define CONFIG_TRACK_LOG                            "TrackLogConfig"
 // ADSelect组件配置
 #define CONFIG_ADSELECT                             "ADSelectConfig"
 // DEBUG配置
@@ -62,6 +66,8 @@
 #define CONFIG_CLICK_PATH                           "conf/click.conf"
 // 相关日志配置文件
 #define CONFIG_LOG_PATH                             "conf/log.conf"
+// 跟踪模块日志配置文件
+#define CONFIG_TRACK_LOG_PATH                       "conf/track_log.conf"
 // ADSelect相关配置文件
 #define CONFIG_ADSELECT_PATH                        "conf/adselect.conf"
 // DEBUG相关配置文件

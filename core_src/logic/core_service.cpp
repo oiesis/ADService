@@ -54,6 +54,9 @@ namespace adservice{
         void CoreService::start(){
             executor.start();
             serviceLogger->start();
+            if(trackLogger.use_count()>0) {
+                trackLogger->start();
+            }
             server->start();
             loop.loop();
         }
@@ -139,7 +142,15 @@ namespace adservice{
             LogConfig* logConfig = (LogConfig*)configManager.get(CONFIG_LOG);
             serviceLogger = adservice::log::LogPusher::getLogger(MTTY_SERVICE_LOGGER,
                                                                logConfig->loggerThreads,
-                                                               !logConfig->logRemote);
+                                                               !logConfig->logRemote,
+                                                                CONFIG_LOG);
+            if(serverConfig->runTrack) {
+                LogConfig *trackLogConfig = (LogConfig *) configManager.get(CONFIG_TRACK_LOG);
+                trackLogger = adservice::log::LogPusher::getLogger(MTTY_TRACK_LOGGER,
+                                                                   trackLogConfig->loggerThreads,
+                                                                   !trackLogConfig->logRemote,
+                                                                   CONFIG_TRACK_LOG);
+            }
             // 初始化http server
             muduo::net::InetAddress addr(static_cast<uint16_t>(port));
             server = std::make_shared<CoreHttpServer>(&loop,addr,"mtty::core_service",serverConfig->checkIdleConnection,
@@ -148,6 +159,7 @@ namespace adservice{
             server->setThreadNum(httpThreads);
             configManager.registerOnChange(CONFIG_SERVICE,std::bind(&onConfigChange,CONFIG_SERVICE,_1,_2));
             configManager.registerOnChange(CONFIG_LOG,std::bind(&onConfigChange,CONFIG_LOG,_1,_2));
+            configManager.registerOnChange(CONFIG_TRACK_LOG,std::bind(&onConfigChange,CONFIG_TRACK_LOG,_1,_2));
             configManager.registerOnChange(CONFIG_ADSELECT,std::bind(&onConfigChange,CONFIG_ADSELECT,_1,_2));
             configManager.registerOnChange(CONFIG_DEBUG,std::bind(&onDebugConfigChange,CONFIG_DEBUG,_1,_2));
             //初始化IpManager

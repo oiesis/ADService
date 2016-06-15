@@ -91,6 +91,10 @@ namespace adservice {
             // set error detail to response body
             virtual void onError(std::exception& e,HttpResponse& response) = 0;
 
+            virtual std::string usedLoggerName(){
+                return MTTY_SERVICE_LOGGER;
+            }
+
             void setLogger(const adservice::log::LogPusherPtr& logger){
                 serviceLogger = logger;
             }

@@ -47,6 +47,7 @@ using namespace adservice::log;
 
 ConfigManager* configManager;
 LogPusherPtr serviceLogger;
+LogPusherPtr trackLogger;
 
 
 void onRequest(const HttpRequest& req, HttpResponse* resp)
@@ -174,8 +175,17 @@ int main(int argc, char* argv[])
     LogConfig* logConfig = (LogConfig*)configManager->get(CONFIG_LOG);
     serviceLogger = adservice::log::LogPusher::getLogger(MTTY_SERVICE_LOGGER,
                                                          logConfig->loggerThreads,
-                                                         !logConfig->logRemote);
+                                                         !logConfig->logRemote,
+                                                         CONFIG_LOG);
     serviceLogger->start();
+    if(serverConfig->runTrack){
+        LogConfig *trackLogConfig = (LogConfig *) configManager->get(CONFIG_TRACK_LOG);
+        trackLogger = adservice::log::LogPusher::getLogger(MTTY_TRACK_LOGGER,
+                                                           trackLogConfig->loggerThreads,
+                                                           !trackLogConfig->logRemote,
+                                                           CONFIG_TRACK_LOG);
+        trackLogger->start();
+    }
 
     HandleShowQueryTask::loadTemplates();
     HandleBidQueryTask::init();
@@ -183,6 +193,7 @@ int main(int argc, char* argv[])
 
     configManager->registerOnChange(CONFIG_SERVICE,std::bind(&onConfigChange,CONFIG_SERVICE,_1,_2));
     configManager->registerOnChange(CONFIG_LOG,std::bind(&onConfigChange,CONFIG_LOG,_1,_2));
+    configManager->registerOnChange(CONFIG_TRACK_LOG,std::bind(&onConfigChange,CONFIG_TRACK_LOG,_1,_2));
     configManager->registerOnChange(CONFIG_ADSELECT,std::bind(&onConfigChange,CONFIG_ADSELECT,_1,_2));
     configManager->registerOnChange(CONFIG_DEBUG,std::bind(&onDebugConfigChange,CONFIG_DEBUG,_1,_2));
 
@@ -195,6 +206,9 @@ int main(int argc, char* argv[])
     dosignals();
     loop.loop();
     serviceLogger->stop();
+    if(trackLogger.use_count()>0){
+        trackLogger->stop();
+    }
     AdSelectManager::release();
     ThreadLocalManager::getInstance().destroy();
     ConfigManager::exit();

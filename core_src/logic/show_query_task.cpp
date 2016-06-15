@@ -189,27 +189,32 @@ namespace adservice{
             int bannerId = banner["bid"].GetInt();
             //替换点击宏
             rapidjson::Value& mtls = mtAdInfo["mtls"];
-            char clickMacroBuffer[2048];
-            char landingPageBuffer[1024];
-            std::string landingUrl = mtls[0]["p1"].GetString();
-            std::string encodedLandingUrl;
-            urlEncode_f(landingUrl,encodedLandingUrl,landingPageBuffer);
-            int clickMacroLen = snprintf(clickMacroBuffer,sizeof(clickMacroBuffer),
-                                         SSP_CLICK_URL"?s=%s&x=%s&r=%s&d=%d&e=%s&c=%d&f=%s&h=000&a=%s&url=%s",
-                                         pid.data(),
-                                         adxid.data(),
-                                         impid.data(),
-                                         advId,
-                                         sid.data(),
-                                         bannerId,
-                                         referer.data(),
-                                         address.data(),
-                                         encodedLandingUrl.data()
-                                         );
-            if(clickMacroLen>=sizeof(clickMacroBuffer)){
-                DebugMessageWithTime("in buildResponseForSsp,clickMacroLen greater than sizeof clickMacroBuffer,len:",clickMacroLen);
+            std::string clickMacro = mtls[0]["p5"].GetString();
+            if(clickMacro == "{{click}}") {
+                char clickMacroBuffer[2048];
+                char landingPageBuffer[1024];
+                std::string landingUrl = mtls[0]["p1"].GetString();
+                std::string encodedLandingUrl;
+                urlEncode_f(landingUrl, encodedLandingUrl, landingPageBuffer);
+                int clickMacroLen = snprintf(clickMacroBuffer, sizeof(clickMacroBuffer),
+                                             SSP_CLICK_URL"?s=%s&x=%s&r=%s&d=%d&e=%s&c=%d&f=%s&h=000&a=%s&url=%s",
+                                             pid.data(),
+                                             adxid.data(),
+                                             impid.data(),
+                                             advId,
+                                             sid.data(),
+                                             bannerId,
+                                             referer.data(),
+                                             address.data(),
+                                             encodedLandingUrl.data()
+                );
+                if (clickMacroLen >= sizeof(clickMacroBuffer)) {
+                    DebugMessageWithTime(
+                            "in buildResponseForSsp,clickMacroLen greater than sizeof clickMacroBuffer,len:",
+                            clickMacroLen);
+                }
+                mtls[0]["p5"].SetString(clickMacroBuffer, clickMacroLen);
             }
-            mtls[0]["p5"].SetString(clickMacroBuffer,clickMacroLen);
             std::string jsonResult = utility::json::toJson(mtAdInfo);
             int len = snprintf(buffer,bufferSize-1,templateFmt,paramMap["callback"].c_str(),jsonResult.c_str());
             if(len>=bufferSize){

@@ -12,6 +12,7 @@
 #include "core_executor.h"
 #include "aliyun_log_producer.h"
 #include "kafka_log_producer.h"
+#include "muduo/base/tbb/concurrent_hash_map.h"
 
 namespace adservice{
     namespace log{
@@ -26,16 +27,21 @@ namespace adservice{
         class LogPusher;
         typedef std::shared_ptr<LogPusher> LogPusherPtr;
 
+        typedef tbb::concurrent_hash_map<std::string,LogPusherPtr> LogPusherMap;
+        typedef LogPusherMap::accessor LogPusherMapAccessor;
+
         class LogPusher{
         public:
-            static LogPusherPtr getLogger(const std::string& name,int ifnodefineThreads =10,bool logLocal = false);
+            static LogPusherPtr getLogger(const std::string& name,int ifnodefineThreads =10,bool logLocal = false,const std::string& logConfigKey = CONFIG_LOG);
 
             static void removeLogger(const std::string& name);
 
         public:
-            LogPusher(const char* logger = "log_default",int loggerThreads = LOGGER_THREAD_NUM,bool modeLocal = false):loggerName(logger),
+            LogPusher(const char* logger = "log_default",int loggerThreads = LOGGER_THREAD_NUM,bool modeLocal = false,
+            const std::string& logConfigKey = CONFIG_LOG):loggerName(logger),
                                                           executor(logger,false,loggerThreads,LOG_QUEUE_SIZE),
-                                                          modeLocal(modeLocal)
+                                                          modeLocal(modeLocal),
+                                                          loggerConfigKey(logConfigKey)
             {
                 if(!modeLocal)
                     initProducer();
@@ -50,11 +56,11 @@ namespace adservice{
 
             void initProducer(){
 #if defined (USE_ALIYUN_LOG)
-                producer = LogProducerFactory::createProducer(LogProducerType::LOG_ALIYUN,loggerName);
+                producer = LogProducerFactory::createProducer(LogProducerType::LOG_ALIYUN,loggerName,loggerConfigKey);
 #elif defined (USE_KAFKA_LOG)
-                producer = LogProducerFactory::createProducer(LogProducerType::LOG_KAFKA,loggerName);
+                producer = LogProducerFactory::createProducer(LogProducerType::LOG_KAFKA,loggerName,loggerConfigKey);
 #else
-                producer = LogProducerFactory::createProducer(LogProducerType::LOG_DEFAULT,loggerName);
+                producer = LogProducerFactory::createProducer(LogProducerType::LOG_DEFAULT,loggerName,loggerConfigKey);
 #endif
             }
 
@@ -91,9 +97,10 @@ namespace adservice{
         public:
             static struct spinlock lock;
         private:
-            static std::map<std::string,LogPusherPtr> logMap;
+            static LogPusherMap logMap;
         private:
             std::string loggerName;
+            std::string loggerConfigKey;
             adservice::server::Executor executor;
             LogProducer* producer;
             /// 工作模式,本地文件日志 或 远程日志

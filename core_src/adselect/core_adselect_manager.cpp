@@ -140,7 +140,7 @@ namespace adservice{
             if(bindCondition.adxpid.empty()){
                 bindCondition.adxpid = adplaceInfo["adxpid"].GetString();
             }
-            bindCondition.mediaType = adplaceInfo["media_type"].GetInt();
+            bindCondition.mediaType = adplaceInfo["mediatype"].GetInt();
             bindCondition.adplaceType = adplaceInfo["adplacetype"].GetInt();
             bindCondition.displayNumber = adplaceInfo["displaynumber"].GetInt();
             bindCondition.flowType = adplaceInfo["flowtype"].GetInt();

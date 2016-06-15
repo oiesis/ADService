@@ -68,11 +68,18 @@ namespace adservice{
                 loop.quit();
                 executor.stop();
                 serviceLogger->stop();
+                if(trackLogger.use_count()>0) {
+                    trackLogger->stop();
+                }
                 adservice::log::LogPusher::removeLogger(MTTY_SERVICE_LOGGER);
             }
 
             adservice::log::LogPusherPtr& getLogger(){
                 return serviceLogger;
+            }
+
+            adservice::log::LogPusherPtr& getTrackLogger(){
+                return trackLogger;
             }
 
             bool isNeedRestart(){
@@ -91,6 +98,7 @@ namespace adservice{
             bool needRestart;
             ServerPtr server;
             adservice::log::LogPusherPtr serviceLogger;
+            adservice::log::LogPusherPtr trackLogger;
             muduo::net::EventLoop loop;
             adservice::server::Executor executor;
         };
