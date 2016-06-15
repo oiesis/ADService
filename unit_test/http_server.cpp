@@ -17,6 +17,7 @@
 #include "core_src/logic/click_query_task.h"
 #include "core_src/logpusher/log_pusher.h"
 #include "core_src/core_threadlocal_manager.h"
+#include "core_src/core_ip_manager.h"
 #include "utility/utility.h"
 #include "common/spinlock.h"
 #include "protocol/baidu/baidu_price.h"
@@ -33,7 +34,7 @@
 #include "AdControlTask.h"
 
 using namespace std;
-
+using namespace std::placeholders;
 using namespace muduo;
 using namespace muduo::net;
 using namespace adservice;
@@ -50,6 +51,7 @@ using namespace adservice::log;
 
 ConfigManager* configManager;
 LogPusherPtr serviceLogger;
+AdControl* ctControl;
 
 
 void buildErrorResponse(AdSession* pSession){
@@ -164,6 +166,27 @@ public:
     };
 };
 
+void onConfigChange(const std::string& type,void* newData,void* oldData){
+    DebugMessageWithTime("config ",type," modified");
+    // 简单粗暴地重启服务
+    exit(0);
+}
+
+void onDebugConfigChange(const std::string& type,void* newData,void* oldData){
+    DebugMessageWithTime("DebugConfig modified");
+    DebugConfig* oldDebugConfig = (DebugConfig*)oldData;
+    DebugConfig* newDebugConfig = (DebugConfig*)newData;
+
+    if(newDebugConfig->debugIp!=oldDebugConfig->debugIp){
+        DebugMessageWithTime("debug user ip changed,old ip:",oldDebugConfig->debugIp,",new debug ip:",newDebugConfig->debugIp);
+    }
+    // verbose version,if different print debug info
+    if(newDebugConfig->verboseVersion!=oldDebugConfig->verboseVersion){
+        DebugMessageWithTime("Verbose Debug Info:");
+        DebugMessageWithTime("current debug user IP:",newDebugConfig->debugIp);
+    }
+}
+
 
 int main(int argc,char** argv){
 
@@ -181,6 +204,7 @@ int main(int argc,char** argv){
 
     HandleShowQueryTask::loadTemplates();
     HandleBidQueryTask::init();
+    IpManager::init();
 
     AdServer cServer;
     cout<<"***********Server Init**************\n"<<endl;
@@ -202,15 +226,25 @@ int main(int argc,char** argv){
         return ret;
     }
 
-    AdControl &ctControl = AdControl::Instance();
+    configManager->registerOnChange(CONFIG_SERVICE,std::bind(&onConfigChange,CONFIG_SERVICE,_1,_2));
+    configManager->registerOnChange(CONFIG_LOG,std::bind(&onConfigChange,CONFIG_LOG,_1,_2));
+    configManager->registerOnChange(CONFIG_ADSELECT,std::bind(&onConfigChange,CONFIG_ADSELECT,_1,_2));
+    configManager->registerOnChange(CONFIG_DEBUG,std::bind(&onDebugConfigChange,CONFIG_DEBUG,_1,_2));
 
-    ret = ctControl.OutputInit(1988);
+    ctControl = &(AdControl::Instance());
+
+    ret = ctControl->OutputInit(1988);
     if(ret != AD_SUCCESS)
     {
         AD_ERROR("Control Output init error\n");
         return ret;
     }
-    ctControl.TaskDetect(300);
+    ctControl->TaskDetect(300);
 
+    serviceLogger->stop();
+    AdSelectManager::release();
+    ThreadLocalManager::getInstance().destroy();
+    ConfigManager::exit();
+    IpManager::destroy();
     return 0;
 }

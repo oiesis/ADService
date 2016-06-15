@@ -26,7 +26,7 @@ namespace adservice{
         static constexpr    int DEFAULT_POOL_UNIT_CNT           = (MEMORY_ALLOC_UNIT_CNT<<1)+1;
         static const        int64_t EXPIRE_TIME_INFINITE        = 0x7FFFFFFFFFFFFFFF;
         static const        int CACHE_MAX_LEVEL                 = 3;
-        static const        int CACHE_KEY_LENGTH                = 56;
+        static const        int CACHE_KEY_LENGTH                = 128;
 
         struct CacheResult{
             char key[CACHE_KEY_LENGTH];

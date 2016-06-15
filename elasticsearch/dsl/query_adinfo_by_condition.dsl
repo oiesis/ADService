@@ -27,6 +27,7 @@
                                     {"terms": {"d_displaynumber":["0","%d"]}},
                                     {"terms": {"d_flowtype":["0","%d"]}},
                                     {"terms": {"d_hour":["0","%s"]}},
+                                    {"terms": {"d_geo":["0","%d","%d"]}},
                                     {"term": {"solutionstatus":{"value":20}}},
                                     {"range": {"starttime": {"lte": "now"}}},
                                     {"range": {"endtime":{"gte":"now"}}},
@@ -71,6 +72,7 @@
                                                                 {"terms": {"d_displaynumber":["0","%d"]}},
                                                                 {"terms": {"d_flowtype":["0","%d"]}},
                                                                 {"terms": {"d_hour":["0","%s"]}},
+                                                                {"terms": {"d_geo":["0","%d","%d"]}},
                                                                 {"term": {"solutionstatus":{"value":20}}},
                                                                 {"range": {"starttime": {"lte": "now"}}},
                                                                 {"range": {"endtime":{"gte":"now"}}}

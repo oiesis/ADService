@@ -126,13 +126,6 @@ namespace adservice{
             return false;
         }
 
-        /**
-         * 根据定向类型对基本出价和ctr进行加成
-         */
-        void addupPricer(const rapidjson::Value& solution,double& offerPrice,double& ctr){
-
-        }
-
         void split(const char* str,int len,const char** index,int& size){
             index[0] = str;
             int i =0,j=1;
@@ -149,9 +142,47 @@ namespace adservice{
             }
         }
 
+        bool extractConditionOption(std::string& condition,std::string& filter,double& offerPrice,double& ctr){
+            const char* index[100];
+            int size = sizeof(index)/sizeof(char*);
+            split(condition.data(),condition.length(),index,size);
+            for(int i=0;i<size;i+=3){
+                if(!strncmp(index[i],filter.data(),filter.length())){
+                    offerPrice+=atof(index[i+1]);
+                    ctr+=atof(index[i+2]);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /**
+         * 根据定向类型对基本出价和ctr进行加成
+         */
+        void addupPricer(const rapidjson::Value& solution,AdSelectCondition& selectCondition,double& offerPrice,double& ctr){
+            //地域投放 溢价 http://redmine.mtty.com/redmine/issues/100
+            std::string dGeo = solution["d_geo"].GetString();
+            if(dGeo != "0"){
+                std::string geo = std::to_string(selectCondition.dGeo);
+                if(!extractConditionOption(dGeo,geo,offerPrice,ctr)){//省市通投匹配
+                    std::string countryGeo = std::to_string(selectCondition.dGeo-(selectCondition.dGeo%AREACODE_MARGIN));
+                    extractConditionOption(dGeo,countryGeo,offerPrice,ctr);//国家级通投匹配
+                }
+            }
+            //广告位维度 溢价 http://redmine.mtty.com/redmine/issues/100
+            std::string dAdplace = solution["d_adplace"].GetString();
+            if(dAdplace!="0"){
+                std::string pid = selectCondition.mttyPid;
+                extractConditionOption(dAdplace,pid,offerPrice,ctr);
+            }
+        }
+
+        /**
+         *
+         */
         double getHourPercent(const rapidjson::Value& solution,std::string& dHour){
             if(dHour.empty()){
-                DebugMessageWithTime("input dHour is empty");
+                //DebugMessageWithTime("input dHour is empty");
                 return 1.0;
             }
             std::string hour = solution["d_hour"].GetString();
@@ -218,10 +249,12 @@ namespace adservice{
                 }
                 int bgid = solution["bgid"].GetInt();
                 rapidjson::Value& banner = bestBannerFromBannerGroup(bannerMap,bgid);//advId?
+                //创意维度 溢价 http://redmine.mtty.com/redmine/issues/101
                 offerprice += banner["offerprice"].GetDouble();
                 ctr += banner["ctr"].GetDouble();
                 int priceType = solution["pricetype"].GetInt();
                 double hourPercent = getHourPercent(solution,condition.dHour);
+                addupPricer(solution,condition,offerprice,ctr);
                 double ecpm = offerprice * (priceType == PRICETYPE_RRTB_CPC ?ctr: 1.0) * hourPercent;
                 finalOfferPrice[i] = offerprice;
                 solScore[i] = calcSolutionScore(priceType,ecpm);

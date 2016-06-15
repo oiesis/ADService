@@ -11,6 +11,7 @@
 #include "common/types.h"
 #include "task_thread_data.h"
 #include "logpusher/log_pusher.h"
+#include "core_src/core_config_manager.h"
 #ifdef USE_ENCODING_GZIP
 #include "muduo/net/ZlibStream.h"
 #endif
@@ -22,6 +23,7 @@ namespace adservice {
 
         using namespace muduo;
         using namespace muduo::net;
+        using namespace adservice::server;
         using namespace adservice::utility::serialize;
         using namespace adservice::utility::cypher;
         using namespace adservice::utility::url;
@@ -38,7 +40,12 @@ namespace adservice {
                 data = request.query();
                 userCookies = request.getHeader("Cookie");
                 userAgent = request.getHeader("User-Agent");
+#ifndef USER_DEBUG
                 userIp = request.getHeader("X-Forwarded-For");
+#else
+                DebugConfig* debugConfig = (DebugConfig*)ConfigManager::getInstance().get(CONFIG_DEBUG);
+                userIp = debugConfig->debugIp;
+#endif
                 referer = request.getHeader("Referer");
                 isPost = request.method()== HttpRequest::Method::kPost;
                 needLog = true;

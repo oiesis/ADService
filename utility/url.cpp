@@ -170,7 +170,7 @@ namespace adservice{
                     char codetable[]={'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
                     for(int i=0;i<128;i++){
                         if((i>='0'&&i<='9') || (i>='A' && i<='Z')
-                           || (i>='a'|| i<='z')
+                           || (i>='a'&& i<='z')
                            || i=='-' || i=='_' || i=='~'){
                             entry[i] = true;
                         }else{

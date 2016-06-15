@@ -209,7 +209,7 @@ namespace adservice {
             std::string randomId(int field){
                 char buffer[256];
                 char* p = buffer;
-                for(int i=0;i<field;i++,*p++='-'){
+                for(int i=0;i<field;i++){
                     int r = rng::randomInt();
                     toHex(false,(const uchar_t*)&r,sizeof(int),p);
                     p+=sizeof(int)<<1;

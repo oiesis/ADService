@@ -18,7 +18,7 @@ namespace adservice{
         using namespace adservice::utility::json;
         using namespace adservice::utility::time;
 
-        static const int DEFAULT_KEY_LENGTH = 56;
+        static const int DEFAULT_KEY_LENGTH = 128;
         static const int LITTLE_BUFFER_SIZE = 1024;
         static const int LARGE_BUFFER_SIZE = 10240;
         static const int CACHE_LEVEL_1_SIZE = 1;
@@ -124,38 +124,54 @@ namespace adservice{
 
         }
 
+        int countryGeo(int geo){
+            return geo - (geo%AREACODE_MARGIN);
+        }
+
         /**
          * 进行条件参数绑定
          */
         void bindSelectCondition(rapidjson::Value& adplaceInfo,AdSelectCondition& bindCondition,const char* cTemplate,INOUT char* output,const char* pid){
             //创意支持类型过滤
             const char* supportBanner = adplaceInfo["supportbanner"].IsNull()?DEFAULT_SUPPORT_BANNERTYPE:adplaceInfo["supportbanner"].GetString();
+            if(bindCondition.mttyPid.empty()){
+                bindCondition.mttyPid = std::to_string(adplaceInfo["pid"].GetInt());
+            }
+            if(bindCondition.adxpid.empty()){
+                bindCondition.adxpid = adplaceInfo["adxpid"].GetString();
+            }
             bindCondition.mediaType = adplaceInfo["media_type"].GetInt();
             bindCondition.adplaceType = adplaceInfo["adplacetype"].GetInt();
             bindCondition.displayNumber = adplaceInfo["displaynumber"].GetInt();
             bindCondition.flowType = adplaceInfo["flowtype"].GetInt();
+            bindCondition.width = adplaceInfo["width"].GetInt();
+            bindCondition.height = adplaceInfo["height"].GetInt();
             //时间定点过滤
             std::string dHour = adSelectTimeCodeUtc();
             bindCondition.dHour = dHour;
+            //国家通投编码
+            int dCountryGeo = countryGeo(bindCondition.dGeo);
             sprintf(output,cTemplate,pid,
-                    adplaceInfo["media_type"].GetInt(),
+                    bindCondition.mediaType,
                     pid,
-                    adplaceInfo["adplacetype"].GetInt(),
-                    adplaceInfo["displaynumber"].GetInt(),
-                    adplaceInfo["flowtype"].GetInt(),
-                    dHour.c_str(),
-                    adplaceInfo["width"].GetInt(),
-                    adplaceInfo["height"].GetInt(),
+                    bindCondition.adplaceType,
+                    bindCondition.displayNumber,
+                    bindCondition.flowType,
+                    bindCondition.dHour.data(),
+                    bindCondition.dGeo,dCountryGeo,
+                    bindCondition.width,
+                    bindCondition.height,
                     supportBanner,
-                    adplaceInfo["width"].GetInt(),
-                    adplaceInfo["height"].GetInt(),
+                    bindCondition.width,
+                    bindCondition.height,
                     supportBanner,
-                    adplaceInfo["media_type"].GetInt(),
+                    bindCondition.mediaType,
                     pid,
-                    adplaceInfo["adplacetype"].GetInt(),
-                    adplaceInfo["displaynumber"].GetInt(),
-                    adplaceInfo["flowtype"].GetInt(),
-                    dHour.c_str()
+                    bindCondition.adplaceType,
+                    bindCondition.displayNumber,
+                    bindCondition.flowType,
+                    bindCondition.dHour.data(),
+                    bindCondition.dGeo,dCountryGeo
             );
         }
 
@@ -164,7 +180,7 @@ namespace adservice{
                 const std::string& mttyPid = selectCondition.mttyPid;
                 ElasticSearch& agent = getAvailableConnection(seqId);
                 char key[DEFAULT_KEY_LENGTH];
-                snprintf(key,DEFAULT_KEY_LENGTH,"adinfo_pid_%s",mttyPid.c_str());
+                snprintf(key,DEFAULT_KEY_LENGTH,"adinfo_pid_%s_%s",mttyPid.c_str(),selectCondition.areaCode.data());
                 CacheResult* cacheResult = cacheManager.get(key,CACHE_LEVEL_3_SIZE,[&mttyPid,this,&agent,&result,&selectCondition](CacheResult& newCache){
                     try {
                         char buffer[LARGE_BUFFER_SIZE];
@@ -214,7 +230,7 @@ namespace adservice{
                 const std::string& adxPid = selectCondition.adxpid;
                 ElasticSearch& agent = getAvailableConnection(seqId);
                 char key[DEFAULT_KEY_LENGTH];
-                snprintf(key,DEFAULT_KEY_LENGTH,"adinfo_adxpid_%s",adxPid.c_str());
+                snprintf(key,DEFAULT_KEY_LENGTH,"adinfo_adxpid_%s_%s",adxPid.c_str(),selectCondition.areaCode.data());
                 CacheResult* cacheResult = cacheManager.get(key,CACHE_LEVEL_3_SIZE,[&adxPid,this,&agent,&result,&selectCondition](CacheResult& newCache){
                    try {
                        char buffer[LARGE_BUFFER_SIZE];

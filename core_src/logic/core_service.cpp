@@ -3,6 +3,7 @@
 //
 
 #include <signal.h>
+#include <exception>
 #include "core_service.h"
 #include "utility/utility.h"
 #include "protocol/log/log.h"
@@ -11,7 +12,6 @@
 #include "click_query_task.h"
 #include "show_query_task.h"
 #include "bid_query_task.h"
-#include <exception>
 
 extern adservice::corelogic::CoreModule g_coreService;
 
@@ -100,13 +100,17 @@ namespace adservice{
             DebugConfig* newDebugConfig = (DebugConfig*)newData;
             // debug dynamic log level
             if(newDebugConfig->dynamicLogLevel!=oldDebugConfig->dynamicLogLevel){
-                DebugMessageWithTime("logging level change,old level:",oldDebugConfig->dynamicLogLevel,",new level:",newDebugConfig->dynamicLogLevel);
+                DebugMessageWithTime("logging level changed,old level:",oldDebugConfig->dynamicLogLevel,",new level:",newDebugConfig->dynamicLogLevel);
                 setLogLevel(newDebugConfig->dynamicLogLevel);
+            }
+            if(newDebugConfig->debugIp!=oldDebugConfig->debugIp){
+                DebugMessageWithTime("debug user ip changed,old ip:",oldDebugConfig->debugIp,",new debug ip:",newDebugConfig->debugIp);
             }
             // verbose version,if different print debug info
             if(newDebugConfig->verboseVersion!=oldDebugConfig->verboseVersion){
                 DebugMessageWithTime("Verbose Debug Info:");
                 DebugMessageWithTime("current log level:",(int)muduo::Logger::logLevel());
+                DebugMessageWithTime("current debug user IP:",newDebugConfig->debugIp);
             }
 
         }
@@ -146,6 +150,8 @@ namespace adservice{
             configManager.registerOnChange(CONFIG_LOG,std::bind(&onConfigChange,CONFIG_LOG,_1,_2));
             configManager.registerOnChange(CONFIG_ADSELECT,std::bind(&onConfigChange,CONFIG_ADSELECT,_1,_2));
             configManager.registerOnChange(CONFIG_DEBUG,std::bind(&onDebugConfigChange,CONFIG_DEBUG,_1,_2));
+            //初始化IpManager
+            IpManager::init();
         }
 
 

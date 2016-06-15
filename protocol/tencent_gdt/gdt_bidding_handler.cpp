@@ -4,6 +4,7 @@
 
 #include "gdt_bidding_handler.h"
 #include "utility.h"
+#include "core_ip_manager.h"
 #include <string>
 
 namespace protocol {
@@ -11,6 +12,7 @@ namespace protocol {
 
         using namespace protocol::gdt::adx;
         using namespace adservice::utility::serialize;
+        using namespace adservice::server;
 
         inline int max(const int& a,const int& b){
             return a>b?a:b;
@@ -86,6 +88,10 @@ namespace protocol {
             adInfo.mid = adplace["mid"].GetInt();
             adInfo.cpid = adInfo.advId;
             adInfo.offerPrice = maxCpmPrice;
+
+            const std::string& userIp = bidRequest.ip();
+            IpManager& ipManager = IpManager::getInstance();
+            adInfo.areaId = ipManager.getAreaCodeStrByIp(userIp.data());
 
             //html snippet相关
             char showParam[2048];

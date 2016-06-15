@@ -71,6 +71,7 @@ public:
 	{
 		string sName = "Control";
 		SetName(sName);
+		running = true;
 	};
 	virtual ~AdControl(){};
 
@@ -86,6 +87,10 @@ public:
 	//get Control mudule
 	static AdControl & Instance();
 
+	void setRunning(bool r){
+		running = r;
+	}
+
 	void TaskDetect(int iSecond);
 private:
 	//task list
@@ -98,5 +103,7 @@ private:
 
 	//project path, version
 	string m_sProjectPath;
+
+	bool running;
 };
 #endif

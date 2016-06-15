@@ -33,7 +33,7 @@ void AdControl::TaskDetect(int iSecond)
 {
 	map<UINT, AdTask *>::iterator  iter;
 	map<UINT, UINT> mLastCounter;
-	while(true)
+	while(running)
 	{
 		Time::wait(iSecond);
 		for(iter = m_mTasks.begin(); iter != m_mTasks.end(); iter ++)

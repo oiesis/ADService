@@ -3,6 +3,7 @@
 //
 
 #include "tanx_bidding_handler.h"
+#include "core_ip_manager.h"
 #include "utility.h"
 
 namespace protocol {
@@ -11,6 +12,7 @@ namespace protocol {
         using namespace protocol::Tanx;
         using namespace adservice::utility::serialize;
         using namespace adservice::utility::json;
+        using namespace adservice::server;
 
 #define AD_TX_CLICK_MACRO	"%%CLICK_URL_PRE_ENC%%"
 #define AD_TX_PRICE_MACRO  "%%SETTLE_PRICE%%"
@@ -70,6 +72,7 @@ namespace protocol {
                     if(mobile.has_device()){
                         const BidRequest_Mobile_Device& device = mobile.device();
                         logItem.deviceInfo = device.DebugString();
+                        logItem.adInfo.adxid = ADX_TANX_MOBILE;
                     }
                 }
                 logItem.adInfo.sid = adInfo.sid;
@@ -143,7 +146,9 @@ namespace protocol {
             adInfo.mid = adplace["mid"].GetInt();
             adInfo.cpid = adInfo.advId;
             adInfo.offerPrice = maxCpmPrice;
-            adInfo.areaId = "0086-ffff-ffff";
+            const std::string& userIp = bidRequest.ip();
+            IpManager& ipManager = IpManager::getInstance();
+            adInfo.areaId = ipManager.getAreaCodeStrByIp(userIp.data());
 
             char pjson[2048]={'\0'};
             std::string strBannerJson = banner["json"].GetString();

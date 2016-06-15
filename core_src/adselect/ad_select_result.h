@@ -33,6 +33,7 @@ namespace adservice{
             std::string ip;
             std::string areaCode;
             std::string dHour;
+            int dGeo;
             int width;
             int height;
             int mediaType;

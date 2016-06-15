@@ -69,17 +69,35 @@ void hash_test(){
 }
 
 
-#include "protocol/tencent_gdt/tencent_gdt_price.h"
 
-void price_test(){
-    std::string input = "VwSSFElLxs3wWy0LMsTy5Q==";
-    int price = gdt_price_decode(input);
-    DebugMessageWithTime("price:",price);
+#include "core_src/core_ip_manager.h"
+
+void ip_area_test(const char* ip){
+    using namespace adservice::server;
+    IpManager::init("../17monipdb.dat","../city_area_code.txt");
+    IpManager& ipManager = IpManager::getInstance();
+    long timeBegin = getCurrentTimeStamp();
+    int code;
+    for(int i=0;i<1000000;i++) {
+        code = ipManager.getAreaByIp(ip);
+    }
+    long timeEnd = getCurrentTimeStamp();
+    DebugMessageWithTime("begin time:",timeBegin,",end time:",timeEnd,",cost:",timeEnd-timeBegin,",area code:",code);
+    IpManager::destroy();
+}
+
+void url_encode_test(const char* url){
+    char buffer[2048];
+    std::string encoded;
+    urlEncode_f(url,strlen(url),encoded,buffer);
+    DebugMessageWithTime("result:",buffer);
 }
 
 int main(int argc,char** argv){
     try {
-        paramTest();
+        if(argc>1){
+            url_encode_test(argv[1]);
+        }
     }catch(std::exception& e){
         DebugMessageWithTime("exception:",e.what());
     }

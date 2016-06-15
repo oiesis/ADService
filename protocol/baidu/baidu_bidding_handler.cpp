@@ -4,12 +4,14 @@
 
 #include "baidu_bidding_handler.h"
 #include "utility/utility.h"
+#include "core_ip_manager.h"
 
 namespace protocol {
     namespace bidding {
 
         using namespace protocol::Baidu;
         using namespace adservice::utility::serialize;
+        using namespace adservice::server;
 
 #define AD_BD_CLICK_MACRO  "%%CLICK_URL_ESC%%"
 #define AD_BD_PRICE_MACRO  "%%PRICE%%"
@@ -115,6 +117,9 @@ namespace protocol {
             adInfo.mid = adplace["mid"].GetInt();
             adInfo.cpid = adInfo.advId;
             adInfo.offerPrice = maxCpmPrice;
+            const std::string& userIp = bidRequest.ip();
+            IpManager& ipManager = IpManager::getInstance();
+            adInfo.areaId = ipManager.getAreaCodeStrByIp(userIp.data());
             adResult->set_html_snippet(baiduHtmlSnippet());
         }
 

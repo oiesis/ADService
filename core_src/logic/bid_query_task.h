@@ -7,6 +7,7 @@
 
 #include "abstract_query_task.h"
 #include "protocol/base/abstract_bidding_handler.h"
+#include "core_ip_manager.h"
 #include <initializer_list>
 
 namespace adservice{

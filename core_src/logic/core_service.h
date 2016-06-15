@@ -16,6 +16,7 @@
 #include "core_http_server.h"
 #include "constants.h"
 #include "core_threadlocal_manager.h"
+#include "core_ip_manager.h"
 #include "adselect/core_adselect_manager.h"
 
 namespace adservice{
@@ -53,6 +54,7 @@ namespace adservice{
                 adservice::server::ThreadLocalManager::getInstance().destroy();
                 AdSelectManager::release();
                 ConfigManager::exit();
+                IpManager::destroy();
             }
 
             virtual void onRequest(const TcpConnectionPtr& conn,const HttpRequest& req, HttpResponse* resp);

@@ -4,17 +4,18 @@
 
 #include "youku_bidding_handler.h"
 #include "utility/utility.h"
+#include "core_ip_manager.h"
 
 namespace protocol {
     namespace bidding {
 
         using namespace adservice::utility::serialize;
         using namespace adservice::utility::json;
+        using namespace adservice::server;
 
 #define   AD_YOUKU_CM_URL   ""
 #define   AD_YOUKU_FEED		"http://show.mtty.com/v?res=none&p=%s&%s"
 #define   AD_YOUKU_CLICK	"http://show.mtty.com/c?%s&url=%s"
-
 #define   AD_YOUKU_PRICE 		"${AUCTION_PRICE}"
 
         bool YoukuBiddingHandler::parseRequestData(const std::string& data){
@@ -115,6 +116,9 @@ namespace protocol {
             adInfo.mid = adplace["mid"].GetInt();
             adInfo.cpid = adInfo.advId;
             adInfo.offerPrice = maxCpmPrice;
+            const std::string& userIp = bidRequest["device"]["ip"].GetString();
+            IpManager& ipManager = IpManager::getInstance();
+            adInfo.areaId = ipManager.getAreaCodeStrByIp(userIp.data());
 
             //html snippet相关
             rapidjson::Value& extValue = bidValue["ext"];

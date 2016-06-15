@@ -15,6 +15,7 @@ namespace adservice{
     namespace corelogic{
 
         using namespace adservice::utility;
+        using namespace adservice::server;
 
         int HandleBidQueryTask::initialized = 0;
         int HandleBidQueryTask::moduleCnt = 0;
@@ -123,6 +124,9 @@ namespace adservice{
                     //http://redmine.mtty.com/redmine/issues/96
                     //todo:cookies mapping 接入,人群标签获取
                     // ...
+                    //地域定向接入
+                    IpManager& ipManager = IpManager::getInstance();
+                    condition.dGeo = ipManager.getAreaByIp(condition.ip.data());
                     if(!adSelectLogic.selectByCondition(seqId,condition,true,false)){
                         return false;
                     }

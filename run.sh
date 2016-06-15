@@ -45,8 +45,8 @@ then
 		echo "$LOGROTATE_CONFIG" > ./conf/logrotate.conf
 	        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib64/:$(pwd)/3rdparty/lib/
 		./start_http_server.sh >service_log/run.log 2>&1 &
-		#sudo logrotate -s ./service_log/adservice.log ./conf/logrotate.conf
-                #sudo cp ./conf/logrotate.conf /etc/logrotate.d/adservice
+		sudo logrotate -s ./service_log/adservice.log ./conf/logrotate.conf
+                sudo cp ./conf/logrotate.conf /etc/logrotate.d/adservice
 	elif [[ $1 == "log" ]];
 	then
 		more service_log/service.log
@@ -54,10 +54,10 @@ then
 else
    	 echo "$LOGROTATE_CONFIG" > ./conf/logrotate.conf
    	 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib64/:$(pwd)/3rdparty/lib/
-	./adservice >./service_log/service.log 2>&1 &
-	#if [[ $? == 0 ]];
-	#then
-    		#sudo logrotate -s ./service_log/adservice.log ./conf/logrotate.conf
-    		#sudo cp ./conf/logrotate.conf /etc/logrotate.d/adservice
-    #	fi
+	./adservice >>./service_log/service.log 2>&1 &
+	if [[ $? == 0 ]];
+	then
+    		sudo logrotate -s ./service_log/adservice.log ./conf/logrotate.conf
+    		sudo cp ./conf/logrotate.conf /etc/logrotate.d/adservice
+    	fi
 fi

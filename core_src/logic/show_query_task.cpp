@@ -6,6 +6,8 @@
 #include "adselect/core_adselect_manager.h"
 #include "adselect/ad_select_logic.h"
 #include "atomic.h"
+#include "core_ip_manager.h"
+#include "muduo/base/tbb/concurrent_hash_map.h"
 
 namespace adservice{
     namespace corelogic{
@@ -16,6 +18,15 @@ namespace adservice{
         int HandleShowQueryTask::initialized = 0;
         char HandleShowQueryTask::showAdxTemplate[1024];
         char HandleShowQueryTask::showSspTemplate[1024];
+
+        typedef tbb::concurrent_hash_map<int,int> AdStatusHashMap;
+        typedef AdStatusHashMap::accessor AdStatusHashMapAccessor;
+        //投放单ID-花费 状态表
+        static AdStatusHashMap adCostHashMap;
+        //投放单ID-利润 状态表
+        static AdStatusHashMap adPriceHashMap;
+
+        static long adStatusShowTime = 0;
 
         void HandleShowQueryTask::loadTemplates(){
             if(initialized==1||!ATOM_CAS(&initialized,0,1))
@@ -149,7 +160,8 @@ namespace adservice{
         }
 
         int buildResponseForSsp(rapidjson::Value& solution,rapidjson::Value& adplace,rapidjson::Value& banner,ParamMap& paramMap,
-                                const char* json,const char* templateFmt,char* buffer,int bufferSize){
+                                const char* json,const char* templateFmt,char* buffer,int bufferSize,const std::string& userIp,
+                                const std::string& referer){
             char pjson[2048]={'\0'};
             strncat(pjson,json,sizeof(pjson));
             tripslash2(pjson);
@@ -158,19 +170,46 @@ namespace adservice{
             auto &allocator = mtAdInfo.GetAllocator();
             std::string pid = to_string(adplace["pid"].GetInt());
             mtAdInfo.AddMember("pid",MakeStringValue(pid),allocator);
-            std::string impid = cypher::randomId(5);
+            std::string impid = cypher::randomId(3);
             mtAdInfo.AddMember("impid",MakeStringValue(impid),allocator);
             std::string adxid = to_string(adplace["adxid"].GetInt());
             mtAdInfo.AddMember("unid",MakeStringValue(adxid),allocator);
             mtAdInfo.AddMember("plid",MakeStringConstValue(""),allocator);
             std::string sid = to_string(solution["sid"].GetInt());
             mtAdInfo.AddMember("gpid",MakeStringValue(sid),allocator);
-            mtAdInfo.AddMember("arid",MakeStringConstValue("0086-ffff-ffff"),allocator);
+            IpManager& ipManager = IpManager::getInstance();
+            std::string address=ipManager.getAreaCodeStrByIp(userIp.data());
+            mtAdInfo.AddMember("arid",MakeStringValue(address),allocator);
             mtAdInfo.AddMember("xcurl",MakeStringConstValue(""),allocator);
             std::string width = to_string(banner["width"].GetInt());
             std::string height = to_string(banner["height"].GetInt());
             mtAdInfo.AddMember("width",MakeStringValue(width),allocator);
             mtAdInfo.AddMember("height",MakeStringValue(height),allocator);
+            int advId = solution["advid"].GetInt();
+            int bannerId = banner["bid"].GetInt();
+            //替换点击宏
+            rapidjson::Value& mtls = mtAdInfo["mtls"];
+            char clickMacroBuffer[2048];
+            char landingPageBuffer[1024];
+            std::string landingUrl = mtls[0]["p1"].GetString();
+            std::string encodedLandingUrl;
+            urlEncode_f(landingUrl,encodedLandingUrl,landingPageBuffer);
+            int clickMacroLen = snprintf(clickMacroBuffer,sizeof(clickMacroBuffer),
+                                         SSP_CLICK_URL"?s=%s&x=%s&r=%s&d=%d&e=%s&c=%d&f=%s&h=000&a=%s&url=%s",
+                                         pid.data(),
+                                         adxid.data(),
+                                         impid.data(),
+                                         advId,
+                                         sid.data(),
+                                         bannerId,
+                                         referer.data(),
+                                         address.data(),
+                                         encodedLandingUrl.data()
+                                         );
+            if(clickMacroLen>=sizeof(clickMacroBuffer)){
+                DebugMessageWithTime("in buildResponseForSsp,clickMacroLen greater than sizeof clickMacroBuffer,len:",clickMacroLen);
+            }
+            mtls[0]["p5"].SetString(clickMacroBuffer,clickMacroLen);
             std::string jsonResult = utility::json::toJson(mtAdInfo);
             int len = snprintf(buffer,bufferSize-1,templateFmt,paramMap["callback"].c_str(),jsonResult.c_str());
             if(len>=bufferSize){
@@ -381,6 +420,8 @@ namespace adservice{
                 else
                     condition.mttyPid = queryPid;
                 condition.ip = log.ipInfo.proxy;
+                server::IpManager& ipManager = IpManager::getInstance();
+                condition.dGeo = ipManager.getAreaByIp(condition.ip.data());
                 if(!adSelectLogic.selectByCondition(seqId,condition,isAdxPid,true)){
                     log.adInfo.pid = isAdxPid?"0":queryPid;
                     log.adInfo.adxpid = isAdxPid?queryPid:"0";
@@ -404,7 +445,7 @@ namespace adservice{
                 //返回结果
                 char buffer[8192];
                 //int len = fillHtmlFixedParam(finalSolution,adplace,banner,paramMap,tmp,templateFmt,buffer,sizeof(buffer));
-                int len = buildResponseForSsp(finalSolution,adplace,banner,paramMap,tmp,templateFmt,buffer,sizeof(buffer));
+                int len = buildResponseForSsp(finalSolution,adplace,banner,paramMap,tmp,templateFmt,buffer,sizeof(buffer),userIp,referer);
                 respBody = std::string(buffer,buffer+len);
             }else {//DSP of=0,of=2,of=3
                 bool showCreative = true;
@@ -447,6 +488,12 @@ namespace adservice{
                 } else {
                     DebugMessageWithTime("handleShowRequests:", handleShowRequests);
                 }
+            }
+            if(log.adInfo.cost!=0){ //更新花费表状态
+
+            }
+            if(log.adInfo.bidPrice!=0){ //更新BidPrice表状态
+
             }
         }
 

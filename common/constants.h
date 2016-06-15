@@ -147,6 +147,9 @@
 #define TEMPLATE_SHOW_SSP_PATH                      "html/show_ssp.html"
 
 
+// SSP返回点击宏中的点击链接
+#define SSP_CLICK_URL                               "http://click.mtty.com/c"
+
 /** ADX 广告交换商代码 */
 // 淘宝
 #define ADX_TANX                                    1
@@ -154,8 +157,10 @@
 #define ADX_YOUKU                                   5
 // 百度
 #define ADX_BAIDU                                   6
-// 腾讯
+// 腾讯广点通
 #define ADX_TENCENT_GDT                             13
+// 淘宝移动
+#define ADX_TANX_MOBILE                             15
 
 // 淘宝竞价请求模块名
 #define BID_QUERY_PATH_TANX                         "/tanxbid"
@@ -228,5 +233,11 @@
 #define  URL_LONG_REQUEST_THRESH                    1024
 #define  URL_LONG_INPUT_PARAMETER                   1024
 
+// IP 库 数据文件路径
+#define IP_DATA_FILE                                "17monipdb.dat"
+// 地域编码文件
+#define AREA_CODE_FILE                              "city_area_code.txt"
+// 地域编码地位
+#define AREACODE_MARGIN    1000000
 
 #endif //ADCORE_CONSTANTS_H

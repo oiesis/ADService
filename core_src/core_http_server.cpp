@@ -24,7 +24,7 @@ namespace adservice{
           bool close = connection == "close" ||
             (req.getVersion() == HttpRequest::kHttp10 && connection != "Keep-Alive");
             HttpResponse resp(close);
-          httpCallback_(conn,req, &resp);
+            httpCallback_(conn,req, &resp);
             Buffer buf;
             resp.appendToBuffer(&buf);
             conn->send(&buf);

@@ -32,7 +32,7 @@ namespace adservice{
             }
 
             virtual int reqMethod(){
-                return HTTP_REQUEST_POST;
+                return HTTP_REQUEST_GET;
             }
 
             /**
