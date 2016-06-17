@@ -17,6 +17,7 @@
 #include "core_src/logic/bid_query_task.h"
 #include "core_src/logic/show_query_task.h"
 #include "core_src/logic/click_query_task.h"
+#include "core_src/logic/trace_query_task.h"
 #include "core_src/logpusher/log_pusher.h"
 #include "core_src/core_threadlocal_manager.h"
 #include "core_src/core_ip_manager.h"
@@ -64,6 +65,10 @@ void onRequest(const HttpRequest& req, HttpResponse* resp)
             HandleClickQueryTask clickTask(req,*resp);
             clickTask.setLogger(serviceLogger);
             clickTask();
+        }else if(req.path() == "/t"){
+            HandleTraceTask traceTask(req,*resp);
+            traceTask.setLogger(trackLogger);
+            traceTask();
         }else if (req.path().find("bid")!=std::string::npos){
             HandleBidQueryTask bidTask(req,*resp);
             bidTask.setLogger(serviceLogger);
@@ -174,16 +179,16 @@ int main(int argc, char* argv[])
 
     LogConfig* logConfig = (LogConfig*)configManager->get(CONFIG_LOG);
     serviceLogger = adservice::log::LogPusher::getLogger(MTTY_SERVICE_LOGGER,
+                                                         CONFIG_LOG,
                                                          logConfig->loggerThreads,
-                                                         !logConfig->logRemote,
-                                                         CONFIG_LOG);
+                                                         !logConfig->logRemote);
     serviceLogger->start();
     if(serverConfig->runTrack){
         LogConfig *trackLogConfig = (LogConfig *) configManager->get(CONFIG_TRACK_LOG);
         trackLogger = adservice::log::LogPusher::getLogger(MTTY_TRACK_LOGGER,
+                                                           CONFIG_TRACK_LOG,
                                                            trackLogConfig->loggerThreads,
-                                                           !trackLogConfig->logRemote,
-                                                           CONFIG_TRACK_LOG);
+                                                           !trackLogConfig->logRemote);
         trackLogger->start();
     }
 

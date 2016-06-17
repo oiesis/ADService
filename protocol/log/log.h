@@ -17,8 +17,8 @@
  */
 
 
-#ifndef LOG_AVRO_LOG_H_1504036405__H_
-#define LOG_AVRO_LOG_H_1504036405__H_
+#ifndef LOG_AVRO_LOG_H_3595108610__H_
+#define LOG_AVRO_LOG_H_3595108610__H_
 
 
 #include <sstream>
@@ -120,6 +120,37 @@ struct UserInfo {
         { }
 };
 
+struct TraceInfo {
+    std::string version;
+    std::string deviceType;
+    std::string sourceid;
+    std::string tag1;
+    std::string tag2;
+    std::string tag3;
+    std::string tag4;
+    std::string tag5;
+    std::string tag6;
+    std::string tag7;
+    std::string tag8;
+    std::string tag9;
+    std::string tag10;
+    TraceInfo() :
+        version(std::string()),
+        deviceType(std::string()),
+        sourceid(std::string()),
+        tag1(std::string()),
+        tag2(std::string()),
+        tag3(std::string()),
+        tag4(std::string()),
+        tag5(std::string()),
+        tag6(std::string()),
+        tag7(std::string()),
+        tag8(std::string()),
+        tag9(std::string()),
+        tag10(std::string())
+        { }
+};
+
 struct LogItem {
     int64_t timeStamp;
     LogPhaseType logType;
@@ -140,6 +171,7 @@ struct LogItem {
     AdInfo adInfo;
     int32_t clickx;
     int32_t clicky;
+    TraceInfo traceInfo;
     LogItem() :
         timeStamp(int64_t()),
         logType(LogPhaseType()),
@@ -159,7 +191,8 @@ struct LogItem {
         traceId(int32_t()),
         adInfo(AdInfo()),
         clickx(int32_t()),
-        clicky(int32_t())
+        clicky(int32_t()),
+        traceInfo(TraceInfo())
         { }
 };
 
@@ -179,6 +212,8 @@ public:
     void set_IPInfo(const IPInfo& v);
     UserInfo get_UserInfo() const;
     void set_UserInfo(const UserInfo& v);
+    TraceInfo get_TraceInfo() const;
+    void set_TraceInfo(const TraceInfo& v);
     LogItem get_LogItem() const;
     void set_LogItem(const LogItem& v);
     __tmp_json_Union__0__();
@@ -255,8 +290,22 @@ void __tmp_json_Union__0__::set_UserInfo(const UserInfo& v) {
 }
 
 inline
-LogItem __tmp_json_Union__0__::get_LogItem() const {
+TraceInfo __tmp_json_Union__0__::get_TraceInfo() const {
     if (idx_ != 5) {
+        throw avro::Exception("Invalid type for union");
+    }
+    return boost::any_cast<TraceInfo >(value_);
+}
+
+inline
+void __tmp_json_Union__0__::set_TraceInfo(const TraceInfo& v) {
+    idx_ = 5;
+    value_ = v;
+}
+
+inline
+LogItem __tmp_json_Union__0__::get_LogItem() const {
+    if (idx_ != 6) {
         throw avro::Exception("Invalid type for union");
     }
     return boost::any_cast<LogItem >(value_);
@@ -264,7 +313,7 @@ LogItem __tmp_json_Union__0__::get_LogItem() const {
 
 inline
 void __tmp_json_Union__0__::set_LogItem(const LogItem& v) {
-    idx_ = 5;
+    idx_ = 6;
     value_ = v;
 }
 
@@ -525,6 +574,90 @@ template<> struct codec_traits<protocol::log::UserInfo> {
     }
 };
 
+template<> struct codec_traits<protocol::log::TraceInfo> {
+    static void encode(Encoder& e, const protocol::log::TraceInfo& v) {
+        avro::encode(e, v.version);
+        avro::encode(e, v.deviceType);
+        avro::encode(e, v.sourceid);
+        avro::encode(e, v.tag1);
+        avro::encode(e, v.tag2);
+        avro::encode(e, v.tag3);
+        avro::encode(e, v.tag4);
+        avro::encode(e, v.tag5);
+        avro::encode(e, v.tag6);
+        avro::encode(e, v.tag7);
+        avro::encode(e, v.tag8);
+        avro::encode(e, v.tag9);
+        avro::encode(e, v.tag10);
+    }
+    static void decode(Decoder& d, protocol::log::TraceInfo& v) {
+        if (avro::ResolvingDecoder *rd =
+            dynamic_cast<avro::ResolvingDecoder *>(&d)) {
+            const std::vector<size_t> fo = rd->fieldOrder();
+            for (std::vector<size_t>::const_iterator it = fo.begin();
+                it != fo.end(); ++it) {
+                switch (*it) {
+                case 0:
+                    avro::decode(d, v.version);
+                    break;
+                case 1:
+                    avro::decode(d, v.deviceType);
+                    break;
+                case 2:
+                    avro::decode(d, v.sourceid);
+                    break;
+                case 3:
+                    avro::decode(d, v.tag1);
+                    break;
+                case 4:
+                    avro::decode(d, v.tag2);
+                    break;
+                case 5:
+                    avro::decode(d, v.tag3);
+                    break;
+                case 6:
+                    avro::decode(d, v.tag4);
+                    break;
+                case 7:
+                    avro::decode(d, v.tag5);
+                    break;
+                case 8:
+                    avro::decode(d, v.tag6);
+                    break;
+                case 9:
+                    avro::decode(d, v.tag7);
+                    break;
+                case 10:
+                    avro::decode(d, v.tag8);
+                    break;
+                case 11:
+                    avro::decode(d, v.tag9);
+                    break;
+                case 12:
+                    avro::decode(d, v.tag10);
+                    break;
+                default:
+                    break;
+                }
+            }
+        } else {
+            avro::decode(d, v.version);
+            avro::decode(d, v.deviceType);
+            avro::decode(d, v.sourceid);
+            avro::decode(d, v.tag1);
+            avro::decode(d, v.tag2);
+            avro::decode(d, v.tag3);
+            avro::decode(d, v.tag4);
+            avro::decode(d, v.tag5);
+            avro::decode(d, v.tag6);
+            avro::decode(d, v.tag7);
+            avro::decode(d, v.tag8);
+            avro::decode(d, v.tag9);
+            avro::decode(d, v.tag10);
+        }
+    }
+};
+
 template<> struct codec_traits<protocol::log::LogItem> {
     static void encode(Encoder& e, const protocol::log::LogItem& v) {
         avro::encode(e, v.timeStamp);
@@ -546,6 +679,7 @@ template<> struct codec_traits<protocol::log::LogItem> {
         avro::encode(e, v.adInfo);
         avro::encode(e, v.clickx);
         avro::encode(e, v.clicky);
+        avro::encode(e, v.traceInfo);
     }
     static void decode(Decoder& d, protocol::log::LogItem& v) {
         if (avro::ResolvingDecoder *rd =
@@ -611,6 +745,9 @@ template<> struct codec_traits<protocol::log::LogItem> {
                 case 18:
                     avro::decode(d, v.clicky);
                     break;
+                case 19:
+                    avro::decode(d, v.traceInfo);
+                    break;
                 default:
                     break;
                 }
@@ -635,6 +772,7 @@ template<> struct codec_traits<protocol::log::LogItem> {
             avro::decode(d, v.adInfo);
             avro::decode(d, v.clickx);
             avro::decode(d, v.clicky);
+            avro::decode(d, v.traceInfo);
         }
     }
 };
@@ -659,13 +797,16 @@ template<> struct codec_traits<protocol::log::__tmp_json_Union__0__> {
             avro::encode(e, v.get_UserInfo());
             break;
         case 5:
+            avro::encode(e, v.get_TraceInfo());
+            break;
+        case 6:
             avro::encode(e, v.get_LogItem());
             break;
         }
     }
     static void decode(Decoder& d, protocol::log::__tmp_json_Union__0__& v) {
         size_t n = d.decodeUnionIndex();
-        if (n >= 6) { throw avro::Exception("Union index too big"); }
+        if (n >= 7) { throw avro::Exception("Union index too big"); }
         switch (n) {
         case 0:
             {
@@ -703,6 +844,13 @@ template<> struct codec_traits<protocol::log::__tmp_json_Union__0__> {
             }
             break;
         case 5:
+            {
+                protocol::log::TraceInfo vv;
+                avro::decode(d, vv);
+                v.set_TraceInfo(vv);
+            }
+            break;
+        case 6:
             {
                 protocol::log::LogItem vv;
                 avro::decode(d, vv);

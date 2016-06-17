@@ -93,11 +93,25 @@ void url_encode_test(const char* url){
     DebugMessageWithTime("result:",buffer);
 }
 
+#include "core_src/core_config_manager.h"
+
+void configmanager_test(){
+    using namespace adservice::server;
+    ConfigManager::init();
+    ConfigManager& configManager = ConfigManager::getInstance();
+    LogConfig* logConfig = (LogConfig*)configManager.get(CONFIG_LOG);
+    DebugMessageWithTime("logConfig kafka broker:",logConfig->kafkaBroker);
+    DebugMessageWithTime("logConfig kafka topic:",logConfig->kafkaTopic);
+    ServerConfig* serviceConfig = (ServerConfig*)configManager.get(CONFIG_SERVICE);
+    DebugMessageWithTime("serviceConfig loadClick:",serviceConfig->runClick);
+    DebugMessageWithTime("serviceConfig loadBid:",serviceConfig->coreHttpThreads);
+    DebugMessageWithTime("serviceConfig loadBid:",serviceConfig->corePort);
+    ConfigManager::exit();
+}
+
 int main(int argc,char** argv){
     try {
-        if(argc>1){
-            url_encode_test(argv[1]);
-        }
+        configmanager_test();
     }catch(std::exception& e){
         DebugMessageWithTime("exception:",e.what());
     }

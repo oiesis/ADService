@@ -95,6 +95,10 @@ namespace adservice {
                 return MTTY_SERVICE_LOGGER;
             }
 
+            virtual std::string usedLoggerConfig(){
+                return CONFIG_LOG;
+            }
+
             void setLogger(const adservice::log::LogPusherPtr& logger){
                 serviceLogger = logger;
             }

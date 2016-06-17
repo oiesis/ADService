@@ -141,15 +141,15 @@ namespace adservice{
             // 初始化 logger
             LogConfig* logConfig = (LogConfig*)configManager.get(CONFIG_LOG);
             serviceLogger = adservice::log::LogPusher::getLogger(MTTY_SERVICE_LOGGER,
+                                                                 CONFIG_LOG,
                                                                logConfig->loggerThreads,
-                                                               !logConfig->logRemote,
-                                                                CONFIG_LOG);
+                                                               !logConfig->logRemote);
             if(serverConfig->runTrack) {
                 LogConfig *trackLogConfig = (LogConfig *) configManager.get(CONFIG_TRACK_LOG);
                 trackLogger = adservice::log::LogPusher::getLogger(MTTY_TRACK_LOGGER,
+                                                                   CONFIG_TRACK_LOG,
                                                                    trackLogConfig->loggerThreads,
-                                                                   !trackLogConfig->logRemote,
-                                                                   CONFIG_TRACK_LOG);
+                                                                   !trackLogConfig->logRemote);
             }
             // 初始化http server
             muduo::net::InetAddress addr(static_cast<uint16_t>(port));

@@ -280,31 +280,43 @@ namespace adservice{
 
 
 
-            inline int getClassValue(rapidjson::Value& value,int def){
+            inline int getClassValue(const rapidjson::Value& value,int def){
                 return value.GetInt();
             }
 
 
-            inline const std::string getClassValue(rapidjson::Value& value,const std::string& def){
+            inline const std::string getClassValue(const rapidjson::Value& value,const std::string& def){
                 return std::string(value.GetString());
             }
 
 
-            inline double getClassValue(rapidjson::Value& value,double def){
+            inline double getClassValue(const rapidjson::Value& value,double def){
                 return value.GetDouble();
             }
 
-            inline bool getClassValue(rapidjson::Value& value,bool def){
+            inline bool getClassValue(const rapidjson::Value& value,bool def){
                 return value.GetBool();
             }
 
-            inline std::string getField(rapidjson::Value& document,const std::string& key,const char* def){
+
+
+            inline std::string getField(const rapidjson::Value& document,const std::string& key,const char* def){
                 std::string defStr(def);
                 return document.HasMember(key.c_str())?getClassValue(document[key.c_str()],defStr):defStr;
             }
 
             template<typename T>
-            inline T getField(rapidjson::Value& document,const std::string& key,const T& def){
+            inline T getField(const rapidjson::Value& document,const std::string& key,const T& def){
+                return document.HasMember(key.c_str())?getClassValue(document[key.c_str()],def):def;
+            }
+
+            inline std::string getField(const rapidjson::Document& document,const std::string& key,const char* def){
+                std::string defStr(def);
+                return document.HasMember(key.c_str())?getClassValue(document[key.c_str()],defStr):defStr;
+            }
+
+            template<typename T>
+            inline T getField(const rapidjson::Document& document,const std::string& key,const T& def){
                 return document.HasMember(key.c_str())?getClassValue(document[key.c_str()],def):def;
             }
 

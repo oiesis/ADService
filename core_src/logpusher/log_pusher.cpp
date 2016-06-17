@@ -145,7 +145,7 @@ namespace adservice{
         };
 
 
-        LogPusherPtr LogPusher::getLogger(const std::string& name,int ifnodefineThreads,bool logLocal,const std::string& logConfigKey){ //fixme: std::map is not thread-safe,risk still holds
+        LogPusherPtr LogPusher::getLogger(const std::string& name,const std::string& logConfigKey,int ifnodefineThreads,bool logLocal){ //fixme: std::map is not thread-safe,risk still holds
             LogPusherMapAccessor acc;
             if(!logMap.find(acc,name)){
                 spinlock_lock(&lock);

@@ -121,6 +121,50 @@
     } ]
   }, {
     "type" : "record",
+    "name" : "TraceInfo",
+    "namespace" : "com.mtty.protocol",
+    "fields" : [ {
+      "name" : "version",
+      "type" : "string"
+    }, {
+      "name" : "deviceType",
+      "type" : "string"
+    }, {
+      "name" : "sourceid",
+      "type" : "string"
+    }, {
+      "name" : "tag1",
+      "type" : "string"
+    }, {
+      "name" : "tag2",
+      "type" : "string"
+    }, {
+      "name" : "tag3",
+      "type" : "string"
+    }, {
+      "name" : "tag4",
+      "type" : "string"
+    }, {
+      "name" : "tag5",
+      "type" : "string"
+    }, {
+      "name" : "tag6",
+      "type" : "string"
+    }, {
+      "name" : "tag7",
+      "type" : "string"
+    }, {
+      "name" : "tag8",
+      "type" : "string"
+    }, {
+      "name" : "tag9",
+      "type" : "string"
+    }, {
+      "name" : "tag10",
+      "type" : "string"
+    } ]
+  }, {
+    "type" : "record",
     "name" : "LogItem",
     "namespace" : "com.mtty.protocol",
     "fields" : [ {
@@ -183,5 +227,8 @@
     }, {
       "name" : "clicky",
       "type" : "int"
+    }, {
+      "name" : "traceInfo",
+      "type" : "TraceInfo"
     } ]
   } ]

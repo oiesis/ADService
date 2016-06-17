@@ -5,7 +5,7 @@ OS:=$(shell uname -s)
 ROOT_PATH:=$(shell pwd)
 THIRD_LIB_PATH=$(ROOT_PATH)/3rdparty/lib
 INCLUDE_PATH:=-I$(ROOT_PATH)/3rdparty/include/ -I$(ROOT_PATH)/common/ -I$(ROOT_PATH)/utility/ -I$(ROOT_PATH)/core_src -I$(ROOT_PATH)/
-LOAD_LIB:= -lpthread -lavrocpp -lonsclient4cpp -lssl -lcrypto -lcryptopp -lprotobuf -levent
+LOAD_LIB:= -lpthread -lavrocpp -lonsclient4cpp -lssl -lcrypto -lcryptopp -lprotobuf -levent -laerospike
 STRICT_CCFLAGS:=-Wall -Wextra -Werror -Wconversion -Wno-unused-parameter -Wold-style-cast -Woverloaded-virtual -Wpointer-arith -Wshadow -Wwrite-strings
 CCFlags:=--std=c++11 -g -march=native -O2 -finline-limit=1000 -DNDEBUG -DUNIT_TEST -DMUDUO_STD_STRING
 CCFlags+= -DUSE_KAFKA_LOG
@@ -14,7 +14,7 @@ CCFlags+= -DUSE_SHORT_CONN
 #CCFlags+= -DUSE_ALIYUN_LOG
 CCFlags+= -DNOUSE_QUERY_EXECUTOR_QUEUE
 #CCFlags+= -DUSE_TBB_HASHMAP
-CCFlags+= -DUSER_DEBUG
+#CCFlags+= -DUSER_DEBUG
 LOAD_LIB+= -ltbb
 LOAD_LIB+= -lrdkafka++ -lz
 
@@ -50,6 +50,7 @@ ALL_OBJS:= cypher.o \
 	elasticsearch.o \
 	platform.o \
 	random.o \
+	aero_spike.o \
 	
 init:
 	mkdir -p $(BUILD_PATH)
@@ -129,7 +130,8 @@ UTILITY_BUILD_SOURCE:= cypher.cpp \
 			url.cpp \
 			escape.cpp \
 			file.cpp \
-			random.cpp
+			random.cpp \
+			aero_spike.cpp
 utility.o:
 	cd $(UTILITY_FOLDER) && \
 	$(CC) $(CCFlags) $(INCLUDE_PATH) -c $(UTILITY_BUILD_SOURCE) && \
@@ -140,6 +142,7 @@ CORE_BUILD_SOURCE:= $(wildcard $(CORE_FOLDER)/*.cpp)
 CORE_BUILD_SOURCE+= $(wildcard $(CORE_FOLDER)/logic/*.cpp)
 CORE_BUILD_SOURCE+= $(wildcard $(CORE_FOLDER)/logpusher/*.cpp)
 CORE_BUILD_SOURCE+= $(wildcard $(CORE_FOLDER)/adselect/*.cpp)
+CORE_BUILD_SOURCE+= $(wildcard $(CORE_FOLDER)/model/*.cpp)
 core.o:elasticsearch.o platform.o
 	cd $(CORE_FOLDER) && \
 	$(CC) -c $(CCFlags) $(INCLUDE_PATH) $(CORE_BUILD_SOURCE) && \

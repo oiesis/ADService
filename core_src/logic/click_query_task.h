@@ -18,6 +18,7 @@ namespace adservice{
             explicit HandleClickQueryTask(const HttpRequest& request,HttpResponse& response):AbstractQueryTask(request,response){
             }
             virtual ~HandleClickQueryTask(){}
+
             protocol::log::LogPhaseType currentPhase(){
                 return protocol::log::LogPhaseType::CLICK;
             }

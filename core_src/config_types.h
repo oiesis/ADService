@@ -27,20 +27,20 @@ namespace adservice{
             int coreHttpThreads;
             int loggingLevel;
             int idleConnectionTimeout;
-            static void* parse(const MessageWraper& mw,void* data){
+            static void* parse(const rapidjson::Document& mw,void* data){
                 data = data==NULL? (new ServerConfig):data;
                 ServerConfig* c = (ServerConfig*)data;
-                c->runClick = mw.getBoolean("load_click", false);
-                c->runShow = mw.getBoolean("load_show",false);
-                c->runBid = mw.getBoolean("load_bid",false);
-                c->runView = mw.getBoolean("load_view",false);
-                c->runTrack = mw.getBoolean("load_track",false);
-                c->corePort = mw.getInt("core_port",80);
-                c->coreHttpThreads = mw.getInt("core_http_threads",24);
-                c->isDaemon = mw.getBoolean("isDaemon",true);
-                c->loggingLevel = mw.getInt("logging_level",4);
-                c->checkIdleConnection = mw.getBoolean("check_idle_connection",false);
-                c->idleConnectionTimeout = mw.getInt("idle_connection_timeout",HTTP_IDLE_MAX_SECOND);
+                c->runClick = getField(mw,"load_click",false);
+                c->runShow = getField(mw,"load_show",false);
+                c->runBid = getField(mw,"load_bid",false);
+                c->runView = getField(mw,"load_view",false);
+                c->runTrack = getField(mw,"load_track",false);
+                c->corePort = getField(mw,"core_port",80);
+                c->coreHttpThreads = getField(mw,"core_http_threads",24);
+                c->isDaemon = getField(mw,"isDaemon",true);
+                c->loggingLevel = getField(mw,"logging_level",4);
+                c->checkIdleConnection = getField(mw,"check_idle_connection",false);
+                c->idleConnectionTimeout = getField(mw,"idle_connection_timeout",HTTP_IDLE_MAX_SECOND);
                 return data;
             }
             static void destruct(void* data){
@@ -52,11 +52,11 @@ namespace adservice{
         struct ClickConfig{
             int clickPort;
             int httpthreads;
-            static void* parse(const MessageWraper& mw,void* data){
+            static void* parse(const rapidjson::Document& mw,void* data){
                 data = data==NULL?(new ClickConfig):data;
                 ClickConfig* c = (ClickConfig*)data;
-                c->clickPort = mw.getInt("click_port",8808);
-                c->httpthreads = mw.getInt("click_http_threads",24);
+                c->clickPort = getField(mw,"click_port",8808);
+                c->httpthreads = getField(mw,"click_http_threads",24);
                 return data;
             }
             static void destruct(void* data){
@@ -76,19 +76,19 @@ namespace adservice{
             std::string aliyunSecretKey;
             int loggerThreads;
             bool logRemote;
-            static void* parse(const MessageWraper& mw,void* data){
+            static void* parse(const rapidjson::Document& mw,void* data){
                 data = data==NULL?(new LogConfig):data;
                 LogConfig* c = (LogConfig*)data;
-                c->loggerThreads = mw.getInt("logger_threads",10);
-                c->logRemote = mw.getBoolean("log_remote",false);
-                c->kafkaBroker = mw.getString("kafka_broker",DEFAULT_KAFKA_BROKER);
-                c->kafkaTopic = mw.getString("kafka_topic",DEFAULT_KAFKA_TOPIC);
-                c->kafkaKey = mw.getString("kafka_key",DEFAULT_KAFKA_KEY);
-                c->kafkaMQMaxSize = mw.getString("kafka_mqmaxsize",DEFAULT_KAFKA_MQSIZE_STR);
-                c->aliyunProducerId = mw.getString("aliyun_producer_id",DEFAULT_ALIYUN_PRODUCER_ID);
-                c->aliyunTopic = mw.getString("aliyun_topic",DEFAULT_ALIYUN_TOPIC);
-                c->aliyunAccessKey = mw.getString("aliyun_access_key",DEFAULT_ALIYUN_ACCESS_KEY);
-                c->aliyunSecretKey = mw.getString("aliyun_secret_key",DEFAULT_ALIYUN_SECRET_KEY);
+                c->loggerThreads = getField(mw,"logger_threads",10);
+                c->logRemote = getField(mw,"log_remote",false);
+                c->kafkaBroker = getField(mw,"kafka_broker",DEFAULT_KAFKA_BROKER);
+                c->kafkaTopic = getField(mw,"kafka_topic",DEFAULT_KAFKA_TOPIC);
+                c->kafkaKey = getField(mw,"kafka_key",DEFAULT_KAFKA_KEY);
+                c->kafkaMQMaxSize = getField(mw,"kafka_mqmaxsize",DEFAULT_KAFKA_MQSIZE_STR);
+                c->aliyunProducerId = getField(mw,"aliyun_producer_id",DEFAULT_ALIYUN_PRODUCER_ID);
+                c->aliyunTopic = getField(mw,"aliyun_topic",DEFAULT_ALIYUN_TOPIC);
+                c->aliyunAccessKey = getField(mw,"aliyun_access_key",DEFAULT_ALIYUN_ACCESS_KEY);
+                c->aliyunSecretKey = getField(mw,"aliyun_secret_key",DEFAULT_ALIYUN_SECRET_KEY);
                 return data;
             }
             static void destruct(void* data){
@@ -100,12 +100,12 @@ namespace adservice{
             std::string entryNode;
             int entryPort;
             std::string authorization;
-            static void* parse(const MessageWraper& mw,void* data){
+            static void* parse(const rapidjson::Document& mw,void* data){
                 data = data==NULL? (new ADSelectConfig):data;
                 ADSelectConfig* c = (ADSelectConfig*)data;
-                c->entryNode = mw.getString("entry_node",DEFAULT_ADSELECT_NODE);
-                c->entryPort = mw.getInt("entry_port",DEFAULT_ADSELECT_PORT);
-                c->authorization = mw.getString("auth",DEFAULT_AUTHORIZATION);
+                c->entryNode = getField(mw,"entry_node",DEFAULT_ADSELECT_NODE);
+                c->entryPort = getField(mw,"entry_port",DEFAULT_ADSELECT_PORT);
+                c->authorization = getField(mw,"auth",DEFAULT_AUTHORIZATION);
                 return data;
             }
             static void destruct(void* data){
@@ -118,17 +118,56 @@ namespace adservice{
             int verboseVersion;
             int fd;
             std::string debugIp;
-            static void* parse(const MessageWraper& mw,void* data){
+            static void* parse(const rapidjson::Document& mw,void* data){
                 data = data==NULL? (new DebugConfig):data;
                 DebugConfig* c = (DebugConfig*)data;
-                c->dynamicLogLevel = mw.getInt("dynamic_log_level",3);
-                c->verboseVersion = mw.getInt("verbose_version",0);
-                c->fd = mw.getInt("debug_fd",-1);
-                c->debugIp = mw.getString("debug_ip","59.108.49.35");
+                c->dynamicLogLevel = getField(mw,"dynamic_log_level",3);
+                c->verboseVersion = getField(mw,"verbose_version",0);
+                c->fd = getField(mw,"debug_fd",-1);
+                c->debugIp = getField(mw,"debug_ip","59.108.49.35");
                 return data;
             }
             static void destruct(void* data){
                 delete ((DebugConfig*)data);
+            }
+        };
+
+        struct AerospikeConfig {
+            struct Connection {
+                std::string host;
+                int port;
+            };
+
+            std::vector<Connection> connections;
+            std::string nameSpace;
+
+            static void * parse(const rapidjson::Document & mw, void * data)
+            {
+                data = data == nullptr ? (new AerospikeConfig) : data;
+                auto * c = (AerospikeConfig *)data;
+
+                c->nameSpace = getField(mw, "nameSpace", "mt");
+
+                auto connIt = mw.FindMember("connections");
+                if (connIt != mw.MemberEnd()) {
+                    if (connIt->value.IsArray()) {
+                        for (auto it = connIt->value.Begin(); it != connIt->value.End(); ++it) {
+                            auto hostIt = it->FindMember("host");
+                            auto portIt = it->FindMember("port");
+                            if (hostIt != it->MemberEnd() && hostIt->value.IsString() &&
+                                portIt != it->MemberEnd() && portIt->value.IsNumber() && portIt->value.IsInt()) {
+                                c->connections.emplace_back(Connection { .host = hostIt->value.GetString(), .port = portIt->value.GetInt() });
+                            }
+                        }
+                    }
+                }
+
+                return data;
+            }
+
+            static void destruct(void * data)
+            {
+                delete ((AerospikeConfig *)data);
             }
         };
     }

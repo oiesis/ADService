@@ -32,7 +32,7 @@ namespace adservice{
 
         class LogPusher{
         public:
-            static LogPusherPtr getLogger(const std::string& name,int ifnodefineThreads =10,bool logLocal = false,const std::string& logConfigKey = CONFIG_LOG);
+            static LogPusherPtr getLogger(const std::string& name,const std::string& logConfigKey = CONFIG_LOG,int ifnodefineThreads =10,bool logLocal = false);
 
             static void removeLogger(const std::string& name);
 

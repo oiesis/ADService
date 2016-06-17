@@ -83,4 +83,34 @@ record UserInfo{
     int interest;
 }
 
+@namespace("com.mtty.protocol")
+record TraceInfo{
+    // 版本号
+    string version;
+    // 1 PC端  2 移动端
+    string deviceType;
+    // c模块生成
+    string sourceid;
+    // 用户ID/订单ID
+    string tag1;
+    // 用户名/商品名
+    string tag2;
+    // 商品ID
+    string tag3;
+    // 商品价格
+    string tag4;
+    // 商品数量
+    string tag5;
+    // 订单总金额
+    string tag6;
+    // 商品图片地址
+    string tag7;
+    // 商品URL地址
+    string tag8;
+    // 
+    string tag9;
+    // 
+    string tag10;
+}
+
 }

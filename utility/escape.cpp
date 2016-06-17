@@ -22,7 +22,7 @@ namespace adservice {
 
             int numberDecode(const uint8_t *&buf) {
                 int result = 0;
-                int j = 0, i;
+                int j = 0, i=0;
                 while (buf[i] > 0x7F)i++;
                 j = i;
                 while (i > 0) {

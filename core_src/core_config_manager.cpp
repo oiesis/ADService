@@ -51,7 +51,8 @@ namespace adservice{
                 }
                 time_t lastModified = filestat.st_mtime;
                 if(lastModified>version){ // 修改时间比当前版本更晚,更新
-                    MessageWraper mw;
+//                    MessageWraper mw;
+                    rapidjson::Document mw;
                     bool bSuccess = parseJsonFile(filePath.c_str(),mw);
                     if(!bSuccess){
                         LOG_ERROR<<"ConfigManager:parse config file error,"<<filePath;
@@ -91,6 +92,7 @@ namespace adservice{
             configMap[CONFIG_TRACK_LOG] =   MAKE_CONFIG(CONFIG_TRACK_LOG_PATH,LogConfig);
             configMap[CONFIG_ADSELECT]  =   MAKE_CONFIG(CONFIG_ADSELECT_PATH,ADSelectConfig);
             configMap[CONFIG_DEBUG]     =   MAKE_CONFIG(CONFIG_DEBUG_PATH,DebugConfig);
+            configMap[CONFIG_AEROSPIKE] =   MAKE_CONFIG(CONFIG_AEROSPIKE_PATH, AerospikeConfig);
             // 加载注册配置
             load();
             // 开启配置检测线程
@@ -110,7 +112,8 @@ namespace adservice{
             if(configValue.data==NULL){
                 //tofix:concurrent access
                 const std::string& filePath = configValue.filePath;
-                MessageWraper mw;
+//                MessageWraper mw;
+                rapidjson::Document mw;
                 bool bSuccess = parseJsonFile(filePath.c_str(),mw);
                 if(!bSuccess){
                     throw ConfigException(std::string("ConfigManager:parse config file ")+filePath);

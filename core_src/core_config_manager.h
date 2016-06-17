@@ -18,7 +18,7 @@ namespace adservice{
 
         using namespace adservice::utility::json;
 
-        typedef std::function<void* (const MessageWraper&,void*)> ConfigObjectParser;
+        typedef std::function<void* (const rapidjson::Document&,void*)> ConfigObjectParser;
         typedef std::function<void (void*,void*)> ConfigChangeCallback;
         typedef std::function<void (void*)> ConfigObjectDestructor;
 

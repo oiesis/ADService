@@ -47,6 +47,9 @@
                                             }
                                         }}
                                      }}
+                                ],
+                                "must_not":[
+                                    {"term":{"n_adplace":"%s"}}
                                 ]
                             }
                         },
@@ -76,6 +79,9 @@
                                                                 {"term": {"solutionstatus":{"value":20}}},
                                                                 {"range": {"starttime": {"lte": "now"}}},
                                                                 {"range": {"endtime":{"gte":"now"}}}
+                                                            ],
+                                                            "must_not":[
+                                                                {"term":{"n_adplace":"%s"}}
                                                             ]
                                                         }
                                                    }

@@ -251,7 +251,8 @@ namespace adservice{
                 serviceLogger->push(logString);
             }else {
                 std::string loggerName = usedLoggerName();
-                adservice::log::LogPusherPtr logPusher = adservice::log::LogPusher::getLogger(loggerName);
+                std::string logConfigKey = usedLoggerConfig();
+                adservice::log::LogPusherPtr logPusher = adservice::log::LogPusher::getLogger(loggerName,logConfigKey);
                 if(logPusher.use_count()>0)
                     logPusher->push(logString);
             }

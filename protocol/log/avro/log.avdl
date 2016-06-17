@@ -42,6 +42,8 @@ record LogItem {
 	int clickx;
 	// 点击坐标y,如果前端没有传,为0
 	int clicky;
+    // trace模块记录的信息
+    TraceInfo traceInfo;
 }
 
 }

@@ -58,6 +58,8 @@
 #define CONFIG_ADSELECT                             "ADSelectConfig"
 // DEBUG配置
 #define CONFIG_DEBUG                                "DebugConfig"
+//  aerospike配置
+#define CONFIG_AEROSPIKE                            "AerospikeConfig"
 
 /**配置文件路径常量**/
 // 服务配置文件
@@ -72,6 +74,8 @@
 #define CONFIG_ADSELECT_PATH                        "conf/adselect.conf"
 // DEBUG相关配置文件
 #define CONFIG_DEBUG_PATH                           "conf/debug.conf"
+//  aerospike配置文件
+#define CONFIG_AEROSPIKE_PATH                       "conf/aerospike.conf"
 
 /**核心逻辑模块常量**/
 // 点击逻辑服务屏蔽字
@@ -145,6 +149,8 @@
 #define OF_DSP_MOBILE_SHOW                          "2"
 // 移动流量日志计费
 #define OF_DSP_MOBILE_LOG                           "3"
+// 移动SSP,参见http://redmine.mtty.com/redmine/issues/144
+#define OF_SSP_MOBILE                               "4"
 
 /** HTML模版路径 */
 // 曝光模块返回ADX html模板

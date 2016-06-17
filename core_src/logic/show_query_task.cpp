@@ -75,13 +75,14 @@ namespace adservice{
          * of=1 SSP
          * of=2 移动展示
          * of=3 移动日志
+         * of=4 移动SSP
          */
         bool isShowForSSP(ParamMap& paramMap){
             ParamMap::const_iterator iter = paramMap.find(URL_IMP_OF);
             if(iter==paramMap.end()){
                 return false;
             }else{
-                return iter->second == OF_SSP;
+                return iter->second == OF_SSP || iter->second == OF_SSP_MOBILE;
             }
         }
 
@@ -187,10 +188,11 @@ namespace adservice{
             mtAdInfo.AddMember("height",MakeStringValue(height),allocator);
             int advId = solution["advid"].GetInt();
             int bannerId = banner["bid"].GetInt();
-            //替换点击宏
-            rapidjson::Value& mtls = mtAdInfo["mtls"];
-            std::string clickMacro = mtls[0]["p5"].GetString();
-            if(clickMacro == "{{click}}") {
+            //需求http://redmine.mtty.com/redmine/issues/144
+            if(paramMap[URL_IMP_OF] == OF_SSP_MOBILE) {
+                //替换点击宏
+                rapidjson::Value& mtls = mtAdInfo["mtls"];
+                std::string clickMacro = mtls[0]["p5"].GetString();
                 char clickMacroBuffer[2048];
                 char landingPageBuffer[1024];
                 std::string landingUrl = mtls[0]["p1"].GetString();

@@ -162,6 +162,7 @@ namespace adservice{
                     bindCondition.width,
                     bindCondition.height,
                     supportBanner,
+                    pid,
                     bindCondition.width,
                     bindCondition.height,
                     supportBanner,
@@ -171,7 +172,8 @@ namespace adservice{
                     bindCondition.displayNumber,
                     bindCondition.flowType,
                     bindCondition.dHour.data(),
-                    bindCondition.dGeo,dCountryGeo
+                    bindCondition.dGeo,dCountryGeo,
+                    pid
             );
         }
 

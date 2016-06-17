@@ -178,7 +178,7 @@ namespace adservice{
         }
 
         /**
-         *
+         * 获取hour比例
          */
         double getHourPercent(const rapidjson::Value& solution,std::string& dHour){
             if(dHour.empty()){
