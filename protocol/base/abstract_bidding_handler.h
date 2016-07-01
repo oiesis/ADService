@@ -67,7 +67,7 @@ namespace protocol{
             /**
              * 产生htmlsnippet
              */
-            virtual std::string generateHtmlSnippet(const std::string &bid, int width, int height, char *extShowBuf,
+            virtual std::string generateHtmlSnippet(const std::string &bid, int width, int height, const char *extShowBuf,
                                                     const char *cookieMappingUrl = "");
 
             virtual std::string generateScript(const std::string &bid,int width,int height,const char* scriptUrl,const char* clickMacro,const char* extParam);
@@ -80,7 +80,9 @@ namespace protocol{
                 return (isBidAccepted = true);
             }
         protected:
-            void httpsnippet(const std::string& bid,char* showParamBuf,int showBufSize,char* clickParamBuf,int clickBufSize);
+            void getShowPara(const std::string& bid,char* showParamBuf,int showBufSize);
+            void getClickPara(const std::string& bid,char* clickParamBuf,int clickBufSize,const std::string& ref,const std::string& landingurl);
+            int extractRealValue(const std::string& input,int adx);
         protected:
             //最近一次匹配的结果
             bool isBidAccepted;

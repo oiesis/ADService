@@ -102,6 +102,8 @@ namespace adservice{
             return result["hits"]["hits"][0]["_source"];
         }
 
+#define ES_SIZE_FILTER "{\"bool\": {\"must\": [{\"term\":{\"width\":%d}},{\"term\":{\"height\":%d}}]}}"
+
 
         rapidjson::Value& AdSelectManager::queryAdInfoByPid(int seqId,const std::string& pid,rapidjson::Document& result,bool isAdxPid){
             AdSelectCondition condition;
@@ -121,11 +123,22 @@ namespace adservice{
             }else{
                 return queryAdInfoByMttyPid(seqId,condition,result);
             }
-
         }
 
         int countryGeo(int geo){
             return geo - (geo%AREACODE_MARGIN);
+        }
+
+        int frontEndFlowType2BackEndType(int flowType){
+            switch(flowType){
+                case FLOWTYPE_FRONTEND_PC:
+                    return SOLUTION_FLOWTYPE_PC;
+                case FLOWTYPE_FRONTEND_MOBILE:
+                case FLOWTYPE_FRONTEND_INAPP:
+                    return SOLUTION_FLOWTYPE_MOBILE;
+                default:
+                    return SOLUTION_FLOWTYPE_ALL;
+            }
         }
 
         /**
@@ -143,7 +156,9 @@ namespace adservice{
             bindCondition.mediaType = adplaceInfo["mediatype"].GetInt();
             bindCondition.adplaceType = adplaceInfo["adplacetype"].GetInt();
             bindCondition.displayNumber = adplaceInfo["displaynumber"].GetInt();
-            bindCondition.flowType = adplaceInfo["flowtype"].GetInt();
+            if(bindCondition.flowType==SOLUTION_FLOWTYPE_ALL){
+                bindCondition.flowType = frontEndFlowType2BackEndType(adplaceInfo["flowtype"].GetInt());
+            }
             bindCondition.width = adplaceInfo["width"].GetInt();
             bindCondition.height = adplaceInfo["height"].GetInt();
             //时间定点过滤
@@ -159,10 +174,13 @@ namespace adservice{
                     bindCondition.flowType,
                     bindCondition.dHour.data(),
                     bindCondition.dGeo,dCountryGeo,
+                    bindCondition.mobileDevice,
+                    bindCondition.pcOS,
                     bindCondition.width,
                     bindCondition.height,
                     supportBanner,
                     pid,
+                    bindCondition.dGeo,
                     bindCondition.width,
                     bindCondition.height,
                     supportBanner,
@@ -173,8 +191,123 @@ namespace adservice{
                     bindCondition.flowType,
                     bindCondition.dHour.data(),
                     bindCondition.dGeo,dCountryGeo,
-                    pid
+                    bindCondition.mobileDevice,
+                    bindCondition.pcOS,
+                    pid,
+                    bindCondition.dGeo
             );
+        }
+
+        //一般是通投条件,目前用于广点通
+        void bindSelectConditionMultiSize(AdSelectCondition& bindCondition,const char* cTemplate,INOUT char* output){
+            PreSetAdplaceInfo& adplaceInfo = *bindCondition.pAdplaceInfo;
+            //创意支持类型过滤
+            const char* supportBanner = DEFAULT_SUPPORT_BANNERTYPE;
+            char multiSizeBuffer[1024]="\0";
+            vector<std::tuple<int,int>>& sizeArray = adplaceInfo.sizeArray;
+            int len = 0;
+            for(auto& iter : sizeArray){
+                int l = snprintf(multiSizeBuffer+len,sizeof(multiSizeBuffer)-len,ES_SIZE_FILTER,std::get<0>(iter),std::get<1>(iter));
+                len += l;
+                multiSizeBuffer[len++]=',';
+            }
+            multiSizeBuffer[len-1]='\0';
+            //时间定点过滤
+            std::string dHour = adSelectTimeCodeUtc();
+            bindCondition.dHour = dHour;
+            //国家通投编码
+            int dCountryGeo = countryGeo(bindCondition.dGeo);
+            sprintf(output,cTemplate,
+                    bindCondition.flowType,
+                    bindCondition.dHour.data(),
+                    bindCondition.dGeo,dCountryGeo,
+                    bindCondition.mobileDevice,
+                    bindCondition.pcOS,
+                    supportBanner,
+                    multiSizeBuffer,
+                    bindCondition.dGeo,
+                    supportBanner,
+                    multiSizeBuffer,
+                    bindCondition.flowType,
+                    bindCondition.dHour.data(),
+                    bindCondition.dGeo,dCountryGeo,
+                    bindCondition.mobileDevice,
+                    bindCondition.pcOS,
+                    bindCondition.dGeo
+            );
+        }
+
+        rapidjson::Value& AdSelectManager::queryAdInfoByMttyPidNoCache(int seqId,AdSelectCondition& selectCondition,rapidjson::Document& result){
+            try {
+                const std::string &mttyPid = selectCondition.mttyPid;
+                ElasticSearch &agent = getAvailableConnection(seqId);
+                char buffer[LARGE_BUFFER_SIZE];
+                int cnt;
+                if(selectCondition.pAdplaceInfo==NULL) {
+                    snprintf(buffer, LARGE_BUFFER_SIZE, this->dsl_query_adplace_pid, mttyPid.c_str());
+                    rapidjson::Document adplace;
+                    cnt = agent.search(ES_INDEX_SOLUTIONS, ES_DOCUMENT_ADPLACE, ES_FILTER_FORMAT, buffer,
+                                       adplace);
+                    if (cnt == 0)
+                        return result;
+                    rapidjson::Value &adplaceInfo = adplace["hits"]["hits"][0]["_source"];
+                    //过滤条件绑定
+                    bindSelectCondition(adplaceInfo, selectCondition, this->dsl_query_adinfo_condition, buffer,
+                                        mttyPid.c_str());
+                    cnt = agent.search(ES_INDEX_SOLUTIONS, ES_DOCUMENT_SOLBANADPLACE, ES_FILTER_FORMAT2, buffer,
+                                       result);
+                    if (cnt < 2)
+                        return result;
+                    result.AddMember("adplace", adplaceInfo, result.GetAllocator());
+                    appendMtStatus(result);
+                }else{
+                    bindSelectConditionMultiSize(selectCondition,this->dsl_query_adinfo_condition_multisize,buffer);
+                    cnt = agent.search(ES_INDEX_SOLUTIONS,ES_DOCUMENT_SOLBANADPLACE,ES_FILTER_FORMAT2,buffer,result);
+                    if(cnt<2){
+                        return result;
+                    }
+                }
+            }catch(std::exception& e){
+                DebugMessageWithTime("in queryAdInfoByMttyPidNoCache exception occured:",e.what());
+            }
+            return result["hits"]["hits"];
+        }
+
+
+        rapidjson::Value& AdSelectManager::queryAdInfoByAdxPidNoCache(int seqId,AdSelectCondition& selectCondition,rapidjson::Document& result){
+            try {
+                const std::string &adxPid = selectCondition.adxpid;
+                ElasticSearch &agent = getAvailableConnection(seqId);
+                char buffer[LARGE_BUFFER_SIZE];
+                int cnt;
+                if(selectCondition.pAdplaceInfo==NULL) {
+                    snprintf(buffer, LARGE_BUFFER_SIZE, this->dsl_query_adplace_adxpid, adxPid.c_str());
+                    rapidjson::Document adplace;
+                    cnt = agent.search(ES_INDEX_SOLUTIONS, ES_DOCUMENT_ADPLACE, ES_FILTER_FORMAT, buffer,
+                                           adplace);
+                    if (cnt == 0)
+                        return result;
+                    rapidjson::Value &adplaceInfo = adplace["hits"]["hits"][0]["_source"];
+                    //过滤条件绑定
+                    bindSelectCondition(adplaceInfo, selectCondition, this->dsl_query_adinfo_condition, buffer,
+                                        adxPid.c_str());
+                    cnt = agent.search(ES_INDEX_SOLUTIONS, ES_DOCUMENT_SOLBANADPLACE, ES_FILTER_FORMAT2, buffer,
+                                       result);
+                    if (cnt < 2)
+                        return result;
+                    result.AddMember("adplace", adplaceInfo, result.GetAllocator());
+                    appendMtStatus(result);
+                }else{
+                    bindSelectConditionMultiSize(selectCondition,this->dsl_query_adinfo_condition_multisize,buffer);
+                    cnt = agent.search(ES_INDEX_SOLUTIONS,ES_DOCUMENT_SOLBANADPLACE,ES_FILTER_FORMAT2,buffer,result);
+                    if(cnt<2){
+                        return result;
+                    }
+                }
+            }catch(std::exception& e){
+                DebugMessageWithTime("in queryAdInfoByAdxPidNoCache exception occured:,",e.what());
+            }
+            return result["hits"]["hits"];
         }
 
         rapidjson::Value& AdSelectManager::queryAdInfoByMttyPid(int seqId,AdSelectCondition& selectCondition,rapidjson::Document& result){
@@ -182,24 +315,43 @@ namespace adservice{
                 const std::string& mttyPid = selectCondition.mttyPid;
                 ElasticSearch& agent = getAvailableConnection(seqId);
                 char key[DEFAULT_KEY_LENGTH];
-                snprintf(key,DEFAULT_KEY_LENGTH,"adinfo_pid_%s_%s",mttyPid.c_str(),selectCondition.areaCode.data());
+                snprintf(key,DEFAULT_KEY_LENGTH,"adinfo_pid_%s_%d_%d_%d",
+                         mttyPid.c_str(),
+                         selectCondition.dGeo,
+                         selectCondition.mobileDevice,
+                         selectCondition.pcOS);
                 CacheResult* cacheResult = cacheManager.get(key,CACHE_LEVEL_3_SIZE,[&mttyPid,this,&agent,&result,&selectCondition](CacheResult& newCache){
                     try {
+                        int cnt;
                         char buffer[LARGE_BUFFER_SIZE];
-                        snprintf(buffer,LARGE_BUFFER_SIZE,this->dsl_query_adplace_pid, mttyPid.c_str());
-                        rapidjson::Document adplace;
-                        int cnt = agent.search(ES_INDEX_SOLUTIONS, ES_DOCUMENT_ADPLACE, ES_FILTER_FORMAT, buffer,
-                                               adplace);
-                        if (cnt == 0)
-                            return false;
-                        rapidjson::Value& adplaceInfo = adplace["hits"]["hits"][0]["_source"];
-                        //过滤条件绑定
-                        bindSelectCondition(adplaceInfo,selectCondition,this->dsl_query_adinfo_condition,buffer,mttyPid.c_str());
-                        cnt = agent.search(ES_INDEX_SOLUTIONS,ES_DOCUMENT_SOLBANADPLACE,ES_FILTER_FORMAT2,buffer,result);
-                        if(cnt<2)
-                            return false;
-                        result.AddMember("adplace",adplaceInfo,result.GetAllocator());
-                        appendMtStatus(result);
+                        if(selectCondition.pAdplaceInfo==NULL) { //没有预设广告位信息
+                            snprintf(buffer, LARGE_BUFFER_SIZE, this->dsl_query_adplace_pid, mttyPid.c_str(),
+                                     selectCondition.adxid);
+                            rapidjson::Document adplace;
+                            cnt = agent.search(ES_INDEX_SOLUTIONS, ES_DOCUMENT_ADPLACE, ES_FILTER_FORMAT, buffer,
+                                                   adplace);
+                            if (cnt == 0) {
+                                DebugMessageWithTime("adplace not found,mttyPid:", mttyPid);
+                                return false;
+                            }
+                            rapidjson::Value &adplaceInfo = adplace["hits"]["hits"][0]["_source"];
+                            //过滤条件绑定
+                            bindSelectCondition(adplaceInfo, selectCondition, this->dsl_query_adinfo_condition, buffer,
+                                                mttyPid.c_str());
+                            cnt = agent.search(ES_INDEX_SOLUTIONS,ES_DOCUMENT_SOLBANADPLACE,ES_FILTER_FORMAT2,buffer,result);
+                            if(cnt<2) {
+                                DebugMessageWithTime("solution or banner not found,mttyPid:",mttyPid,",selectCondition:",selectCondition.toString());
+                                return false;
+                            }
+                            result.AddMember("adplace",adplaceInfo,result.GetAllocator());
+                            appendMtStatus(result);
+                        }else{
+                            bindSelectConditionMultiSize(selectCondition,this->dsl_query_adinfo_condition_multisize,buffer);
+                            cnt = agent.search(ES_INDEX_SOLUTIONS,ES_DOCUMENT_SOLBANADPLACE,ES_FILTER_FORMAT2,buffer,result);
+                            if(cnt<2){
+                                return false;
+                            }
+                        }
                         std::string jsonResult = toJson(result);
                         if(jsonResult.length()>=newCache.size) {
                             DebugMessage("in queryAdInfoByPid result too large,pid:", mttyPid,",result size:",jsonResult.length());
@@ -232,25 +384,46 @@ namespace adservice{
                 const std::string& adxPid = selectCondition.adxpid;
                 ElasticSearch& agent = getAvailableConnection(seqId);
                 char key[DEFAULT_KEY_LENGTH];
-                snprintf(key,DEFAULT_KEY_LENGTH,"adinfo_adxpid_%s_%s",adxPid.c_str(),selectCondition.areaCode.data());
+                snprintf(key,DEFAULT_KEY_LENGTH,"adinfo_adxpid_%s_%d_%d_%d",
+                         adxPid.c_str(),
+                         selectCondition.dGeo,
+                         selectCondition.mobileDevice,
+                         selectCondition.pcOS);
                 CacheResult* cacheResult = cacheManager.get(key,CACHE_LEVEL_3_SIZE,[&adxPid,this,&agent,&result,&selectCondition](CacheResult& newCache){
                    try {
+                       int cnt;
                        char buffer[LARGE_BUFFER_SIZE];
-                       snprintf(buffer,LARGE_BUFFER_SIZE,this->dsl_query_adplace_adxpid, adxPid.c_str());
-                       rapidjson::Document adplace;
-                       int cnt = agent.search(ES_INDEX_SOLUTIONS, ES_DOCUMENT_ADPLACE, ES_FILTER_FORMAT, buffer,
+                       if(selectCondition.pAdplaceInfo==NULL) {
+                           snprintf(buffer, LARGE_BUFFER_SIZE, this->dsl_query_adplace_adxpid, adxPid.c_str(),
+                                    selectCondition.adxid);
+                           rapidjson::Document adplace;
+                           cnt = agent.search(ES_INDEX_SOLUTIONS, ES_DOCUMENT_ADPLACE, ES_FILTER_FORMAT, buffer,
                                               adplace);
-                       if (cnt == 0)
-                           return false;
-                       rapidjson::Value& adplaceInfo = adplace["hits"]["hits"][0]["_source"];
-                       std::string pid = to_string(adplaceInfo["pid"].GetInt());
-                       //过滤条件绑定
-                       bindSelectCondition(adplaceInfo,selectCondition,this->dsl_query_adinfo_condition,buffer,pid.c_str());
-                       cnt = agent.search(ES_INDEX_SOLUTIONS,ES_DOCUMENT_SOLBANADPLACE,ES_FILTER_FORMAT2,buffer,result);
-                       if(cnt<2)
-                           return false;
-                       result.AddMember("adplace",adplaceInfo,result.GetAllocator());
-                       appendMtStatus(result);
+                           if (cnt == 0) {
+                               DebugMessageWithTime("adplace not found,adxPid:", adxPid);
+                               return false;
+                           }
+                           rapidjson::Value &adplaceInfo = adplace["hits"]["hits"][0]["_source"];
+                           std::string pid = to_string(adplaceInfo["pid"].GetInt());
+                           //过滤条件绑定
+                           bindSelectCondition(adplaceInfo, selectCondition, this->dsl_query_adinfo_condition, buffer,
+                                               pid.c_str());
+                           cnt = agent.search(ES_INDEX_SOLUTIONS, ES_DOCUMENT_SOLBANADPLACE, ES_FILTER_FORMAT2, buffer,
+                                              result);
+                           if (cnt < 2) {
+                               DebugMessageWithTime("solution or banner not found,adxPid:", adxPid, ",selectCondition:",
+                                                    selectCondition.toString());
+                               return false;
+                           }
+                           result.AddMember("adplace", adplaceInfo, result.GetAllocator());
+                           appendMtStatus(result);
+                       }else{
+                           bindSelectConditionMultiSize(selectCondition,this->dsl_query_adinfo_condition_multisize,buffer);
+                           cnt = agent.search(ES_INDEX_SOLUTIONS,ES_DOCUMENT_SOLBANADPLACE,ES_FILTER_FORMAT2,buffer,result);
+                           if(cnt<2){
+                               return false;
+                           }
+                       }
                        std::string jsonResult = toJson(result);
                        if(jsonResult.length()>=newCache.size) {
                            DebugMessage("in queryAdInfoByAdxPid result too large,adxpid:", adxPid,",result size:",jsonResult.length());

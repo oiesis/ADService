@@ -1,18 +1,17 @@
 //
-// Created by guoze.lin on 16/5/3.
+// Created by guoze.lin on 16/6/27.
 //
 
-#ifndef ADCORE_TANX_BIDDING_HANDLER_H
-#define ADCORE_TANX_BIDDING_HANDLER_H
+#ifndef ADCORE_NETEASE_BIDDING_HANDLER_H
+#define ADCORE_NETEASE_BIDDING_HANDLER_H
 
 #include "protocol/base/abstract_bidding_handler.h"
-#include "protocol/tanx/tanx_bidding.pb.h"
+
 
 namespace protocol{
     namespace bidding{
 
-
-        class TanxBiddingHandler : public AbstractBiddingHandler {
+        class NetEaseBiddingHandler : AbstractBiddingHandler{
         public:
             /**
              * 从Adx Bid Post请求数据中获取具体的请求信息
@@ -44,23 +43,13 @@ namespace protocol{
              * 不接受ADX的流量请求
              */
             void reject(INOUT HttpResponse& response);
-
-            std::string generateHtmlSnippet(const std::string &bid, int width, int height,const char *extShowBuf,
-                                                    const char *cookieMappingUrl = "");
-
         private:
-            /**
-             * 产生tanx的html snippet
-             */
-            std::string tanxHtmlSnippet();
 
-        private:
-            protocol::Tanx::BidRequest bidRequest;
-            protocol::Tanx::BidResponse bidResponse;
-            char feedbackUrl[2048];
+            rapidjson::Document bidRequest;
+            rapidjson::Document bidResponse;
         };
 
     }
 }
 
-#endif //ADCORE_TANX_BIDDING_HANDLER_H
+#endif //ADCORE_NETEASE_BIDDING_HANDLER_H

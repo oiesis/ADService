@@ -118,13 +118,17 @@ namespace adservice{
             int verboseVersion;
             int fd;
             std::string debugIp;
+            std::string debugUseragent;
+            std::string debugCookies;
             static void* parse(const rapidjson::Document& mw,void* data){
                 data = data==NULL? (new DebugConfig):data;
                 DebugConfig* c = (DebugConfig*)data;
                 c->dynamicLogLevel = getField(mw,"dynamic_log_level",3);
                 c->verboseVersion = getField(mw,"verbose_version",0);
                 c->fd = getField(mw,"debug_fd",-1);
-                c->debugIp = getField(mw,"debug_ip","59.108.49.35");
+                c->debugIp = getField(mw,"debug_ip","");
+                c->debugUseragent = getField(mw,"debug_ua","");
+                c->debugCookies = getField(mw,"debug_cookies","");
                 return data;
             }
             static void destruct(void* data){

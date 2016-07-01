@@ -169,10 +169,20 @@
 #define ADX_YOUKU                                   5
 // 百度
 #define ADX_BAIDU                                   6
+// 搜狐PC
+#define ADX_SOHU_PC                                 8
 // 腾讯广点通
 #define ADX_TENCENT_GDT                             13
+// 光阴网络
+#define ADX_GUANGYIN                                14
 // 淘宝移动
 #define ADX_TANX_MOBILE                             15
+// 搜狐移动
+#define ADX_SOHU_MOBILE                             19
+// 网易新闻移动
+#define ADX_NETEASE_MOBILE                          20
+// mtty ssp
+#define ADX_SSP                                     99
 
 // 淘宝竞价请求模块名
 #define BID_QUERY_PATH_TANX                         "/tanxbid"
@@ -225,6 +235,8 @@
 #define  ES_QUERY_ADPLACE_BY_ADXPID                 "elasticsearch/dsl/query_adplace_by_adxpid.dsl"
 // ES中按根据广告位条件查询广告信息
 #define  ES_QUERY_ADINFO_BY_CONDITION               "elasticsearch/dsl/query_adinfo_by_condition.dsl"
+// ES中按根据广告位条件查询广告信息,其中条件包含多个尺寸
+#define  ES_QUERY_ADINFO_BY_CONDITION_MULTISIZE     "elasticsearch/dsl/query_adinfo_by_condition_multisize.dsl"
 
 // ES中Banner表的json字段名
 #define  ES_BANNER_FILED_JSON                       "json"
@@ -239,7 +251,7 @@
 #define PRICETYPE_RRTB_CPC                          6
 
 // ADSELECT CACHE存活秒数
-#define  ADSELECT_CACHE_EXPIRE_TIME                 30
+#define  ADSELECT_CACHE_EXPIRE_TIME                 10
 
 // URL多长被认为是长URL
 #define  URL_LONG_REQUEST_THRESH                    1024
@@ -250,6 +262,123 @@
 // 地域编码文件
 #define AREA_CODE_FILE                              "city_area_code.txt"
 // 地域编码地位
-#define AREACODE_MARGIN    1000000
+#define AREACODE_MARGIN                             1000000
+
+// 投放单投放成功率的最大权重
+#define SOLUTION_SUCCESS_RATE_BASE                  10000
+
+//http://redmine.mtty.com/redmine/attachments/download/18/mtWeb定向方式编码表.xlsx
+// 投放单浏览器定向编码表(仅PC)
+// 不限浏览器类型
+#define SOLUTION_BROWSER_ALL                        0
+// IE
+#define SOLUTION_BROWSER_IE                         1
+// EDGE
+#define SOLUTION_BROWSER_EDGE                       2
+// 360浏览器
+#define SOLUTION_BROWSER_360                        3
+// Chrome
+#define SOLUTION_BROWSER_CHROME                     4
+// firefox
+#define SOLUTION_BROWSER_FIREFOX                    5
+// Safari
+#define SOLUTION_BROWSER_SAFARI                     6
+// 遨游
+#define SOLUTION_BROWSER_AOYOU                      7
+// QQ浏览器
+#define SOLUTION_BROWSER_QQ                         8
+// 猎豹浏览器
+#define SOLUTION_BROWSER_LIEBAO                     9
+// 其它浏览器
+#define SOLUTION_BROWSER_OTHER                      20
+
+// 投放单操作系统定向编码表(仅PC)
+// 不限操作系统类型
+#define SOLUTION_OS_ALL                             0
+// Windows
+#define SOLUTION_OS_WINDOWS                         1
+// Mac
+#define SOLUTION_OS_MAC                             2
+// Linux
+#define SOLUTION_OS_LINUX                           3
+// 其它操作系统
+#define SOLUTION_OS_OTHER                           20
+
+// 投放单设备定向编码表(仅移动)
+// 不限设备类型
+#define SOLUTION_DEVICE_ALL                         0
+// iPhone
+#define SOLUTION_DEVICE_IPHONE                      1
+// Android
+#define SOLUTION_DEVICE_ANDROID                     2
+// iPad
+#define SOLUTION_DEVICE_IPAD                        3
+// WindowsPhone
+#define SOLUTION_DEVICE_WINDOWSPHONE                4
+// Android Pad
+#define SOLUTION_DEVICE_ANDROIDPAD                  5
+// TV
+#define SOLUTION_DEVICE_TV                          6
+// 其它设备
+#define SOLUTION_DEVICE_OTHER                       20
+
+// 投放单网络环境定向编码表(仅移动)
+// 不限网络环境
+#define SOLUTION_NETWORK_ALL                        0
+// wifi
+#define SOLUTION_NETWORK_WIFI                       1
+// 未知
+#define SOLUTION_NETWORK_UNKNOWN                    2
+// 2G
+#define SOLUTION_NETWORK_2G                         3
+// 3G
+#define SOLUTION_NETWORK_3G                         4
+// 4G
+#define SOLUTION_NETWORK_4G                         5
+// 其它
+#define SOLUTION_NETWORK_OTHER                      20
+
+// 投放单运营商定向(仅移动)
+// 不限运营商
+#define SOLUTION_NETWORK_PROVIDER_ALL               0
+// 中国移动
+#define SOLUTION_NETWORK_PROVIDER_CHINAMOBILE       46000
+// 中国联通
+#define SOLUTION_NETWORK_PROVIDER_CHINAUNICOM       46001
+// 中国电信
+#define SOLUTION_NETWORK_PROVIDER_CHINATELECOM      46003
+
+// PC 流量 前端宏
+#define  FLOWTYPE_FRONTEND_PC                                0
+// 移动流量 前端宏
+#define  FLOWTYPE_FRONTEND_MOBILE                            1
+// INAPP 流量 前端宏
+#define  FLOWTYPE_FRONTEND_INAPP                             2
+// 视频流量 前端宏
+#define  FLOWTYPE_FRONTEND_VIDEO                             3
+
+// 不限流量 后端宏
+#define SOLUTION_FLOWTYPE_ALL                                0
+// PC
+#define SOLUTION_FLOWTYPE_PC                                 1
+// 移动
+#define SOLUTION_FLOWTYPE_MOBILE                             2
+
+
+// SSP URL 参数 设备类型
+#define URL_SSP_DEVICE                              "t1"
+// SSP URL 参数 平台类型
+#define URL_SSP_PLATFORM                            "t2"
+
+#define SSP_DEVICE_UNKNOWN                          "0"
+#define SSP_DEVICE_MOBILEPHONE                      "1"
+#define SSP_DEVICE_PAD                              "2"
+
+#define SSP_PLATFORM_UNKNOWN                        "0"
+#define SSP_PLATFORM_IOS                            "1"
+#define SSP_PLATFORM_ANDROID                        "2"
+#define SSP_PLATFORM_WINDOWSPHONE                   "3"
+
+#define IP_UNKNOWN                                  999999
 
 #endif //ADCORE_CONSTANTS_H

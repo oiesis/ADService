@@ -7,10 +7,65 @@
 
 #include "protocol/base/abstract_bidding_handler.h"
 #include "protocol/tencent_gdt/gdt.pb.h"
+#include <map>
 
 namespace protocol{
     namespace bidding{
 
+        struct GdtAdplace{
+            int width,height,flowType;
+            GdtAdplace(){}
+            GdtAdplace(int w,int h,int f):width(w),height(h),flowType(f){}
+        };
+
+        class GdtAdplaceMap{
+        public:
+            GdtAdplaceMap(){
+                add(133,582,166,SOLUTION_FLOWTYPE_MOBILE);
+                add(134,114,114,SOLUTION_FLOWTYPE_MOBILE);
+                add(79,640,960,SOLUTION_FLOWTYPE_MOBILE);
+                add(80,320,480,SOLUTION_FLOWTYPE_MOBILE);
+                add(119,480,720,SOLUTION_FLOWTYPE_MOBILE);
+                add(120,640,1136,SOLUTION_FLOWTYPE_MOBILE);
+                add(124,720,1280,SOLUTION_FLOWTYPE_MOBILE);
+                add(125,1080,1920,SOLUTION_FLOWTYPE_MOBILE);
+                add(142,750,1334,SOLUTION_FLOWTYPE_MOBILE);
+                add(96,140,425,SOLUTION_FLOWTYPE_PC);
+                add(99,200,162,SOLUTION_FLOWTYPE_PC);
+                add(23,198,100,SOLUTION_FLOWTYPE_PC);
+                add(12,198,40,SOLUTION_FLOWTYPE_PC);
+                add(2,160,210,SOLUTION_FLOWTYPE_PC);
+                add(207,640,1136,SOLUTION_FLOWTYPE_MOBILE);
+                add(208,640,960,SOLUTION_FLOWTYPE_MOBILE);
+                add(212,320,480,SOLUTION_FLOWTYPE_MOBILE);
+                add(147,1200,800,SOLUTION_FLOWTYPE_MOBILE);
+                add(148,1280,720,SOLUTION_FLOWTYPE_MOBILE);
+                add(149,1200,627,SOLUTION_FLOWTYPE_MOBILE);
+                add(150,800,1200,SOLUTION_FLOWTYPE_MOBILE);
+                add(58,300,250,SOLUTION_FLOWTYPE_MOBILE);
+                add(59,600,500,SOLUTION_FLOWTYPE_MOBILE);
+                add(70,72,72,SOLUTION_FLOWTYPE_MOBILE);
+                add(113,640,960,SOLUTION_FLOWTYPE_MOBILE);
+                add(114,320,480,SOLUTION_FLOWTYPE_MOBILE);
+                add(10,640,100,SOLUTION_FLOWTYPE_MOBILE);
+                add(28,240,38,SOLUTION_FLOWTYPE_MOBILE);
+                add(31,480,75,SOLUTION_FLOWTYPE_MOBILE);
+                add(35,320,50,SOLUTION_FLOWTYPE_MOBILE);
+                add(69,72,72,SOLUTION_FLOWTYPE_MOBILE);
+                add(65,1000,560,SOLUTION_FLOWTYPE_MOBILE);
+            }
+            inline void add(int k,int w,int h,int f){
+                gdtMap.insert(std::make_pair(k,GdtAdplace(w,h,f)));
+            }
+            inline GdtAdplace& get(int k){
+                return gdtMap[k];
+            }
+            inline bool find(int k){
+                return gdtMap.find(k)!=gdtMap.end();
+            }
+        private:
+            std::map<int,GdtAdplace> gdtMap;
+        };
 
         class GdtBiddingHandler : public AbstractBiddingHandler {
         public:

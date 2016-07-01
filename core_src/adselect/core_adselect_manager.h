@@ -91,6 +91,16 @@ namespace adservice{
              */
             rapidjson::Value& queryAdInfoByAdxPid(int seqId, AdSelectCondition& selectCondition,rapidjson::Document& result);
 
+            /**
+             * 根据Mtty PID找到合适的广告信息,不使用Cache
+             */
+            rapidjson::Value& queryAdInfoByMttyPidNoCache(int seqId,AdSelectCondition& selectCondition,rapidjson::Document& result);
+
+            /**
+             * 根据ADX PID找到合适的广告信息,不使用Cache
+             */
+            rapidjson::Value& queryAdInfoByAdxPidNoCache(int seqId,AdSelectCondition& selectCondition,rapidjson::Document& result);
+
         private:
             AdSelectManager(const std::string& node,const std::string& auth = std::string()){
                 for(int i=0;i<ADSELECT_MAX_CONNECTION;i++) {
@@ -101,6 +111,7 @@ namespace adservice{
                 loadFile(dsl_query_adplace_pid,ES_QUERY_ADPLACE_BY_PID);
                 loadFile(dsl_query_adplace_adxpid,ES_QUERY_ADPLACE_BY_ADXPID);
                 loadFile(dsl_query_adinfo_condition,ES_QUERY_ADINFO_BY_CONDITION);
+                loadFile(dsl_query_adinfo_condition_multisize,ES_QUERY_ADINFO_BY_CONDITION_MULTISIZE);
             }
         public:
             ElasticSearch& getAvailableConnection(int seqId) const{
@@ -119,11 +130,13 @@ namespace adservice{
             // 查询创意的DSL
             char dsl_query_banner[256];
             // 根据mtty pid查询广告位信息
-            char dsl_query_adplace_pid[128];
+            char dsl_query_adplace_pid[256];
             // 根据adxpid查询广告位信息
-            char dsl_query_adplace_adxpid[128];
+            char dsl_query_adplace_adxpid[256];
             // 根据广告位条件查询广告信息
             char dsl_query_adinfo_condition[8192];
+            // 根据广告位条件查询广告信息,条件中包含多个尺寸条件
+            char dsl_query_adinfo_condition_multisize[8192];
         };
 
     }

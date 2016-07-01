@@ -14,7 +14,7 @@ CCFlags+= -DUSE_SHORT_CONN
 #CCFlags+= -DUSE_ALIYUN_LOG
 CCFlags+= -DNOUSE_QUERY_EXECUTOR_QUEUE
 #CCFlags+= -DUSE_TBB_HASHMAP
-#CCFlags+= -DUSER_DEBUG
+CCFlags+= -DUSER_DEBUG
 LOAD_LIB+= -ltbb
 LOAD_LIB+= -lrdkafka++ -lz
 
@@ -51,6 +51,7 @@ ALL_OBJS:= cypher.o \
 	platform.o \
 	random.o \
 	aero_spike.o \
+	userclient.o \
 	
 init:
 	mkdir -p $(BUILD_PATH)
@@ -131,7 +132,8 @@ UTILITY_BUILD_SOURCE:= cypher.cpp \
 			escape.cpp \
 			file.cpp \
 			random.cpp \
-			aero_spike.cpp
+			aero_spike.cpp \
+			userclient.cpp
 utility.o:
 	cd $(UTILITY_FOLDER) && \
 	$(CC) $(CCFlags) $(INCLUDE_PATH) -c $(UTILITY_BUILD_SOURCE) && \
@@ -166,6 +168,11 @@ PLATFORM_SOURCE+= $(wildcard $(PLATFORM_FOLDER)/youku/*.cpp)
 PLATFORM_SOURCE+= $(wildcard $(PLATFORM_FOLDER)/youku/*.cc)
 PLATFORM_SOURCE+= $(wildcard $(PLATFORM_FOLDER)/tencent_gdt/*.cpp)
 PLATFORM_SOURCE+= $(wildcard $(PLATFORM_FOLDER)/tencent_gdt/*.cc)
+PLATFORM_SOURCE+= $(wildcard $(PLATFORM_FOLDER)/guangyin/*.cpp)
+PLATFORM_SOURCE+= $(wildcard $(PLATFORM_FOLDER)/guangyin/*.cc)
+PLATFORM_SOURCE+= $(wildcard $(PLATFORM_FOLDER)/sohu/*.cpp)
+PLATFORM_SOURCE+= $(wildcard $(PLATFORM_FOLDER)/sohu/*.cc)
+PLATFORM_SOURCE+= $(wildcard $(PLATFORM_FOLDER)/netease/*.cpp)
 PLATFORM_SOURCE+= $(wildcard $(PLATFORM_FOLDER)/base/*.cpp)
 platform.o:
 	cd $(PLATFORM_FOLDER) && \

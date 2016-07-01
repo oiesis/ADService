@@ -18,6 +18,10 @@ namespace protocol{
          */
         class YoukuBiddingHandler : public AbstractBiddingHandler {
         public:
+
+            YoukuBiddingHandler():isDeal(false){
+                dealId.reserve(256);
+            }
             /**
              * 从Adx Bid Post请求数据中获取具体的请求信息
              */
@@ -49,9 +53,10 @@ namespace protocol{
              */
             void reject(INOUT HttpResponse& response);
         private:
-
             rapidjson::Document bidRequest;
             rapidjson::Document bidResponse;
+            bool isDeal;
+            std::string dealId;
         };
 
     }

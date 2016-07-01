@@ -103,8 +103,8 @@ namespace adservice{
                 DebugMessageWithTime("Bidding Handler Not Found,adxId:",adxId);
                 return;
             }
-            if(!biddingHandler->parseRequestData(data)){
-                DebugMessageWithTime("Parse Bidding Request Failed,adxId",adxId);
+            if(data.empty()||!biddingHandler->parseRequestData(data)){
+                DebugMessageWithTime("Parse Bidding Request Failed,adxId:",adxId);
             }
         }
 

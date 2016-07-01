@@ -188,6 +188,7 @@ namespace adservice{
             mtAdInfo.AddMember("height",MakeStringValue(height),allocator);
             int advId = solution["advid"].GetInt();
             int bannerId = banner["bid"].GetInt();
+            int resultLen = 0;
             //需求http://redmine.mtty.com/redmine/issues/144
             if(paramMap[URL_IMP_OF] == OF_SSP_MOBILE) {
                 //替换点击宏
@@ -216,14 +217,19 @@ namespace adservice{
                             clickMacroLen);
                 }
                 mtls[0]["p5"].SetString(clickMacroBuffer, clickMacroLen);
+                //只输出标准json
+                std::string jsonResult = utility::json::toJson(mtAdInfo);
+                resultLen = snprintf(buffer,bufferSize-1,"%s",jsonResult.c_str());
+            }else {
+                std::string jsonResult = utility::json::toJson(mtAdInfo);
+                resultLen = snprintf(buffer, bufferSize - 1, templateFmt, paramMap["callback"].c_str(),
+                                   jsonResult.c_str());
             }
-            std::string jsonResult = utility::json::toJson(mtAdInfo);
-            int len = snprintf(buffer,bufferSize-1,templateFmt,paramMap["callback"].c_str(),jsonResult.c_str());
-            if(len>=bufferSize){
-                DebugMessageWithTime("[Warning]in buildResponseForSsp buffer overflow,length:",len);
+            if(resultLen>=bufferSize){
+                DebugMessageWithTime("[Warning]in buildResponseForSsp buffer overflow,length:",resultLen);
                 return bufferSize;
             }
-            return len;
+            return resultLen;
         }
 
         /**
@@ -392,7 +398,29 @@ namespace adservice{
             return len;
         }
 
-
+        /**
+         * 根据输入参数获取设备类型
+         */
+        int getDeviceTypeForSsp(ParamMap& paramMap){
+            std::string devType = paramMap.find(URL_SSP_DEVICE)!=paramMap.end()?paramMap[URL_SSP_DEVICE]:SSP_DEVICE_UNKNOWN;
+            std::string platform = paramMap.find(URL_SSP_PLATFORM)!=paramMap.end()?paramMap[URL_SSP_PLATFORM]:SSP_PLATFORM_UNKNOWN;
+            if(devType==SSP_DEVICE_MOBILEPHONE){
+                if(platform==SSP_PLATFORM_IOS){
+                    return SOLUTION_DEVICE_IPHONE;
+                }else if(platform == SSP_PLATFORM_ANDROID){
+                    return SOLUTION_DEVICE_ANDROID;
+                }else if(platform == SSP_PLATFORM_WINDOWSPHONE){
+                    return SOLUTION_DEVICE_WINDOWSPHONE;
+                }
+            }else if(devType==SSP_DEVICE_PAD){
+                if(platform==SSP_PLATFORM_IOS){
+                    return SOLUTION_DEVICE_IPAD;
+                }else if(platform == SSP_PLATFORM_ANDROID){
+                    return SOLUTION_DEVICE_ANDROIDPAD;
+                }
+            }
+            return SOLUTION_DEVICE_OTHER;
+        }
 
         void HandleShowQueryTask::customLogic(ParamMap& paramMap,protocol::log::LogItem& log,HttpResponse& response){
             bool isSSP = isShowForSSP(paramMap);
@@ -428,10 +456,15 @@ namespace adservice{
                     condition.mttyPid = queryPid;
                 condition.ip = log.ipInfo.proxy;
                 server::IpManager& ipManager = IpManager::getInstance();
+                condition.adxid = ADX_SSP;
                 condition.dGeo = ipManager.getAreaByIp(condition.ip.data());
+                condition.mobileDevice = getDeviceTypeForSsp(paramMap);
+                condition.pcOS = utility::userclient::getOSTypeFromUA(userAgent);
+                condition.pcBrowserStr = utility::userclient::getBrowserTypeFromUA(userAgent);
                 if(!adSelectLogic.selectByCondition(seqId,condition,isAdxPid,true)){
-                    log.adInfo.pid = isAdxPid?"0":queryPid;
-                    log.adInfo.adxpid = isAdxPid?queryPid:"0";
+                    log.adInfo.adxid = ADX_SSP;
+                    log.adInfo.pid = condition.mttyPid;
+                    log.adInfo.adxpid = condition.adxpid;
                     log.reqStatus = 500;
                     return;
                 }

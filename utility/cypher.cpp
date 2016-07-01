@@ -228,7 +228,7 @@ namespace adservice {
             array<char,64> CypherMapGenerator::randomCharSequence(){
                 array<char,64> keys= {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
                                       'A','B','C','D','M','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','X','Y','Z',
-                                      '=','+','-','[',']','#','@','_','[','_','@','|'};
+                                      '=','1','2','3','4','5','6','7','8','9','0','_'};
                 std::shuffle(keys.begin(),keys.end(),std::random_device());
                 return keys;
             }
@@ -269,7 +269,7 @@ namespace adservice {
                 for(int i=0;i<4;i++){
                     printf("{");
                     for(int j=0;j<16;j++){
-                        printf(" %c,",cypherMap[i][j]);
+                        printf("'%c',",cypherMap[i][j]);
                     }
                     printf("},\n");
                 }
@@ -278,7 +278,7 @@ namespace adservice {
                 for(int i=0;i<4;i++){
                     printf("{");
                     for(int j=0;j<16;j++){
-                        printf(" %c,",cypherSortMap[i][j]);
+                        printf("'%c',",cypherSortMap[i][j]);
                     }
                     printf("},\n");
                 }
@@ -296,18 +296,18 @@ namespace adservice {
 
 
 
-            static const char cypherMap[4][16] = {{'e','S','U','s','K','n','M','O','[','C','l','-','Q','c','E','b'},
-                                                  {'u','v','z','X','f','R','x','Y','V','+','_','@','M','L','B','m'},
-                                                  {']','w','T','#','@','a','k','I','d','j','G','J','Z','q','N','o'},
-                                                  {'[','A','p','t','=','F','P','r','|','_','H','i','g','y','h','D'}};
-            static const char cypherSortMap[4][16] = {{'-','C','E','K','M','O','Q','S','U','[','b','c','e','l','n','s'},
-                                              {'+','@','B','L','M','R','V','X','Y','_','f','m','u','v','x','z'},
-                                              {'#','@','G','I','J','N','T','Z',']','a','d','j','k','o','q','w'},
-                                              {'=','A','D','F','H','P','[','_','g','h','i','p','r','t','y','|'}};
-            static const int cypherPosMap[4][16] = {{11,9,14,4,6,7,12,1,2,8,15,13,0,10,5,3},
-                                                    {9,11,14,13,12,5,8,3,7,10,4,15,0,1,6,2},
-                                                    {3,4,10,7,11,14,2,12,0,5,8,9,6,15,13,1},
-                                                    {4,1,15,5,10,6,0,9,12,14,11,2,7,3,13,8}};
+            static const char cypherMap[4][16] ={{'6','F','X','D','e','N','R','g','y','s','4','q','=','9','U','Y'},
+                                                 {'1','o','i','B','C','a','w','3','j','v','_','A','z','M','J','m'},
+                                                 {'O','k','M','t','d','7','x','T','u','f','n','I','K','P','h','H'},
+                                                 {'5','L','8','V','0','E','b','S','l','G','Q','Z','r','c','2','p'}};
+            static const char cypherSortMap[4][16] ={{'4','6','9','=','D','F','N','R','U','X','Y','e','g','q','s','y'},
+                                                     {'1','3','A','B','C','J','M','_','a','i','j','m','o','v','w','z'},
+                                                     {'7','H','I','K','M','O','P','T','d','f','h','k','n','t','u','x'},
+                                                     {'0','2','5','8','E','G','L','Q','S','V','Z','b','c','l','p','r'}};
+            static const int cypherPosMap[4][16] = {{10,0,13,12,3,1,5,6,14,2,15,4,7,11,9,8},
+                                                    {0,7,11,3,4,14,13,10,5,2,8,15,1,9,6,12},
+                                                    {5,15,11,12,2,0,13,7,4,9,14,1,10,3,8,6},
+                                                    {4,14, 0,2,5,9,1,10,7,3,11,6,13,8,15,12}};
             template<typename T>
             int bSearch(T* array,int size,T key){
                 int l=0,h=size-1;
@@ -319,6 +319,9 @@ namespace adservice {
                         l = mid+1;
                 }
                 assert(l>=0&&l<size&&array[l]==key);
+                if(array[l]!=key){
+                    l = -1;
+                }
                 return l;
             }
 

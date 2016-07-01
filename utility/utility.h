@@ -26,6 +26,7 @@
 #include "mttytime.h"
 #include "escape.h"
 #include "file.h"
+#include "userclient.h"
 
 #include "google/protobuf/message.h"
 

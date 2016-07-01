@@ -12,10 +12,36 @@ namespace protocol {
 
         using namespace protocol::gdt::adx;
         using namespace adservice::utility::serialize;
+        using namespace adservice::utility::userclient;
         using namespace adservice::server;
+
+        static GdtAdplaceMap gdtAdplaceMap;
 
         inline int max(const int& a,const int& b){
             return a>b?a:b;
+        }
+
+
+        int getGdtOsType(BidRequest_OperatingSystem os){
+            switch(os){
+                case BidRequest_OperatingSystem::BidRequest_OperatingSystem_kOSWindows:
+                    return SOLUTION_OS_WINDOWS;
+                default:
+                    return SOLUTION_OS_OTHER;
+            }
+        }
+
+        int getGdtMobileDeviceType(BidRequest_OperatingSystem os){
+            switch(os){
+                case BidRequest_OperatingSystem::BidRequest_OperatingSystem_kOSWindows:
+                    return SOLUTION_DEVICE_WINDOWSPHONE;
+                case BidRequest_OperatingSystem::BidRequest_OperatingSystem_kOSAndroid:
+                    return SOLUTION_DEVICE_ANDROID;
+                case BidRequest_OperatingSystem::BidRequest_OperatingSystem_kOSIOS:
+                    return SOLUTION_DEVICE_IPHONE;
+                default:
+                    return SOLUTION_DEVICE_OTHER;
+            }
         }
 
         bool GdtBiddingHandler::parseRequestData(const std::string& data){
@@ -50,15 +76,51 @@ namespace protocol {
                 return bidFailedReturn();
             }
             //从BID Request中获取请求的广告位信息,目前只取第一个
-
             const BidRequest_Impression& adzInfo = bidRequest.impressions(0);
             long pid = adzInfo.placement_id();
             AdSelectCondition queryCondition;
+            queryCondition.adxid = ADX_TENCENT_GDT;
             queryCondition.adxpid = std::to_string(pid);
             queryCondition.ip = bidRequest.ip();
+            IpManager& ipManager = IpManager::getInstance();
+            queryCondition.dGeo = ipManager.getAreaByIp(queryCondition.ip.data());
+            PreSetAdplaceInfo adplaceInfo;
+            for(int i=0;i<adzInfo.creative_specs_size();i++){
+                int createspecs = adzInfo.creative_specs(i);
+                if(gdtAdplaceMap.find(createspecs)) {
+                    GdtAdplace &gdtAdplace = gdtAdplaceMap.get(createspecs);
+                    adplaceInfo.sizeArray.push_back(std::make_tuple(gdtAdplace.width,gdtAdplace.height));
+                    adplaceInfo.flowType = gdtAdplace.flowType;
+                }
+            }
+            if(adplaceInfo.sizeArray.size()==0){
+                return bidFailedReturn();
+            }
+            if(bidRequest.has_device()){ //device
+                const BidRequest_Device& device = bidRequest.device();
+                BidRequest_DeviceType devType = device.device_type();
+                if(devType==BidRequest_DeviceType::BidRequest_DeviceType_kDeviceTypePC){
+                    queryCondition.pcOS = getGdtOsType(device.os());
+                    queryCondition.pcBrowserStr = getBrowserTypeFromUA(device.user_agent());
+                    if(queryCondition.pcOS==SOLUTION_OS_OTHER){
+                        queryCondition.pcOS = getOSTypeFromUA(device.user_agent());
+                    }
+                }else if(devType==BidRequest_DeviceType::BidRequest_DeviceType_kDeviceTypeMobile){
+                    adplaceInfo.flowType = SOLUTION_FLOWTYPE_MOBILE;
+                    queryCondition.mobileDevice = getGdtMobileDeviceType(device.os());
+                }else if(devType == BidRequest_DeviceType::BidRequest_DeviceType_kDeviceTypePad){
+                    queryCondition.mobileDevice = device.os()==BidRequest_OperatingSystem_kOSIOS?SOLUTION_DEVICE_IPAD:
+                                                  SOLUTION_DEVICE_ANDROIDPAD;
+                }else{
+                    queryCondition.mobileDevice = SOLUTION_DEVICE_OTHER;
+                    queryCondition.pcOS = SOLUTION_OS_OTHER;
+                }
+            }
+            queryCondition.pAdplaceInfo = &adplaceInfo;
             if(!filterCb(this,queryCondition)){
                 return bidFailedReturn();
             }
+
             return isBidAccepted = true;
         }
 
@@ -81,11 +143,9 @@ namespace protocol {
             adInfo.advId = finalSolution["advId"].GetInt();
             adInfo.sid = finalSolution["sid"].GetInt64();
             adInfo.adxid = ADX_TENCENT_GDT;
-            adInfo.adxpid = adplace["adxpid"].GetString();
+            adInfo.adxpid = std::to_string(adzInfo.placement_id());
             adInfo.adxuid = bidRequest.user().id();
             adInfo.bannerId = banner["bid"].GetInt();
-            adInfo.cid = adplace["cid"].GetInt();
-            adInfo.mid = adplace["mid"].GetInt();
             adInfo.cpid = adInfo.advId;
             adInfo.offerPrice = maxCpmPrice;
 
@@ -95,11 +155,10 @@ namespace protocol {
 
             //html snippet相关
             char showParam[2048];
-            httpsnippet(bidRequest.id(),showParam,sizeof(showParam),NULL,0);
-            char buffer[2048];
-            snprintf(buffer,sizeof(buffer),"of=3&%s",showParam);
-            adResult->set_click_param(buffer);
-            adResult->set_impression_param(buffer);
+            getShowPara(bidRequest.id(),showParam,sizeof(showParam));
+            strncat(showParam,"&of=3",5);
+            adResult->set_click_param(showParam);
+            adResult->set_impression_param(showParam);
         }
 
         void GdtBiddingHandler::match(HttpResponse &response) {

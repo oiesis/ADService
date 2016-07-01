@@ -1,18 +1,19 @@
 //
-// Created by guoze.lin on 16/5/3.
+// Created by guoze.lin on 16/6/27.
 //
 
-#ifndef ADCORE_TANX_BIDDING_HANDLER_H
-#define ADCORE_TANX_BIDDING_HANDLER_H
+#ifndef ADCORE_SOHU_BIDDING_HANDLER_H
+#define ADCORE_SOHU_BIDDING_HANDLER_H
 
 #include "protocol/base/abstract_bidding_handler.h"
-#include "protocol/tanx/tanx_bidding.pb.h"
+#include "protocol/sohu/sohuRTB.pb.h"
 
 namespace protocol{
     namespace bidding{
 
 
-        class TanxBiddingHandler : public AbstractBiddingHandler {
+
+        class SohuBiddingHandler : public AbstractBiddingHandler {
         public:
             /**
              * 从Adx Bid Post请求数据中获取具体的请求信息
@@ -45,22 +46,17 @@ namespace protocol{
              */
             void reject(INOUT HttpResponse& response);
 
-            std::string generateHtmlSnippet(const std::string &bid, int width, int height,const char *extShowBuf,
-                                                    const char *cookieMappingUrl = "");
+        private:
+            std::string getDisplayPara();
+            std::string getSohuClickPara(const std::string& url);
 
         private:
-            /**
-             * 产生tanx的html snippet
-             */
-            std::string tanxHtmlSnippet();
+            protocol::sohuadx::Request bidRequest;
+            protocol::sohuadx::Response bidResponse;
 
-        private:
-            protocol::Tanx::BidRequest bidRequest;
-            protocol::Tanx::BidResponse bidResponse;
-            char feedbackUrl[2048];
         };
 
     }
 }
 
-#endif //ADCORE_TANX_BIDDING_HANDLER_H
+#endif //ADCORE_SOHU_BIDDING_HANDLER_H

@@ -223,6 +223,8 @@ namespace adservice{
             if(areaDict.find(acc,areaName)){
                 AreaItem areaItem = acc->second;
                 code = getAreaShortCode(areaItem);
+            }else{
+                code = IP_UNKNOWN;
             }
             acc.release();
             return code;

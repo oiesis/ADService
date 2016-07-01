@@ -81,6 +81,7 @@ namespace protocol {
             const BidRequest_AdSlot& adSlot = bidRequest.adslot(0);
             long pid = adSlot.ad_block_key();
             AdSelectCondition queryCondition;
+            queryCondition.adxid = ADX_BAIDU;
             queryCondition.adxpid = std::to_string(pid);
             queryCondition.ip = bidRequest.ip();
             if(!filterCb(this,queryCondition)){

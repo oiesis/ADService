@@ -16,7 +16,7 @@ namespace adservice{
          */
         rapidjson::Value& selectBannerFromBannerGroup(std::map<int,std::vector<rapidjson::Value*>>& bannerMap,int bgid){
             std::vector<rapidjson::Value*>& banners = bannerMap[bgid];
-            int r = rng::randomInt()%banners.size();
+            int r = std::abs(rng::randomInt())%banners.size();
             return *(banners[r]);
         }
 
@@ -41,7 +41,7 @@ namespace adservice{
                 }
             }
             int r = std::abs(rng::randomInt())%idxCnt;
-            return *(banners[r]);
+            return *(banners[idx[r]]);
         }
 
         /**
@@ -71,7 +71,7 @@ namespace adservice{
          * 根据权重随机选一个投放单
          */
         int randomSolution(double totalWeight,double* accWeights,int size){
-            double r = rng::randomDouble() * totalWeight;
+            double r = std::abs(rng::randomDouble()) * totalWeight;
             int l=0,h=size-1;
             while(l<=h){
                 int mid = l+((h-l)>>1);
@@ -115,6 +115,9 @@ namespace adservice{
             return 0;
         }
 
+        /**
+         * 过滤IP
+         */
         bool filterSolutionIp(const rapidjson::Value& solution,const std::string ip){
             std::string dIp = solution["d_ip"].IsNull()?"":solution["d_ip"].GetString();
             if(dIp.empty()||dIp=="0"||ip.empty()){
@@ -124,6 +127,17 @@ namespace adservice{
                 return true;
             }
             return false;
+        }
+
+        /**
+         * 在走正常投放流程情况下,单子能投出来但需要做几率过滤
+         */
+        bool filterSolutionSuccessRate(const rapidjson::Value& solution){
+//新建投放再测试,现在先注释掉
+//            int successRate = solution["rate"].GetInt();
+//            int r = std::abs(rng::randomInt())%SOLUTION_SUCCESS_RATE_BASE;
+//            return r<successRate;
+            return true;
         }
 
         void split(const char* str,int len,const char** index,int& size){
@@ -143,10 +157,10 @@ namespace adservice{
         }
 
         bool extractConditionOption(std::string& condition,std::string& filter,double& offerPrice,double& ctr){
-            const char* index[100];
+            const char* index[500];
             int size = sizeof(index)/sizeof(char*);
             split(condition.data(),condition.length(),index,size);
-            for(int i=0;i<size;i+=3){
+            for(int i=1;i<=size;i+=3){
                 if(!strncmp(index[i],filter.data(),filter.length())){
                     offerPrice+=atof(index[i+1]);
                     ctr+=atof(index[i+2]);
@@ -188,10 +202,10 @@ namespace adservice{
             std::string hour = solution["d_hour"].GetString();
             if(hour=="0")
                 return 1.0;
-            const char* index[100];
+            const char* index[600];
             int size = sizeof(index)/sizeof(char*);
             split(hour.data(),hour.length(),index,size);
-            for(int i=0;i<size;i+=3){
+            for(int i=1;i<=size;i+=3){
                 if(!strncmp(index[i],dHour.data(),dHour.length())){
                     return atof(index[i+1]);
                 }
@@ -214,7 +228,8 @@ namespace adservice{
                 const char* type = result[i]["_type"].GetString();
                 if(!strcmp(type,ES_DOCUMENT_SOLUTION)){ //投放单
                     solutions[solCnt]=&(result[i]["_source"]);
-                    if(filterSolutionIp(*(solutions[solCnt]),condition.ip)){
+                    if(filterSolutionIp(*(solutions[solCnt]),condition.ip)  //IP过滤
+                       && filterSolutionSuccessRate(*(solutions[solCnt]))){ //SuccessRate过滤
                         solCnt++;
                     }
                 }else if(!strcmp(type,ES_DOCUMENT_BANNER)){ // 创意
@@ -230,6 +245,7 @@ namespace adservice{
                 }
             }
             if(solCnt==0){ //失败
+                DebugMessageWithTime("solutionCnt==0");
                 return false;
             }
             //计算投放单ecpm,并计算score进行排序
@@ -267,25 +283,27 @@ namespace adservice{
             }
             sortSolutionScore(solIdx,solScore,solCnt);
             //按排序概率展示
-            double totalRate = 0;
-            double cpdRate = 0;
-            double accRate[100];
-            for(int i=0;i<solCnt;i++){
-                rapidjson::Value& solution = *(solutions[solIdx[i]]);
-                int priceType = solution["pricetype"].GetInt();
-                double rate = solution["rate"].GetDouble();
-                totalRate+=rate;
-                accRate[i] = totalRate;
-                if(priceType == PRICETYPE_CPD){
-                    cpdRate+=rate;
+            int rankIdx[4];
+            int rankWeight[3]={80,96,100};
+            int actualRank = 0;
+            double lastScore = -1;
+            for(int i=0;i<solCnt && actualRank<4;i++){
+                double s = solScore[solIdx[i]];
+                if(s>lastScore){
+                    rankIdx[actualRank++]=i;
+                    lastScore = s;
                 }
             }
-            if(cpdRate>100){
-                totalRate = cpdRate;
-            }else if(cpdRate>0){
-                totalRate = 100;
+            for(int i=actualRank;i<4;i++){
+                rankIdx[i] = solCnt;
             }
-            int finalSolutionIdx = randomSolution(totalRate,accRate,solCnt);
+            actualRank = actualRank>=4?3:actualRank;
+            int totalWeight = rankWeight[actualRank-1];
+            int randnum = std::abs(rng::randomInt())%totalWeight;
+            int solutionRank = 0;
+            for(;randnum>rankWeight[solutionRank];solutionRank++);
+
+            int finalSolutionIdx =rankIdx[solutionRank]+std::abs(rng::randomInt())%(rankIdx[solutionRank+1]-rankIdx[solutionRank]);
             selectResult.finalSolution = solutions[solIdx[finalSolutionIdx]];
             rapidjson::Value& finalSolution = *(selectResult.finalSolution);
             rapidjson::Value& banner = bestBannerFromBannerGroup(bannerMap,finalSolution["bgid"].GetInt());

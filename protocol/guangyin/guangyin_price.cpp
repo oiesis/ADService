@@ -1,4 +1,6 @@
-
+//
+// Created by guoze.lin on 16/6/21.
+//
 
 #include <stdio.h>
 #include <iostream>
@@ -12,9 +14,8 @@
 #include <openssl/buffer.h>
 #include <string>
 #include "common/types.h"
-#include "baidu_price.h"
 #include "common/functions.h"
-
+#include "guangyin_price.h"
 using namespace std;
 using std::string;
 
@@ -24,28 +25,41 @@ static const int SIGNATURE_SIZE = 4;
 static const int ENCRYPTED_VALUE_SIZE =
         INITIALIZATION_VECTOR_SIZE + CIPHER_TEXT_SIZE + SIGNATURE_SIZE;
 static const int HASH_OUTPUT_SIZE = 20;
+//static const char integrity_key_v[]  = {
+//        0x48,0xd8,0x6c,0xe0,0x75,0x02,0x83,0x13,
+//        0x19,0xeb,0x35,0x16,0x0d,0xa6,0x58,0x9d,
+//        0xcd,0xd5,0xe1,0x46,0x58,0x55,0xea,0x5f,
+//        0x1a,0x80,0x2a,0x43,0x4a,0x6d,0xc7,0xcd
+//};
+static const char integrity_key_v[] = {
+        0xa9,0xf1,0x9b,0x14,0x98,0x55,0xd4,0xb8,
+        0xfc,0xbf,0xd3,0xca,0x68,0x2b,0x2d,0x07,
+        0x53,0x9c,0x03,0xcc,0x1a,0x8b,0xab,0xc4,
+        0x5d,0x91,0x9e,0x3e,0xdb,0x98,0x0f,0x52
+};
+//static const char encryption_key_v[] = {
+//        0xfd,0x45,0xd3,0xe4,0xee,0xc9,0x2d,0xe4,
+//        0xdf,0xc4,0xe6,0xa3,0x85,0x9d,0xf1,0x87,
+//        0x5a,0x12,0x13,0x84,0x49,0x9c,0x73,0x7f,
+//        0x5f,0x0f,0x15,0x7e,0xee,0x7c,0x99,0x9d
+//};
 
 static const char encryption_key_v[] = {
-        0x01,0x1d,0x6a,0x0b,0x00,0x2a,0xa1,0x12,
-        0xde,0x49,0x48,0x51,0x00,0x2a,0xa1,0x12,
-        0xde,0x49,0x8d,0xdc,0x00,0x2a,0xa1,0x12,
-        0xde,0x49,0x98,0xce,0x85,0x76,0xb3,0xaf
+        0x4c,0x75,0xa4,0x10,0x5a,0xa9,0xa8,0xef,
+        0xf1,0x0b,0x2f,0x61,0x4e,0x96,0xb1,0x9e,
+        0x89,0x46,0x4f,0xe5,0xf6,0x82,0xd2,0x20,
+        0xc9,0x06,0x44,0x05,0x0d,0x9c,0xf2,0x1f
 };
-static const char integrity_key_v[] = {
-        0x01,0x1d,0x6a,0x0b,0x00,0x2a,0xa1,0x12,
-        0xde,0x4a,0x17,0x7a,0x00,0x2a,0xa1,0x12,
-        0xde,0x4a,0x20,0x98,0x00,0x2a,0xa1,0x12,
-        0xde,0x4a,0x25,0xf2,0xd3,0x93,0x5b,0x25
-};
+
 static const string ENCRYPTION_KEY(encryption_key_v, 32);
 static const string INTEGRITY_KEY(integrity_key_v, 32);
 
 // Definition of htonll
-inline uint64_t htonll(uint64_t net_int){
-#if defined (__LITTLE_ENDIAN)
+inline uint64_t htonll(uint64_t net_int) {
+#if defined(__LITTLE_ENDIAN)
 return static_cast<uint64_t>(htonl(static_cast<uint32_t>(net_int >> 32))) |
             (static_cast<uint64_t>(htonl(static_cast<uint32_t>(net_int))) << 32);
-#elif defined (__BIG_ENDIAN)
+#elif defined(__BIG_ENDIAN)
 return net_int;
 #else
 #error Could not determine endianness.
@@ -105,21 +119,19 @@ static bool decrypt_int64(
         plaintext_bytes[i] = price_pad[i] ^ ciphertext_bytes[i];
     }
     //print debug_info
-    /*
-    printf("\nciphertext_bytes:");
-    for(int size=0;size<CIPHER_TEXT_SIZE;size++){
-        printf("%02x",ciphertext_bytes[size]);
-    }
-    printf("\nprice_pad:");
-    for(int size=0;size<HASH_OUTPUT_SIZE;size++){
-        printf("%02x",price_pad[size]);
-    }
-    */
+//    printf("\nciphertext_bytes:");
+//    for(int size=0;size<CIPHER_TEXT_SIZE;size++){
+//        printf("%02x",ciphertext_bytes[size]);
+//    }
+//    printf("\nprice_pad:");
+//    for(int size=0;size<HASH_OUTPUT_SIZE;size++){
+//        printf("%02x",price_pad[size]);
+//    }
 
     //value = ntohllprice_pad ^ ciphertext_bytes)
     memcpy(value, plaintext_bytes, CIPHER_TEXT_SIZE);
     *value = ntohll(*value);  // Switch to host byte order.
-    //cout << endl << "value:" << *value ;
+//    cout << endl << "value:" << *value ;
 
     // Verify integrity bits.
     uint32_t integrity_hash_size = HASH_OUTPUT_SIZE;
@@ -139,21 +151,19 @@ static bool decrypt_int64(
     }
 
     //print debug_info
-    /*
-   printf("\ninput_message:");
-    for(int32_t size=0;size<INPUT_MESSAGE_SIZE;size++){
-        printf("%02x",input_message[size]);
-    }
-    printf("\ninitializatio_hash:");
-    for(uint32_t size=0;size<integrity_hash_size;size++){
-        printf("%02x",integrity_hash[size]);
-    }
-    printf("\nsignatre:");
-    for(int32_t size=0;size<SIGNATURE_SIZE;size++){
-        printf("%02x",signature[size]);
-    }
-    printf("\n");
-    */
+//   printf("\ninput_message:");
+//    for(int32_t size=0;size<INPUT_MESSAGE_SIZE;size++){
+//        printf("%02x",input_message[size]);
+//    }
+//    printf("\ninitializatio_hash:");
+//    for(uint32_t size=0;size<integrity_hash_size;size++){
+//        printf("%02x",integrity_hash[size]);
+//    }
+//    printf("\nsignatre:");
+//    for(int32_t size=0;size<SIGNATURE_SIZE;size++){
+//        printf("%02x",signature[size]);
+//    }
+//    printf("\n");
     return memcmp(integrity_hash, signature, SIGNATURE_SIZE) == 0;
 }
 
@@ -204,7 +214,17 @@ static std::string add_padding(const std::string& b64_string) {
     return b64_string;
 }
 
-int64_t baidu_price_decode(const std::string& encryption_value)
+
+/*
+密文示例和真实价格
+    aiA6VefRdkYNuCxAlZ_Df6fb9Xbf49dRtgo6Bw 500
+    2aRpExhGduTfI2BwaY8aEh1eWiZXiNcXevEe1A 80
+    RZD7LSw2Qlkg2NzdiU9KmtVgQrbVVZX7_Ehf3w 42
+    RtxR_sBr8AwOjAxD0p9omwlXRjKEjtVd-YG2kA 65
+    htkCCbDwfqcHR84scK3u9keskTs81lhA2B_-Mw 10000
+*/
+
+int64_t guangyin_price_decode(const std::string& encryption_value)
 {
     std::string padded = add_padding(encryption_value);
     std::string decode_value;
@@ -212,7 +232,7 @@ int64_t baidu_price_decode(const std::string& encryption_value)
     web_safe_base64_decode(padded,&decode_value);
     if (!decrypt_int64(decode_value,ENCRYPTION_KEY,INTEGRITY_KEY,&act_value))
     {
-        DebugMessageWithTime("error in baidu_price_decode");
+        DebugMessageWithTime("error in guangyin_price_decode");
         return 0;
     }
     return act_value;

@@ -14,15 +14,17 @@
 #include "utility/json.h"
 #include "utility/hash.h"
 #include "utility/mttytime.h"
+#include "utility/cypher.h"
 
 using namespace adservice::utility::url;
 using namespace adservice::utility::json;
 using namespace adservice::utility::hash;
 using namespace adservice::utility::time;
+using namespace adservice::utility::cypher;
 using namespace std;
 
 void paramTest(){
-    const char* url = "http://show.mtty.com/v?p=VwsimgAO6MJ7jEpgW5IA8rszDyLuC4qNGtNxzw&a=0086-ffff-ffff&b=50&c=2546&d=9&e=288&r=3e581c094cf01851&s=9223372032561888060&x=6&tm=1460347546&l=http://click.bes.baidu.com/adx.php?c=cz00NGY1OWJmMDA0MGEzMzFmAHQ9MTQ2MDM0NzU0NgBzZT0xAGJ1PTE4NzA0OTA3AHR1PTkyMjMzNzIwMzI1NjE4ODgwNjAAYWQ9MTQ1ODExOTUyMDUyMDI1NDYAc2l0ZT1odHRwOi8vd3d3Ljh2djguY29tL25ld3MvNzdfMTQuaHRtbAB2PTEAaT05ZDFlOWFjMA&k=dz0zMzYAaD0yODAAY3NpZD0xMjAyNTkwODQzMjE2AHRtPTI2OTA0Njk4NQB0ZD0yMDc5NTQ4AHdpPTE4NzA0OTA3AGZuPTMwMDE0MDg4X2NwcgBmYW49AHVpZD0xODczNzA1NABjaD0wAG9zPTkAYnI9MTAAaXA9MTI0LjEyNi4yMDUuNzgAc3NwPTEAYXBwX2lkPQBhcHBfc2lkPQBzZGtfdmVyc2lvbj0AdHRwPTEAY29tcGxlPTAAc3R5cGU9MABjaG1kPTAAc2NobWQ9MAB4aXA9MTAwLjY1LjQxLjgwAGR0cD0xAGNtYXRjaD0yMDAAZmlyc3RfcmVnaW9uPTEAc2Vjb25kX3JlZ2lvbj0zODIAYWRjbGFzcz0w&url=http%253A%252F%252Fbdtg%2E9377a%2Ecom%252Fsousuotg%2Ephp%253Fid%253D11852%2526uid%253D%257Bmpid%257D_%257Bcid%257D";
+    const char* url = "v=1.0&d=9&k=1&y=7&t1=ererwrwer3&t2=";
     //const char* url = "http://show.mtty.com/v?p=-tsCgWZqNjC6xpRl8VwJxQ==&of=3&a=0086-ffff-ffff&b=20000&c=12551&d=8&e=10000&r=g2iwjo7r6xpag&s=8863364436303842593&x=13&tm=1463538785&w=&gz=1";
     ParamMap paramMap;
     getParamv2(paramMap,url);
@@ -78,9 +80,9 @@ void ip_area_test(const char* ip){
     IpManager& ipManager = IpManager::getInstance();
     long timeBegin = getCurrentTimeStamp();
     int code;
-    for(int i=0;i<1000000;i++) {
+    //for(int i=0;i<1000000;i++) {
         code = ipManager.getAreaByIp(ip);
-    }
+    //}
     long timeEnd = getCurrentTimeStamp();
     DebugMessageWithTime("begin time:",timeBegin,",end time:",timeEnd,",cost:",timeEnd-timeBegin,",area code:",code);
     IpManager::destroy();
@@ -109,9 +111,61 @@ void configmanager_test(){
     ConfigManager::exit();
 }
 
+
+bool checkUserCookies(const std::string& oldCookies){
+    CypherResult128 cypherResult;
+    memcpy((void*)cypherResult.bytes,(void*)oldCookies.c_str(),oldCookies.length());
+    DecodeResult64 decodeResult64;
+    if(!cookiesDecode(cypherResult,decodeResult64)
+       || decodeResult64.words[0]<=0
+       || decodeResult64.words[0]>getCurrentTimeSinceMtty()){
+        return false;
+    }
+    return true;
+}
+
+#include "protocol/guangyin/guangyin_price.h"
+
+void price_test(const char* encrypt){
+    int result = guangyin_price_decode(encrypt);
+    DebugMessageWithTime("result:",result);
+}
+
+
+int extractRealValue(const std::string& input,int targetAdx){
+    const char* pdata = input.data();
+    const char* p1 = pdata,*p2 = p1;
+    while(*p2!='\0'){
+        if(*p2=='|'){
+            int adx = atoi(p1);
+            p2++;
+            p1 = p2;
+            while(*p2!='\0'&&*p2!='|')p2++;
+            if(adx == targetAdx){
+                return atoi(p1);
+            }
+            if(*p2=='|'){
+                p2++;
+                p1=p2;
+            }
+        } else
+            p2++;
+    }
+    return 0;
+}
+
+#include "utility/userclient.h"
+
+void testUaParser(char* input){
+    std::string result = adservice::utility::userclient::getBrowserTypeFromUA(input);
+    DebugMessageWithTime("result:",result);
+}
+
 int main(int argc,char** argv){
     try {
-        configmanager_test();
+        if(argc>1) {
+            price_test(argv[1]);
+        }
     }catch(std::exception& e){
         DebugMessageWithTime("exception:",e.what());
     }

@@ -7,6 +7,8 @@
 #include "protocol/tanx/tanx_price.h"
 #include "protocol/youku/youku_price.h"
 #include "protocol/tencent_gdt/tencent_gdt_price.h"
+#include "protocol/guangyin/guangyin_price.h"
+#include "protocol/sohu/sohu_price.h"
 #include "spinlock.h"
 
 namespace adservice{
@@ -38,8 +40,12 @@ namespace adservice{
                     return youku_price_decode(input);
                 case ADX_BAIDU:
                     return baidu_price_decode(input);
+                case ADX_GUANGYIN:
+                    return guangyin_price_decode(input);
                 case ADX_TENCENT_GDT:
                     return gdt_price_decode(input);
+                case ADX_SOHU_PC:
+                    return sohu_price_decode(input);
                 default:
                     return 0;
             }

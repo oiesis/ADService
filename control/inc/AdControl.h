@@ -98,7 +98,7 @@ private:
 
 	//output
 	int m_iPort;
-        AdOutputCache m_ctCache;
+	AdOutputCache m_ctCache;
 	AdServer m_ctServer;
 
 	//project path, version

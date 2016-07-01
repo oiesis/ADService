@@ -38,13 +38,27 @@ namespace adservice {
         public:
             explicit AbstractQueryTask(const HttpRequest& request,HttpResponse& response):resp(response){
                 data = request.query();
+#ifndef USER_DEBUG
                 userCookies = request.getHeader("Cookie");
                 userAgent = request.getHeader("User-Agent");
-#ifndef USER_DEBUG
                 userIp = request.getHeader("X-Forwarded-For");
 #else
                 DebugConfig* debugConfig = (DebugConfig*)ConfigManager::getInstance().get(CONFIG_DEBUG);
-                userIp = debugConfig->debugIp;
+                if(!debugConfig->debugCookies.empty()){
+                    userCookies = debugConfig->debugCookies;
+                }else{
+                    userCookies = request.getHeader("Cookie");
+                }
+                if(!debugConfig->debugUseragent.empty()){
+                    userAgent = debugConfig->debugUseragent;
+                }else{
+                    userAgent = request.getHeader("User-Agent");
+                }
+                if(!debugConfig->debugIp.empty()){
+                    userIp = debugConfig->debugIp;
+                }else{
+                    userIp = request.getHeader("X-Forwarded-For");
+                }
 #endif
                 referer = request.getHeader("Referer");
                 isPost = request.method()== HttpRequest::Method::kPost;
