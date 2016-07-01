@@ -34,7 +34,6 @@ namespace adservice {
 			std::unique_lock<std::mutex> lock(connectMutex_);
 
 			triedConnect_ = true;
-			std::cout << "connect" << std::endl;
 
 			auto & configManager = adservice::server::ConfigManager::getInstance();
 			auto * config = (adservice::server::AerospikeConfig *)configManager.get(CONFIG_AEROSPIKE);
@@ -44,7 +43,8 @@ namespace adservice {
 			as_config_init(&config_);
 
 			for (int i = 0; i < AS_CONFIG_HOSTS_SIZE && i < config->connections.size(); ++i) {
-				config_.hosts[i] = { .addr = config->connections[i].host.c_str(), .port = config->connections[i].port };
+				config_.hosts[i].addr = config->connections[i].host.c_str();
+				config_.hosts[i].port = config->connections[i].port;
 			}
 
 			if (aerospike_init(&connection_, &config_) == nullptr) {
@@ -57,7 +57,6 @@ namespace adservice {
 		void AeroSpike::close()
 		{
 			std::unique_lock<std::mutex> lock(closeMutex_);
-			std::cout << "close" << std::endl;
 			if (triedConnect_) {
 				aerospike_close(&connection_, &error_);
 

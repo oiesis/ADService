@@ -8,6 +8,7 @@
 #include <muduo/net/Buffer.h>
 #include <muduo/net/http/HttpRequest.h>
 #include <muduo/net/http/HttpResponse.h>
+#include <muduo/base/Logging.h>
 #include "common/constants.h"
 #include "core_src/core_config_manager.h"
 #include "core_src/adselect/core_adselect_manager.h"
@@ -172,6 +173,28 @@ public:
     };
 };
 
+void setLogLevel(int logLevel){
+    switch(logLevel){
+        case 1:
+            muduo::Logger::setLogLevel(muduo::Logger::LogLevel::DEBUG);
+            break;
+        case 2:
+            muduo::Logger::setLogLevel(muduo::Logger::LogLevel::INFO);
+            break;
+        case 3:
+            muduo::Logger::setLogLevel(muduo::Logger::LogLevel::WARN);
+            break;
+        case 4:
+            muduo::Logger::setLogLevel(muduo::Logger::LogLevel::ERROR);
+            break;
+        case 5:
+            muduo::Logger::setLogLevel(muduo::Logger::LogLevel::FATAL);
+            break;
+        default:
+            break;
+    }
+}
+
 void onConfigChange(const std::string& type,void* newData,void* oldData){
     DebugMessageWithTime("config ",type," modified");
     // 简单粗暴地重启服务
@@ -183,6 +206,10 @@ void onDebugConfigChange(const std::string& type,void* newData,void* oldData){
     DebugConfig* oldDebugConfig = (DebugConfig*)oldData;
     DebugConfig* newDebugConfig = (DebugConfig*)newData;
 
+    if(newDebugConfig->dynamicLogLevel!=oldDebugConfig->dynamicLogLevel){
+        DebugMessageWithTime("logging level changed,old level:",oldDebugConfig->dynamicLogLevel,",new level:",newDebugConfig->dynamicLogLevel);
+        setLogLevel(newDebugConfig->dynamicLogLevel);
+    }
     if(newDebugConfig->debugIp!=oldDebugConfig->debugIp){
         DebugMessageWithTime("debug user ip changed,old ip:",oldDebugConfig->debugIp,",new debug ip:",newDebugConfig->debugIp);
     }

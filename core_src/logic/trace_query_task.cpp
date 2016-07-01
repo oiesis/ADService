@@ -53,6 +53,9 @@ namespace adservice {
 // 时间戳
             const std::string URL_TIME =					"t";
 
+// 协议，0为http，1为https
+            const std::string URL_PROTOCOL =				"i";
+
 // sourceid
             bool getSourceId(const std::string & sourceIdIndex, std::string & sourceId)
             {
@@ -130,15 +133,17 @@ namespace adservice {
                 log.traceInfo.tag10 = paramMap[URL_TAG10];
             }
 
-            std::string aliLog(const protocol::log::LogItem & log,
+            std::string aliLog(const std::string & protocol,
+                               const protocol::log::LogItem & log,
                                const core::model::SourceRecord & sourceRecord,
                                ParamMap & paramMap,
                                const std::string & ownerId,
                                const std::string & sourceId,
-                               const std::string & requestTypeStr,
-                               time_t time)
+                               const std::string & requestTypeStr)
             {
-                std::string result = "http://mtty.cn-beijing.log.aliyuncs.com/logstores/mt-log/track.gif?APIVersion=0.6.0";
+                std::string result = std::string(protocol == "1" ? "https" : "http") +
+                                     "://mtty.cn-beijing.log.aliyuncs.com/logstores/mt-log/track.gif?APIVersion=0.6.0&t=" +
+                                     std::to_string(log.timeStamp);
 
                 if (!log.traceInfo.version.empty()) {
                     result += "&v=" + log.traceInfo.version;
@@ -211,7 +216,8 @@ namespace adservice {
                 if (!log.userId.empty()) {
                     result += "&u=" + log.userId;
                 }
-                result += "&t=" + std::to_string(time);
+
+                DebugMessageWithTime("阿里云日志记录URL：" + result);
 
                 return result;
             }
@@ -222,6 +228,10 @@ namespace adservice {
         HandleTraceTask::HandleTraceTask(const HttpRequest & request, HttpResponse & response)
                 : AbstractQueryTask(request, response)
         {
+            auto hs = request.headers();
+            for (auto & p : hs) {
+                std::cout << p.first << ":" << p.second << std::endl;
+            }
         }
 
         protocol::log::LogPhaseType HandleTraceTask::currentPhase()
@@ -245,14 +255,12 @@ namespace adservice {
 
             std::string sourceIdIndex = userId + ownerId;
 
-            time_t time = ::time(nullptr);
-
             std::string sourceId;
             core::model::SourceRecord sourceRecord;
             if (getSourceId(sourceIdIndex, sourceId)) {
-                // 判断是否是一次到达
+                // 判断是否是一次到达，如果是pv，即y=6，限时10秒，否则请求类型保持原样
                 if (getRecord(sourceId, sourceRecord)) {
-                    if (time - sourceRecord.time() <= 10) {
+                    if (requestTypeStr == "6" && log.timeStamp - sourceRecord.time() <= 10) {
                         log.traceId = TRACE_ID_ARRIVE;
                     }
                 }
@@ -261,7 +269,8 @@ namespace adservice {
             // 记录TraceInfo日志
             fillLog(log, paramMap, version, device, sourceId);
 
-            std::string aliLogUrl = aliLog(log, sourceRecord, paramMap, ownerId, sourceId, requestTypeStr, time);
+            std::string protocol = paramMap[URL_PROTOCOL];
+            std::string aliLogUrl = aliLog(protocol, log, sourceRecord, paramMap, ownerId, sourceId, requestTypeStr);
 
             // 跳转至阿里云日志服务
             resp.setStatusCode(HttpResponse::k302Redirect);

@@ -133,11 +133,9 @@ namespace adservice{
          * 在走正常投放流程情况下,单子能投出来但需要做几率过滤
          */
         bool filterSolutionSuccessRate(const rapidjson::Value& solution){
-//新建投放再测试,现在先注释掉
-//            int successRate = solution["rate"].GetInt();
-//            int r = std::abs(rng::randomInt())%SOLUTION_SUCCESS_RATE_BASE;
-//            return r<successRate;
-            return true;
+            int successRate = solution["rate"].GetInt();
+            int r = std::abs(rng::randomInt())%SOLUTION_SUCCESS_RATE_BASE;
+            return r<successRate;
         }
 
         void split(const char* str,int len,const char** index,int& size){
@@ -157,7 +155,7 @@ namespace adservice{
         }
 
         bool extractConditionOption(std::string& condition,std::string& filter,double& offerPrice,double& ctr){
-            const char* index[500];
+            const char* index[3000];
             int size = sizeof(index)/sizeof(char*);
             split(condition.data(),condition.length(),index,size);
             for(int i=1;i<=size;i+=3){
@@ -202,7 +200,7 @@ namespace adservice{
             std::string hour = solution["d_hour"].GetString();
             if(hour=="0")
                 return 1.0;
-            const char* index[600];
+            const char* index[3000];
             int size = sizeof(index)/sizeof(char*);
             split(hour.data(),hour.length(),index,size);
             for(int i=1;i<=size;i+=3){
