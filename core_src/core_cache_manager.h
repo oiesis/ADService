@@ -145,7 +145,7 @@ namespace adservice{
 
         typedef std::function<bool (CacheResult&)> CacheAbsentCallback;
 
-        typedef std::function<int (const char*)> HashFunc;
+        typedef std::function<uint64_t (const char*)> HashFunc;
 
         class CacheManager{
         public:
@@ -171,11 +171,11 @@ namespace adservice{
                 hashFunc = hFunc;
             }
 
-            inline int64_t hash(const std::string& key){
+            inline uint64_t hash(const std::string& key){
                 return hash(key.c_str());
             }
 
-            int64_t hash(const char* key);
+            uint64_t hash(const char* key);
 
             /**
              * 设置缓存,成功返回true,失败返回false

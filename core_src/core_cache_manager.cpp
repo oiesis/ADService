@@ -66,11 +66,11 @@ namespace adservice{
         }
 
 
-        int64_t CacheManager::hash(const char* key){
+        uint64_t CacheManager::hash(const char* key){
             if(hashFunc){
-                return std::abs(hashFunc(key));
+                return hashFunc(key);
             }else{
-                return std::abs(fnv_hash(key,strlen(key)));
+                return fnv_hash(key,strlen(key));
             }
         }
 
@@ -82,7 +82,7 @@ namespace adservice{
             if (data == NULL)
                 return false;
             memcpy(data, value, size);
-            int h = hash(key) % MEMORY_ALLOC_UNIT_CNT;
+            int h = std::abs(hash(key) % MEMORY_ALLOC_UNIT_CNT);
             CacheResult *newCache = (CacheResult *) cacheResultSpare.alloc();
             if (newCache == NULL) {
                 pool.free(data);
@@ -107,7 +107,7 @@ namespace adservice{
 
 
         CacheResult* CacheManager::get(const char* key,int dataSize,const CacheAbsentCallback& cb){
-            int h = hash(key)%MEMORY_ALLOC_UNIT_CNT;
+            int h = std::abs(hash(key)%MEMORY_ALLOC_UNIT_CNT);
             int64_t currentTime = getCurrentTimeStamp();
             if(dataSize!=-1) {
                 int level = getCacheLevel(dataSize);
