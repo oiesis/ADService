@@ -19,6 +19,8 @@ namespace adservice{
 
 #define MakeStringValue(s) rapidjson::Value().SetString(s.c_str(),s.length())
 
+#define MakeStringValue2(s,allocator) rapidjson::Value().SetString(s.c_str(),s.length(),allocator)
+
 #define MakeStringConstValue(s) rapidjson::Value().SetString(s)
 
 #define MakeIntValue(s) rapidjson::Value().SetInt(s)

@@ -7,12 +7,15 @@
 
 #include <stddef.h>
 #include <ctime>
+#include <chrono>
 #include "common/types.h"
 
 namespace adservice{
     namespace utility{
 
         namespace time{
+
+            using namespace std::chrono;
 
             //假定服务器在东八区
 
@@ -31,7 +34,18 @@ namespace adservice{
                 return (int64_t)currentTime;
             }
 
+            inline int64_t getCurrentTimeStampMs(){
+                milliseconds ms = duration_cast< milliseconds >(
+                        system_clock::now().time_since_epoch()
+                );
+                return ms.count();
+            }
+
             std::string getCurrentTimeString();
+
+            std::string getCurrentTimeGmtString();
+
+            std::string gmtTimeStringFromTimeStamp(int64_t timestamp);
 
             std::string timeStringFromTimeStamp(int64_t timestamp);
 
@@ -51,7 +65,7 @@ namespace adservice{
              * 本地时间戳到UTC时间戳
              */
             inline int64_t localTimeStamptoUtc(int64_t unixTimeStamp){
-                return unixTimeStamp - UTC_TIME_DIFF_SEC;
+                return unixTimeStamp;
             }
 
             inline int64_t getCurrentTimeStampUtc(){

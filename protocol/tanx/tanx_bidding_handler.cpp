@@ -120,6 +120,7 @@ namespace protocol {
             if(bidRequest.has_mobile()){
                 queryCondition.mobileDevice = getDeviceType(bidRequest.mobile().device().platform());
                 queryCondition.flowType = SOLUTION_FLOWTYPE_MOBILE;
+                queryCondition.adxid = ADX_TANX_MOBILE;
             }else{
                 queryCondition.pcOS = getOSTypeFromUA(bidRequest.user_agent());
                 queryCondition.pcBrowserStr = getBrowserTypeFromUA(bidRequest.user_agent());
@@ -129,12 +130,10 @@ namespace protocol {
                 adInfo.pid = queryCondition.mttyPid;
                 return bidFailedReturn();
             }
-            adInfo.pid = queryCondition.mttyPid;
-            adInfo.adxpid = queryCondition.adxpid;
             return isBidAccepted = true;
         }
 
-        void TanxBiddingHandler::buildBidResult(const SelectResult &result) {
+        void TanxBiddingHandler::buildBidResult(const AdSelectCondition& queryCondition,const SelectResult &result) {
             bidResponse.Clear();
             bidResponse.set_version(bidRequest.version());
             bidResponse.set_bid(bidRequest.bid());
@@ -165,9 +164,11 @@ namespace protocol {
             adResult->add_creative_type(banner["bannertype"].GetInt());
             adResult->add_category(adxIndustryType);
             //缓存最终广告结果
+            adInfo.pid = std::to_string(adplace["pid"].GetInt());
+            adInfo.adxpid = adplace["adxpid"].GetString();
             adInfo.sid = finalSolution["sid"].GetInt64();
             adInfo.advId = advId;
-            adInfo.adxid = ADX_TANX;
+            adInfo.adxid = queryCondition.adxid;
             adInfo.adxuid = bidRequest.tid();
             adInfo.bannerId = banner["bid"].GetInt();
             adInfo.cid = adplace["cid"].GetInt();

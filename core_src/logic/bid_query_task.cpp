@@ -9,6 +9,8 @@
 #include "protocol/tanx/tanx_bidding_handler.h"
 #include "protocol/youku/youku_bidding_handler.h"
 #include "protocol/tencent_gdt/gdt_bidding_handler.h"
+#include "protocol/sohu/sohu_bidding_handler.h"
+#include "protocol/netease/netease_bidding_handler.h"
 #include "utility/utility.h"
 
 namespace adservice{
@@ -44,6 +46,10 @@ namespace adservice{
             ADD_MODULE_ENTRY(BID_QUERY_PATH_YOUKU,ADX_YOUKU);
             //腾讯ADX
             ADD_MODULE_ENTRY(BID_QUERY_PATH_GDT,ADX_TENCENT_GDT);
+            //搜狐ADX
+            ADD_MODULE_ENTRY(BID_QUERY_PATH_SOHU,ADX_SOHU_PC);
+            //网易客户端ADX
+            ADD_MODULE_ENTRY(BID_QUERY_PATH_NETEASE,ADX_NETEASE_MOBILE);
 
             std::sort<int*>(moduleIdx,moduleIdx+moduleCnt,[moduleAdx](const int& a,const int& b)->bool{
                 return moduleAdx[a].moduleHash<moduleAdx[b].moduleHash;
@@ -79,6 +85,10 @@ namespace adservice{
                     return new BaiduBiddingHandler();
                 case ADX_TENCENT_GDT:
                     return new GdtBiddingHandler();
+                case ADX_SOHU_PC:
+                    return new SohuBiddingHandler();
+                case ADX_NETEASE_MOBILE:
+                    return new NetEaseBiddingHandler();
                 default:
                     return NULL;
             }
@@ -130,7 +140,7 @@ namespace adservice{
                     if(!adSelectLogic.selectByCondition(seqId,condition,true,false)){
                         return false;
                     }
-                    adapter->buildBidResult(adSelectLogic.getResult());
+                    adapter->buildBidResult(condition,adSelectLogic.getResult());
                    return true;
                 });
                 if(bidResult){

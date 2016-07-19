@@ -103,7 +103,7 @@ namespace protocol{
             return isBidAccepted = true;
         }
 
-        void SohuBiddingHandler::buildBidResult(const SelectResult &result) {
+        void SohuBiddingHandler::buildBidResult(const AdSelectCondition& queryCondition,const SelectResult &result) {
             bidResponse.Clear();
             bidResponse.set_version(bidRequest.version());
             bidResponse.set_bidid(bidRequest.bidid());
@@ -120,12 +120,11 @@ namespace protocol{
             adResult->set_price(maxCpmPrice);
 
             //缓存最终广告结果
-            adInfo.pid = std::to_string(adplace["pid"].GetInt64());
+            adInfo.pid = queryCondition.mttyPid;
+            adInfo.adxpid = queryCondition.adxpid;
             adInfo.sid = finalSolution["sid"].GetInt64();
             adInfo.advId = advId;
             adInfo.adxid = ADX_SOHU_PC;
-            const char* strAdxPid = adplace["adxpid"].GetString();
-            adInfo.adxpid = strAdxPid;
             adInfo.adxuid = bidRequest.has_user()?bidRequest.user().suid():"";
             adInfo.bannerId = banner["bid"].GetInt();
             adInfo.cid = adplace["cid"].GetInt();

@@ -5,7 +5,7 @@ OS:=$(shell uname -s)
 ROOT_PATH:=$(shell pwd)
 THIRD_LIB_PATH=$(ROOT_PATH)/3rdparty/lib
 INCLUDE_PATH:=-I$(ROOT_PATH)/3rdparty/include/ -I$(ROOT_PATH)/common/ -I$(ROOT_PATH)/utility/ -I$(ROOT_PATH)/core_src -I$(ROOT_PATH)/
-LOAD_LIB:= -lpthread -lavrocpp -lonsclient4cpp -lssl -lcrypto -lcryptopp -lprotobuf -levent -laerospike
+LOAD_LIB:= -lpthread -lavrocpp -lonsclient4cpp -lssl -lcrypto -lcryptopp -lprotobuf -levent -laerospike -lcurl
 STRICT_CCFLAGS:=-Wall -Wextra -Werror -Wconversion -Wno-unused-parameter -Wold-style-cast -Woverloaded-virtual -Wpointer-arith -Wshadow -Wwrite-strings
 CCFlags:=--std=c++11 -g -march=native -O2 -finline-limit=1000 -DNDEBUG -DUNIT_TEST -DMUDUO_STD_STRING
 CCFlags+= -DUSE_KAFKA_LOG

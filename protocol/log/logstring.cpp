@@ -103,7 +103,7 @@ std::string getLogItemString(protocol::log::LogItem& log){
     ss<<"=====================================logItem========================================="<<endl;
     printLogPhase(ss,log.logType);
     printLogUserId(ss,log.userId);
-    ss<<"utc timestamp:"<<log.timeStamp<<","<<timeStringFromTimeStamp(log.timeStamp)<<endl;
+    ss<<"utc timestamp:"<<log.timeStamp<<","<<gmtTimeStringFromTimeStamp(log.timeStamp)<<endl;
     ss<<"userAgent:"<<log.userAgent<<endl;
     ss<<"host:"<<log.host<<endl;
     ss<<"path:"<<log.path<<endl;

@@ -66,7 +66,7 @@ namespace adservice{
         }
 
 
-        int CacheManager::hash(const char* key){
+        int64_t CacheManager::hash(const char* key){
             if(hashFunc){
                 return std::abs(hashFunc(key));
             }else{

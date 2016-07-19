@@ -99,9 +99,9 @@ namespace adservice{
                 case PRICETYPE_RTB:
                 case PRICETYPE_RRTB_CPM:
                     if(!fromSSP){ //ADX
-                        ecpm1OfferPrice *= AD_RTB_BIDOFFERPRICE_FACTOR;
-                        ecpm1OfferPrice=ecpm1OfferPrice<1.0?1.0:ecpm1OfferPrice;
-                        return std::max(ecpm1OfferPrice,basePrice);
+                        offerPrice *= AD_RTB_BIDOFFERPRICE_FACTOR;
+                        offerPrice=offerPrice<1.0?1.0:offerPrice;
+                        return std::max(offerPrice,basePrice);
                     }else {//SSP
                         if (ecpm2OfferPrice < 0) { //只有一个出价
                             return std::max(ecpm1OfferPrice, basePrice);
@@ -115,10 +115,58 @@ namespace adservice{
             return 0;
         }
 
+
+        bool filterSolutionField(const rapidjson::Value& solution,const char* fieldName,const std::string& toMatch){
+            std::string fieldValue = solution[fieldName].IsNull()?"":solution[fieldName].GetString();
+            if(fieldValue.empty()||fieldValue=="0"||toMatch.empty())
+                return true;
+            if(fieldValue.find(toMatch)!=std::string::npos){
+                return true;
+            }
+            return false;
+        }
+
+        inline bool filterSolutionField(const rapidjson::Value& solution,const char* fieldName,int toMatch){
+            return filterSolutionField(solution,fieldName,std::to_string(toMatch));
+        }
+
+        inline int countryGeo(int geo){
+            return geo - (geo%AREACODE_MARGIN);
+        }
+
+#define ASSERT_SOLUTION_CONDITION(solution,field,match,boolValue) {   \
+            if(filterSolutionField(solution,field,match)!=boolValue){  \
+                return false;   \
+            }   \
+        }
+
+        bool filterSolutionMultiCondition(bool simpleQuery,const rapidjson::Value& solution,const AdSelectCondition& condition){
+            if(!simpleQuery){ //复杂查询上下文,solution已经经过复杂条件过滤,无需再过滤
+                return true;
+            }
+            //后期可以直接走配置
+            ASSERT_SOLUTION_CONDITION(solution,"d_adexchange",condition.adxid,true);
+            ASSERT_SOLUTION_CONDITION(solution,"d_mediatype", condition.mediaType,true);
+            ASSERT_SOLUTION_CONDITION(solution,"d_adplace", condition.mttyPid,true);
+            ASSERT_SOLUTION_CONDITION(solution,"d_adplacetype", condition.adplaceType,true);
+            ASSERT_SOLUTION_CONDITION(solution,"d_displaynumber", condition.displayNumber,true);
+            ASSERT_SOLUTION_CONDITION(solution,"d_flowtype", condition.flowType,true);
+            ASSERT_SOLUTION_CONDITION(solution,"d_hour", condition.dHour,true);
+            ASSERT_SOLUTION_CONDITION(solution,"d_geo",condition.dGeo,true);
+            ASSERT_SOLUTION_CONDITION(solution,"d_geo",countryGeo(condition.dGeo),true);
+            ASSERT_SOLUTION_CONDITION(solution,"d_device",condition.mobileDevice,true);
+            ASSERT_SOLUTION_CONDITION(solution,"d_os",condition.pcOS,true);
+            ASSERT_SOLUTION_CONDITION(solution,"d_dealid",condition.dealId,true);
+            ASSERT_SOLUTION_CONDITION(solution,"n_adplace",condition.mttyPid,false);
+            ASSERT_SOLUTION_CONDITION(solution,"n_geo",condition.dGeo,false);
+            return true;
+        }
+
+
         /**
          * 过滤IP
          */
-        bool filterSolutionIp(const rapidjson::Value& solution,const std::string ip){
+        bool filterSolutionIp(const rapidjson::Value& solution,const std::string& ip){
             std::string dIp = solution["d_ip"].IsNull()?"":solution["d_ip"].GetString();
             if(dIp.empty()||dIp=="0"||ip.empty()){
                 return true;
@@ -133,7 +181,10 @@ namespace adservice{
          * 在走正常投放流程情况下,单子能投出来但需要做几率过滤
          */
         bool filterSolutionSuccessRate(const rapidjson::Value& solution){
+            int controlType = solution["budget_share"].GetInt();
             int successRate = solution["rate"].GetInt();
+            if(controlType==SOLUTION_CONTROLL_TYPE_ACC&&successRate>0) //加速投放不作几率控制
+                return true;
             int r = std::abs(rng::randomInt())%SOLUTION_SUCCESS_RATE_BASE;
             return r<successRate;
         }
@@ -211,13 +262,13 @@ namespace adservice{
             return 1.0;
         }
 
-        bool AdSelectLogic::selectByCondition(int seqId, AdSelectCondition &condition, bool isAdxPid,bool fromSSP) {
-            rapidjson::Value& result = adselect->queryAdInfoByCondition(seqId,condition,esResp,isAdxPid);
+        bool AdSelectLogic::selectByCondition(int seqId, AdSelectCondition &condition, bool isAdxPid,bool fromSSP,bool simpleQuery) {
+            rapidjson::Value& result = adselect->queryAdInfoByCondition(seqId,condition,esResp,isAdxPid,simpleQuery);
             if(!result.IsArray()||result.Empty()){ //正常情况下应该刷出solution和banner以及相应的高级出价器列表
                 return false;
             }
             //从返回结果中整理数据
-            rapidjson::Value& adplace = esResp["adplace"];
+            rapidjson::Value* padplace = NULL;
             rapidjson::Value* solutions[100];
             int solCnt = 0;
             std::map<int,std::vector<rapidjson::Value*>> bannerMap;
@@ -226,7 +277,8 @@ namespace adservice{
                 const char* type = result[i]["_type"].GetString();
                 if(!strcmp(type,ES_DOCUMENT_SOLUTION)){ //投放单
                     solutions[solCnt]=&(result[i]["_source"]);
-                    if(filterSolutionIp(*(solutions[solCnt]),condition.ip)  //IP过滤
+                    if(filterSolutionMultiCondition(simpleQuery,*(solutions[solCnt]),condition)
+                       && filterSolutionIp(*(solutions[solCnt]),condition.ip)  //IP过滤
                        && filterSolutionSuccessRate(*(solutions[solCnt]))){ //SuccessRate过滤
                         solCnt++;
                     }
@@ -240,8 +292,11 @@ namespace adservice{
                     bannerVec.push_back(&banner);
                 }else if(!strcmp(type,ES_DOCUMENT_ES_ADPLACE)){ //高级出价器,一个广告位的高级出价器有且只能有一个
                     superPricer = &(result[i]["_source"]);
+                }else if(!strcmp(type,ES_DOCUMENT_ADPLACE)){//广告位
+                    padplace = &(result[i]["_source"]);
                 }
             }
+            rapidjson::Value& adplace = *padplace;
             if(solCnt==0){ //失败
                 DebugMessageWithTime("solutionCnt==0");
                 return false;
@@ -270,7 +325,7 @@ namespace adservice{
                 double hourPercent = getHourPercent(solution,condition.dHour);
                 addupPricer(solution,condition,offerprice,ctr);
                 double ecpm = offerprice * (priceType == PRICETYPE_RRTB_CPC ?ctr: 1.0) * hourPercent;
-                finalOfferPrice[i] = offerprice;
+                finalOfferPrice[i] = ecpm;
                 solScore[i] = calcSolutionScore(priceType,ecpm);
                 if(ecpm>top1Ecpm){
                     top2Ecpm = top1Ecpm;
@@ -313,7 +368,7 @@ namespace adservice{
             selectResult.adplace = &adplace;
             double offerPrice = finalOfferPrice[solIdx[finalSolutionIdx]];
             int finalPriceType = finalSolution["pricetype"].GetInt();
-            double basePrice = adplace["baseprice"].GetDouble();
+            double basePrice = padplace!=NULL?adplace["baseprice"].GetDouble():0.0;
             selectResult.bidPrice = (int)calcBidPrice(finalPriceType,top1EcpmOfferPrice,top2EcpmOfferPrice,basePrice,offerPrice,fromSSP);
             selectResult.esResp = &esResp;
             return true;

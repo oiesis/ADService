@@ -52,7 +52,7 @@ namespace protocol{
             /**
              * 将匹配结果转换为具体平台的格式的结果
              */
-            virtual void buildBidResult(const SelectResult& result) = 0;
+            virtual void buildBidResult(const AdSelectCondition& selectCondition,const SelectResult& result) = 0;
 
             /**
              * 当接受流量时装配合适的输出

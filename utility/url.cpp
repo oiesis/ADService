@@ -285,7 +285,7 @@ namespace adservice{
 
             adservice::types::string extractCookiesParam(const adservice::types::string& key,const adservice::types::string& input){
                 ParamMap m;
-                getParam(m,input.c_str(),';');
+                getParamv2(m,input.c_str(),';');
                 return m[key];
             }
 

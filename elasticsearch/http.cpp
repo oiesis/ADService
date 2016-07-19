@@ -124,7 +124,7 @@ HTTP::~HTTP() {
 // Returns true if managed to connect.
 bool HTTP::connect(){
 
-    if( ++_connection > 5 )
+    if( ++_connection > 50000 )
         return false;
 
     // If socket point already present. Close connection.
@@ -483,7 +483,7 @@ unsigned int HTTP::request(const char* method, const char* endUrl, const char* d
         }
     } */
 
-    result = OK;
+    //result = OK;
     return statusCode;
 }
 

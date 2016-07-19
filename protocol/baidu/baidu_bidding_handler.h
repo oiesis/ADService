@@ -33,7 +33,7 @@ namespace protocol{
             /**
              * 将匹配结果转换为具体平台的格式的结果
              */
-            void buildBidResult(const SelectResult& result);
+            void buildBidResult(const AdSelectCondition& queryCondition,const SelectResult& result);
 
             /**
              * 当接受流量时装配合适的输出

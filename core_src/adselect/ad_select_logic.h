@@ -26,7 +26,7 @@ namespace adservice{
             /**
              * 根据多个过滤条件进行的过滤选择
              */
-            bool selectByCondition(int seqId,AdSelectCondition& condition,bool isAdxPid,bool fromSSP = false);
+            bool selectByCondition(int seqId,AdSelectCondition& condition,bool isAdxPid,bool fromSSP = false,bool simpleQuery = false);
 
             inline const SelectResult& getResult() const{
                 return selectResult;

@@ -6,6 +6,22 @@
 #include <cassert>
 #include <locale>
 #include <vector>
+#include "common/constants.h"
+
+using namespace adservice::utility::time;
+using namespace adservice::utility::json;
+
+
+size_t curl_read_cb(void* data,size_t s,size_t nmemb,void* param){
+    rapidjson::Document& doc = *(rapidjson::Document*)param;
+    size_t dataSize = s*nmemb;
+    if(dataSize>0){
+        parseJson((const char*)data,doc);
+    }
+    return dataSize;
+}
+
+#define SEARCH_PATH "/"ES_INDEX_SOLUTIONS"/"ES_DOCUMENT_SOLBANADPLACE"/_search"ES_FILTER_FORMAT2
 
 ElasticSearch::ElasticSearch(const std::string& node, bool readOnly,const std::string& auth): _http(node, true,auth), _readOnly(readOnly) {
     // Test if instance is active.
@@ -16,9 +32,14 @@ ElasticSearch::ElasticSearch(const std::string& node, bool readOnly,const std::s
     }else{
         _active = true;
     }
+    curl = curl_easy_init();
+    curl_easy_setopt(curl,CURLOPT_URL,(node+SEARCH_PATH).data());
+    curl_easy_setopt(curl,CURLOPT_WRITEFUNCTION,curl_read_cb);
 }
 
+
 ElasticSearch::~ElasticSearch() {
+    curl_easy_cleanup(curl);
 }
 
 // Test connection with node.
@@ -170,6 +191,14 @@ long ElasticSearch::search(const std::string& index, const std::string& type, co
     return result["hits"]["total"].GetInt();
 }
 
+long ElasticSearch::search2(const std::string& index, const std::string& type, const std::string& searchParam,const std::string& query, rapidjson::Document& result) {
+    int64_t beginTime = getCurrentTimeStampMs();
+    curl_easy_setopt(curl,CURLOPT_WRITEDATA,&result);
+    curl_easy_setopt(curl,CURLOPT_POSTFIELDS,query.data());
+    curl_easy_perform(curl);
+    int64_t endTime = getCurrentTimeStampMs();
+    return result["hits"]["total"].GetInt();
+}
 
 
 // Test if index exists

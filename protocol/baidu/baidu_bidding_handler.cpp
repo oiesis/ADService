@@ -90,7 +90,7 @@ namespace protocol {
             return isBidAccepted = true;
         }
 
-        void BaiduBiddingHandler::buildBidResult(const SelectResult &result) {
+        void BaiduBiddingHandler::buildBidResult(const AdSelectCondition& queryCondition,const SelectResult &result) {
             bidResponse.Clear();
             bidResponse.set_id(bidRequest.id());
             bidResponse.clear_ad();

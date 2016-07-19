@@ -79,27 +79,27 @@ namespace adservice{
             /**
              * 根据多条件查询广告信息
              */
-            rapidjson::Value& queryAdInfoByCondition(int seqId, AdSelectCondition& condition,rapidjson::Document& result,bool isAdxPid = false);
+            rapidjson::Value& queryAdInfoByCondition(int seqId, AdSelectCondition& condition,rapidjson::Document& result,bool isAdxPid = false,bool simpleQuery = false);
 
             /**
              * 根据Mtty PID找到合适的广告信息
              */
-            rapidjson::Value& queryAdInfoByMttyPid(int seqId,AdSelectCondition& selectCondition,rapidjson::Document& result);
+            rapidjson::Value& queryAdInfoByMttyPid(int seqId,AdSelectCondition& selectCondition,rapidjson::Document& result,bool simpleQuery = false);
 
             /**
              * 根据ADX PID找到合适的广告信息
              */
-            rapidjson::Value& queryAdInfoByAdxPid(int seqId, AdSelectCondition& selectCondition,rapidjson::Document& result);
+            rapidjson::Value& queryAdInfoByAdxPid(int seqId, AdSelectCondition& selectCondition,rapidjson::Document& result,bool simpleQuery = false);
 
             /**
              * 根据Mtty PID找到合适的广告信息,不使用Cache
              */
-            rapidjson::Value& queryAdInfoByMttyPidNoCache(int seqId,AdSelectCondition& selectCondition,rapidjson::Document& result);
+            rapidjson::Value& queryAdInfoByMttyPidNoCache(int seqId,AdSelectCondition& selectCondition,rapidjson::Document& result,bool simpleQuery = false);
 
             /**
              * 根据ADX PID找到合适的广告信息,不使用Cache
              */
-            rapidjson::Value& queryAdInfoByAdxPidNoCache(int seqId,AdSelectCondition& selectCondition,rapidjson::Document& result);
+            rapidjson::Value& queryAdInfoByAdxPidNoCache(int seqId,AdSelectCondition& selectCondition,rapidjson::Document& result,bool simpleQuery = false);
 
         private:
             AdSelectManager(const std::string& node,const std::string& auth = std::string()){
@@ -112,6 +112,7 @@ namespace adservice{
                 loadFile(dsl_query_adplace_adxpid,ES_QUERY_ADPLACE_BY_ADXPID);
                 loadFile(dsl_query_adinfo_condition,ES_QUERY_ADINFO_BY_CONDITION);
                 loadFile(dsl_query_adinfo_condition_multisize,ES_QUERY_ADINFO_BY_CONDITION_MULTISIZE);
+                loadFile(dsl_query_adinfo_condition_simple,ES_QUERY_ADINFO_BY_CONDITION_SIMPLE);
             }
         public:
             ElasticSearch& getAvailableConnection(int seqId) const{
@@ -137,6 +138,8 @@ namespace adservice{
             char dsl_query_adinfo_condition[8192];
             // 根据广告位条件查询广告信息,条件中包含多个尺寸条件
             char dsl_query_adinfo_condition_multisize[8192];
+            // 根据最基本的广告位条件查询广告位
+            char dsl_query_adinfo_condition_simple[8192];
         };
 
     }

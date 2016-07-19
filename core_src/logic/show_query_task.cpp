@@ -461,6 +461,7 @@ namespace adservice{
                 condition.mobileDevice = getDeviceTypeForSsp(paramMap);
                 condition.pcOS = utility::userclient::getOSTypeFromUA(userAgent);
                 condition.pcBrowserStr = utility::userclient::getBrowserTypeFromUA(userAgent);
+                condition.flowType = condition.mobileDevice!=SOLUTION_DEVICE_OTHER?SOLUTION_FLOWTYPE_MOBILE:SOLUTION_FLOWTYPE_PC;
                 if(!adSelectLogic.selectByCondition(seqId,condition,isAdxPid,true)){
                     log.adInfo.adxid = ADX_SSP;
                     log.adInfo.pid = condition.mttyPid;

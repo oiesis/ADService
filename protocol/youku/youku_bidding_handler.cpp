@@ -15,7 +15,7 @@ namespace protocol {
         using namespace adservice::server;
 
 #define   AD_YOUKU_CM_URL   ""
-#define   AD_YOUKU_FEED		"http://show.mtty.com/v?of=3&res=none&p=%s&%s"
+#define   AD_YOUKU_FEED		"http://show.mtty.com/v?of=3&p=%s&%s"
 #define   AD_YOUKU_CLICK	"http://click.mtty.com/c?%s"
 #define   AD_YOUKU_PRICE 		"${AUCTION_PRICE}"
 #define   YOUKU_DEVICE_HANDPHONE 0
@@ -30,17 +30,17 @@ namespace protocol {
         int fromYoukuDevTypeOsType(int devType,const std::string& osType,const std::string& ua,int& flowType,int& mobileDev,int& pcOs,std::string& pcBrowser){
             if(devType==YOUKU_DEVICE_HANDPHONE){
                 flowType = SOLUTION_FLOWTYPE_MOBILE;
-                if(osType==YOUKU_OS_ANDROID){
+                if(!strcasecmp(osType.data(),YOUKU_OS_ANDROID)){
                     mobileDev = SOLUTION_DEVICE_ANDROID;
-                }else if(osType == YOUKU_OS_iPhone){
+                }else if(!strcasecmp(osType.data(),YOUKU_OS_iPhone)){
                     mobileDev = SOLUTION_DEVICE_IPHONE;
                 } else
                     mobileDev == SOLUTION_DEVICE_OTHER;
             }else if(devType == YOUKU_DEVICE_PAD){
                 flowType = SOLUTION_FLOWTYPE_MOBILE;
-                if(osType==YOUKU_OS_ANDROID){
+                if(!strcasecmp(osType.data(),YOUKU_OS_ANDROID)){
                     mobileDev = SOLUTION_DEVICE_ANDROIDPAD;
-                }else if(osType == YOUKU_OS_iPhone){
+                }else if(!strcasecmp(osType.data(),YOUKU_OS_iPhone)){
                     mobileDev = SOLUTION_DEVICE_IPAD;
                 } else
                     mobileDev == SOLUTION_DEVICE_OTHER;
@@ -53,7 +53,7 @@ namespace protocol {
 
 
         bool YoukuBiddingHandler::parseRequestData(const std::string& data){
-            bidRequest.Clear();
+            bidRequest.SetObject();
             return parseJson(data.c_str(),bidRequest);
         }
 
@@ -93,30 +93,34 @@ namespace protocol {
             AdSelectCondition queryCondition;
             queryCondition.adxid = ADX_YOUKU;
             queryCondition.adxpid = pid;
+            adInfo.adxid = ADX_YOUKU;
             if(bidRequest.HasMember("device")) {
-                std::string ip = bidRequest["device"].HasMember("ip") ? bidRequest["device"]["ip"].GetString() : "";
+                rapidjson::Value& device = bidRequest["device"];
+                std::string ip = device.HasMember("ip") ? device["ip"].GetString() : "";
                 queryCondition.ip = ip;
-                int devType = bidRequest["device"]["devicetype"].GetInt();
-                std::string osType = bidRequest["device"]["os"].GetString();
-                std::string ua = bidRequest["device"]["ua"].GetString();
+                int devType = device.HasMember("devicetype")?device["devicetype"].GetInt():YOUKU_DEVICE_PC;
+                std::string osType = device.HasMember("os")?device["os"].GetString():"";
+                std::string ua = device.HasMember("ua")?device["ua"].GetString():"";
                 fromYoukuDevTypeOsType(devType,osType,ua,queryCondition.flowType,queryCondition.mobileDevice,queryCondition.pcOS,
                                         queryCondition.pcBrowserStr);
+                if(queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE){
+                    queryCondition.adxid = ADX_YOUKU_MOBILE;
+                    adInfo.adxid = ADX_YOUKU_MOBILE;
+                }
             }
             isDeal = false;
             dealId.clear();
             if(adzinfo.HasMember("pmp")){//deal 请求
                 rapidjson::Value& deals = adzinfo["pmp"]["deals"];
                 if(deals.Size()>0){
-                    queryCondition.priorKey = deals[0]["id"].GetString();
+                    queryCondition.dealId = deals[0]["id"].GetString();
                     isDeal = true;
-                    dealId = queryCondition.priorKey;
+                    dealId = queryCondition.dealId;
                 }
             }
             if(!filterCb(this,queryCondition)){
                 return bidFailedReturn();
             }
-            adInfo.pid = queryCondition.mttyPid;
-            adInfo.adxpid = queryCondition.adxpid;
             return isBidAccepted = true;
         }
 
@@ -132,43 +136,45 @@ namespace protocol {
                                                 "\"ext\":{"
                                                     "\"ldp\":\"\","
                                                     "\"pm\":[],"
-                                                    "\"cm\":[]"
+                                                    "\"cm\":[],"
+                                                    "\"type\":\"\""
                                                     "}"
                                                 "}]}]}";
 
-        void YoukuBiddingHandler::buildBidResult(const SelectResult &result) {
+        void YoukuBiddingHandler::buildBidResult(const AdSelectCondition& queryCondition,const SelectResult &result) {
             rapidjson::Value& adzInfo = bidRequest["imp"][0];
             rapidjson::Value& finalSolution = *(result.finalSolution);
             rapidjson::Value& adplace = *(result.adplace);
             rapidjson::Value& banner = *(result.banner);
             int advId = finalSolution["advid"].GetInt();
             int bidFloor = adzInfo["bidfloor"].GetInt();
-            int maxCpmPrice = std::max(result.bidPrice,bidFloor);
-            bidResponse.Clear();
+            bidResponse.SetObject();
             if(!parseJson(BIDRESPONSE_TEMPLATE,bidResponse)){
                 DebugMessageWithTime("in YoukuBiddingHandler::buildBidResult parseJson failed");
                 isBidAccepted = false;
                 return;
             }
             std::string requestId = bidRequest["id"].GetString();
-            bidResponse["id"].SetString(requestId.data(),requestId.length());
+            bidResponse["id"].SetString(requestId.data(),requestId.length(),bidResponse.GetAllocator());
             bidResponse["bidid"].SetString("1");
             rapidjson::Value& bidValue = bidResponse["seatbid"][0]["bid"][0];
             bidValue["id"].SetString("1");
             std::string impId = adzInfo["id"].GetString();
-            bidValue["impid"].SetString(impId.data(),impId.length());
-            bidValue["price"].SetInt(maxCpmPrice);
+            bidValue["impid"].SetString(impId.data(),impId.length(),bidResponse.GetAllocator());
+
 
             //缓存最终广告结果
+            adInfo.pid = std::to_string(adplace["pid"].GetInt());
+            adInfo.adxpid = adplace["adxpid"].GetString();
+            adInfo.adxpid = queryCondition.adxpid;
             adInfo.sid  = finalSolution["sid"].GetInt64();
             adInfo.advId = advId;
-            adInfo.adxid = ADX_YOUKU;
+            adInfo.adxid = queryCondition.adxid;
             adInfo.adxuid = bidRequest["user"]["id"].GetString();
             adInfo.bannerId = banner["bid"].GetInt();
             adInfo.cid = adplace["cid"].GetInt();
             adInfo.mid = adplace["mid"].GetInt();
             adInfo.cpid = adInfo.advId;
-            adInfo.offerPrice = maxCpmPrice;
             const std::string& userIp = bidRequest["device"]["ip"].GetString();
             IpManager& ipManager = IpManager::getInstance();
             adInfo.areaId = ipManager.getAreaCodeStrByIp(userIp.data());
@@ -182,6 +188,7 @@ namespace protocol {
             parseJson(pjson,bannerJson);
             std::string materialUrl = bannerJson["mtls"][0]["p0"].GetString();
             std::string landingUrl = bannerJson["mtls"][0]["p1"].GetString();
+            std::string tview = bannerJson["tview"].GetString();
 
             rapidjson::Value& extValue = bidValue["ext"];
             char showParam[2048];
@@ -191,25 +198,33 @@ namespace protocol {
                 char dealParam[256];
                 int dealParamLen = snprintf(dealParam,sizeof(dealParam),"&"URL_YOUKU_DEAL"=%s",dealId.data());
                 strncat(showParam,dealParam,dealParamLen);
+                bidValue.AddMember("dealid",MakeStringValue2(dealId,bidResponse.GetAllocator()),bidResponse.GetAllocator());
             }
             char buffer[2048];
             snprintf(buffer,sizeof(buffer),AD_YOUKU_FEED,AD_YOUKU_PRICE,showParam); //包含of=3
             bidValue["nurl"].SetString(buffer,bidResponse.GetAllocator());
             std::string crid = std::to_string(adInfo.bannerId);
-            bidValue["crid"].SetString(crid.data(),crid.length());
-            if(adzInfo.HasMember("video")){ //视频流量 adm为素材地址 ldp为点击链
-                bidValue["adm"].SetString(materialUrl.data(),materialUrl.length());
+            bidValue["crid"].SetString(crid.data(),crid.length(),bidResponse.GetAllocator());
+            if(adzInfo.HasMember("video")||queryCondition.flowType == SOLUTION_FLOWTYPE_MOBILE){ //视频流量 adm为素材地址 ldp为点击链
+                bidValue["adm"].SetString(materialUrl.data(),materialUrl.length(),bidResponse.GetAllocator());
                 getClickPara(requestId,clickParam,sizeof(clickParam),"",landingUrl);
                 snprintf(buffer,sizeof(buffer),AD_YOUKU_CLICK,clickParam);
                 std::string cm = buffer;
-                extValue["ldp"].SetString(cm.data(),cm.length());
+                extValue["ldp"].SetString(cm.data(),cm.length(),bidResponse.GetAllocator());
+                if(!tview.empty()){
+                    extValue["pm"].PushBack(MakeStringValue2(tview,bidResponse.GetAllocator()),bidResponse.GetAllocator());
+                }
+                bidFloor = 0;
             }else{ //动态创意流量 adm为iframe 设置type
                 int w = banner["width"].GetInt();
                 int h = banner["height"].GetInt();
-                std::string html = generateHtmlSnippet(requestId,w,h,"of=2","");
-                bidValue["adm"].SetString(html.data(),html.length());
+                std::string html = generateHtmlSnippet(requestId,w,h,"of=2&","");
+                bidValue["adm"].SetString(html.data(),html.length(),bidResponse.GetAllocator());
                 extValue["type"].SetString("c");
             }
+            int maxCpmPrice = std::max(result.bidPrice,bidFloor);
+            bidValue["price"].SetInt(maxCpmPrice);
+            adInfo.offerPrice = maxCpmPrice;
         }
 
         void YoukuBiddingHandler::match(HttpResponse &response) {

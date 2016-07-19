@@ -35,9 +35,9 @@ namespace protocol{
         void AbstractBiddingHandler::getShowPara(const std::string &bid, char *showParamBuf, int showBufSize){
             int len;
             if(showParamBuf!=NULL) {
-                len = snprintf(showParamBuf, showBufSize, "a=%s&b=%d&c=%d&d=%d&e=%d&s=%s&x=%d&r=%s&tm=%d", \
+                len = snprintf(showParamBuf, showBufSize, "a=%s&b=%d&c=%d&d=%d&e=%d&s=%s&o=%s&x=%d&r=%s&tm=%d", \
                 adInfo.areaId.c_str(), adInfo.offerPrice, adInfo.bannerId, adInfo.advId, \
-                adInfo.sid, adInfo.adxpid.c_str(), adInfo.adxid, bid.c_str(), time(NULL));
+                adInfo.sid, adInfo.adxpid.c_str(),adInfo.pid.c_str(),adInfo.adxid, bid.c_str(), time(NULL));
                 if (len >= showBufSize) {
                     DebugMessageWithTime("In AbstractBiddingHandler::httpsnippet,showBufSize too small,actual:", len);
                 }

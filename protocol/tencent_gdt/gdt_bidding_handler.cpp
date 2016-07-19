@@ -124,7 +124,7 @@ namespace protocol {
             return isBidAccepted = true;
         }
 
-        void GdtBiddingHandler::buildBidResult(const SelectResult &result) {
+        void GdtBiddingHandler::buildBidResult(const AdSelectCondition& queryCondition,const SelectResult &result) {
             bidResponse.Clear();
             bidResponse.set_request_id(bidRequest.id());
             bidResponse.clear_seat_bids();
@@ -140,10 +140,11 @@ namespace protocol {
             adResult->set_bid_price(maxCpmPrice);
             adResult->set_creative_id(std::to_string(banner["bid"].GetInt()));
             //缓存最终广告结果
+            adInfo.pid = queryCondition.mttyPid;
+            adInfo.adxpid = queryCondition.adxpid;
             adInfo.advId = finalSolution["advId"].GetInt();
             adInfo.sid = finalSolution["sid"].GetInt64();
             adInfo.adxid = ADX_TENCENT_GDT;
-            adInfo.adxpid = std::to_string(adzInfo.placement_id());
             adInfo.adxuid = bidRequest.user().id();
             adInfo.bannerId = banner["bid"].GetInt();
             adInfo.cpid = adInfo.advId;

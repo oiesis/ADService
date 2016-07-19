@@ -95,8 +95,10 @@
 #define URL_LANDING_URL                             "url"
 // referer
 #define URL_REFERER                                 "f"
-// 广告位ID
+// ADX广告位ID
 #define URL_ADPLACE_ID                              "s"
+// 我方广告位ID
+#define URL_MTTYADPLACE_ID                          "o"
 // 曝光ID
 #define URL_EXPOSE_ID                               "r"
 // 广告主ID
@@ -177,6 +179,8 @@
 #define ADX_GUANGYIN                                14
 // 淘宝移动
 #define ADX_TANX_MOBILE                             15
+// 优酷移动
+#define ADX_YOUKU_MOBILE                            17
 // 搜狐移动
 #define ADX_SOHU_MOBILE                             19
 // 网易新闻移动
@@ -192,6 +196,10 @@
 #define BID_QUERY_PATH_BAIDU                        "/besbid"
 // 腾讯竞价请求模块名
 #define BID_QUERY_PATH_GDT                          "/gdtbid"
+// 搜狐竞价请求模块名
+#define BID_QUERY_PATH_SOHU                         "/sohubid"
+// 网易竞价请求模块名
+#define BID_QUERY_PATH_NETEASE                      "/neteasebid"
 
 // snippet 中的 曝光URL
 #define SNIPPET_SHOW_URL                            "http://show.mtty.com/v"
@@ -217,7 +225,7 @@
 // ES中的高级出价器表
 #define ES_DOCUMENT_ES_ADPLACE                      "es_adplace"
 // ES中 solution,banner和es_adplace的混合表
-#define ES_DOCUMENT_SOLBANADPLACE                   "banner,solution,es_adplace"
+#define ES_DOCUMENT_SOLBANADPLACE                   "banner,solution,es_adplace,adplace"
 // ES中查询格式参数
 #define ES_FILTER_FORMAT                            "?pretty&filter_path=hits.total,hits.hits._source"
 // ES中的查询结果格式
@@ -237,6 +245,8 @@
 #define  ES_QUERY_ADINFO_BY_CONDITION               "elasticsearch/dsl/query_adinfo_by_condition.dsl"
 // ES中按根据广告位条件查询广告信息,其中条件包含多个尺寸
 #define  ES_QUERY_ADINFO_BY_CONDITION_MULTISIZE     "elasticsearch/dsl/query_adinfo_by_condition_multisize.dsl"
+// ES中按照广告位的简单条件查询广告信息
+#define  ES_QUERY_ADINFO_BY_CONDITION_SIMPLE        "elasticsearch/dsl/query_adinfo_by_condition_simple.dsl"
 
 // ES中Banner表的json字段名
 #define  ES_BANNER_FILED_JSON                       "json"
@@ -363,7 +373,13 @@
 #define SOLUTION_FLOWTYPE_PC                                 1
 // 移动
 #define SOLUTION_FLOWTYPE_MOBILE                             2
+// 未定义流量
+#define SOLUTION_FLOWTYPE_UNKNOWN                            20
 
+// 加速投放
+#define SOLUTION_CONTROLL_TYPE_ACC                           1
+// 匀速投放
+#define SOLUTION_CONTROLL_TYPE_MODERATE                      0
 
 // SSP URL 参数 设备类型
 #define URL_SSP_DEVICE                              "t1"

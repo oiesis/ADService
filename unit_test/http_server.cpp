@@ -9,6 +9,8 @@
 #include <muduo/net/http/HttpRequest.h>
 #include <muduo/net/http/HttpResponse.h>
 #include <muduo/base/Logging.h>
+#include <curl/curl.h>
+#include <curl/easy.h>
 #include "common/constants.h"
 #include "core_src/core_config_manager.h"
 #include "core_src/adselect/core_adselect_manager.h"
@@ -247,6 +249,8 @@ int main(int argc,char** argv){
     HandleShowQueryTask::loadTemplates();
     HandleBidQueryTask::init();
     IpManager::init();
+
+    curl_global_init(CURL_GLOBAL_ALL);
 
     AdServer cServer;
     cout<<"***********Server Init**************\n"<<endl;

@@ -171,11 +171,11 @@ namespace adservice{
                 hashFunc = hFunc;
             }
 
-            inline int hash(const std::string& key){
+            inline int64_t hash(const std::string& key){
                 return hash(key.c_str());
             }
 
-            int hash(const char* key);
+            int64_t hash(const char* key);
 
             /**
              * 设置缓存,成功返回true,失败返回false

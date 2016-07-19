@@ -163,8 +163,9 @@ void testUaParser(char* input){
 
 int main(int argc,char** argv){
     try {
-        if(argc>1) {
-            price_test(argv[1]);
+        if(argc>=2){
+            uint64_t h = std::abs(fnv_hash(argv[1],strlen(argv[1]))%1024);
+            DebugMessage("hash:",h);
         }
     }catch(std::exception& e){
         DebugMessageWithTime("exception:",e.what());

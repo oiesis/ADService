@@ -6,7 +6,8 @@
 #include <list>
 #include <mutex>
 #include <vector>
-
+#include <curl/curl.h>
+#include <curl/easy.h>
 #include "http.h"
 
 /// API class for elastic search server.
@@ -44,6 +45,9 @@ class ElasticSearch {
 
         /// Search API
         long search(const std::string& index, const std::string& type, const std::string& searchParam,const std::string& query, rapidjson::Document& result);
+
+        long search2(const std::string& index, const std::string& type, const std::string& searchParam,const std::string& query, rapidjson::Document& result);
+
     public:
         /// Test if index exists
         bool exist(const std::string& index);
@@ -58,6 +62,7 @@ class ElasticSearch {
         /// Read Only option, all index functions return false.
         bool _readOnly;
         bool _active;
+        CURL* curl;
 };
 
 

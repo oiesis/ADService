@@ -24,7 +24,7 @@ namespace protocol{
         }
 
         bool NetEaseBiddingHandler::parseRequestData(const std::string& data){
-            bidRequest.Clear();
+            bidRequest.SetObject();
             return parseJson(data.c_str(),bidRequest);
         }
 
@@ -81,13 +81,13 @@ namespace protocol{
                 "\"linkUrl\":\"\""
                 "}";
 
-        void NetEaseBiddingHandler::buildBidResult(const SelectResult &result) {
+        void NetEaseBiddingHandler::buildBidResult(const AdSelectCondition& queryCondition,const SelectResult &result) {
             rapidjson::Value& adzInfo = bidRequest["adunit"];
             rapidjson::Value& finalSolution = *(result.finalSolution);
             rapidjson::Value& adplace = *(result.adplace);
             rapidjson::Value& banner = *(result.banner);
             int advId = finalSolution["advid"].GetInt();
-            bidResponse.Clear();
+            bidResponse.SetObject();
             if(!parseJson(BIDRESPONSE_TEMPLATE,bidResponse)){
                 DebugMessageWithTime("in NetEaseBiddingHandler::buildBidResult parseJson failed");
                 isBidAccepted = false;
@@ -128,7 +128,7 @@ namespace protocol{
             snprintf(buffer,sizeof(buffer),AD_NETEASE_CLICK_URL,clickParam);
             bidResponse["clickMonitorUrl"].SetString(buffer,bidResponse.GetAllocator());
             bidResponse["linkUrl"].SetString(landingUrl.data(),bidResponse.GetAllocator());
-            bidResponse["resource_url"].PushBack(MakeStringValue(materialUrl),bidResponse.GetAllocator());
+            bidResponse["resource_url"].PushBack(MakeStringValue2(materialUrl,bidResponse.GetAllocator()),bidResponse.GetAllocator());
         }
 
         void NetEaseBiddingHandler::match(HttpResponse &response) {

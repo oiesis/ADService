@@ -90,10 +90,14 @@ namespace adservice{
                     urlDecode_f(f, output, buf);
                     log.referer = f;
                 }
-                if ((iter=paramMap.find(URL_ADPLACE_ID)) != paramMap.end()) { //广告位Id
+                if ((iter=paramMap.find(URL_ADPLACE_ID)) != paramMap.end()) { //ADX广告位Id
+                    adservice::types::string &s = iter->second;//paramMap[URL_ADPLACE_ID];
+                    log.adInfo.adxpid = s;
+                    log.adInfo.pid = s;
+                }
+                if ((iter=paramMap.find(URL_MTTYADPLACE_ID)) != paramMap.end()) { //广告位Id
                     adservice::types::string &s = iter->second;//paramMap[URL_ADPLACE_ID];
                     log.adInfo.pid = s;
-                    log.adInfo.adxpid = s;
                 }
                 if ((iter=paramMap.find(URL_EXPOSE_ID)) != paramMap.end()) { //曝光Id
                     adservice::types::string &r = iter->second;//paramMap[URL_EXPOSE_ID];
@@ -222,28 +226,29 @@ namespace adservice{
                 getParamv2(paramMap, data.c_str() + 1);
                 filterParamMapSafe(paramMap);
                 parseObjectToLogItem(paramMap,log,data.c_str()+1);
+                adservice::types::string userId = extractCookiesParam(COOKIES_MTTY_ID,userCookies);
+                bool needNewCookies = false;
+                if(userId.empty()||!checkUserCookies(userId)){
+                    CypherResult128 cookiesResult;
+                    makeCookies(cookiesResult);
+                    log.userId = (char*)cookiesResult.char_bytes;
+                    needNewCookies = true;
+                }else{
+                    log.userId = userId;
+                }
+                if(needNewCookies) { //传入的cookies中没有userId,cookies 传出
+                    char cookiesString[64];
+                    sprintf(cookiesString, "%s=%s;Domain=.%s;Max-Age=2617488000;", COOKIES_MTTY_ID,log.userId.c_str(),COOKIES_MTTY_DOMAIN);//必要时加入Domain
+                    resp.addHeader("Set-Cookie", cookiesString);
+                }
             }else{ //对于POST方法传送过来的Query
                 getPostParam(paramMap);
             }
-            adservice::types::string userId = extractCookiesParam(COOKIES_MTTY_ID,userCookies);
-            bool needNewCookies = false;
-            if(userId.empty()||!checkUserCookies(userId)){
-                CypherResult128 cookiesResult;
-                makeCookies(cookiesResult);
-                log.userId = (char*)cookiesResult.char_bytes;
-                needNewCookies = true;
-            }else{
-                log.userId = userId;
-            }
+
             resp.setContentType("text/html");
 #ifdef USE_ENCODING_GZIP
             resp.addHeader("Content-Encoding","gzip");
 #endif
-            if(needNewCookies) { //传入的cookies中没有userId,cookies 传出
-                char cookiesString[64];
-                sprintf(cookiesString, "%s=%s;Domain=.%s;Max-Age=2617488000;", COOKIES_MTTY_ID,log.userId.c_str(),COOKIES_MTTY_DOMAIN);//必要时加入Domain
-                resp.addHeader("Set-Cookie", cookiesString);
-            }
         }
 
         void AbstractQueryTask::doLog(protocol::log::LogItem& log){

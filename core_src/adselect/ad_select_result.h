@@ -6,8 +6,10 @@
 #define ADCORE_AD_SELECT_RESULT_H
 
 #include "utility/json.h"
+#include "common/constants.h"
 #include <string>
 #include <sstream>
+#include <vector>
 #include <tuple>
 
 namespace adservice{
@@ -39,7 +41,7 @@ namespace adservice{
             }
         };
 
-        struct AdSelectCondition{
+        struct AdSelectCondition {
             //adx平台广告位ID
             std::string adxpid;
             //mtty内部广告位ID
@@ -52,8 +54,8 @@ namespace adservice{
             std::string mobileDeviceStr;
             //需要匹配的pc端浏览器类型过滤条件
             std::string pcBrowserStr;
-            //需要匹配的优先条件,比如优酷的dealid
-            std::string priorKey;
+            //需要匹配的deal,比如优酷的dealid
+            std::string dealId;
             //需要匹配的adxid
             int adxid;
             //需要匹配的地域编码
@@ -87,16 +89,17 @@ namespace adservice{
                 height = 0;
                 mediaType = 0;
                 adplaceType = 0;
-                flowType = 0;
+                flowType = SOLUTION_FLOWTYPE_UNKNOWN;
                 displayNumber = 0;
                 pcOS = 0;
                 mobileDevice = 0;
                 mobileNetwork = 0;
                 mobileNetWorkProvider = 0;
                 pAdplaceInfo = NULL;
+                dealId = "0";
             }
 
-            std::string toString(){
+            std::string toString() const {
                 std::stringstream ss;
                 ss<<"adxpid:"<<adxpid<<",";
                 ss<<"mttypid:"<<mttyPid<<",";
@@ -115,7 +118,7 @@ namespace adservice{
                 ss<<"mobileDevice:"<<mobileDevice<<",";
                 ss<<"mobileNetwork:"<<mobileNetwork<<",";
                 ss<<"mobileNetworkProvider:"<<mobileNetWorkProvider<<",";
-                ss<<"priorKey:"<<priorKey;
+                ss<<"dealId:"<<dealId;
                 return ss.str();
             }
 

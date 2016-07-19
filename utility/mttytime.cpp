@@ -73,9 +73,27 @@ namespace adservice{
                 return std::string(tstr,tstr+len);
             }
 
+            std::string getCurrentTimeGmtString(){
+                time_t currentTime;
+                ::time(&currentTime);
+                struct tm t = {0};
+                gmtime_r(&currentTime,&t);
+                char tstr[50];
+                int len = sprintf(tstr,"%04d%02d%02d %02d:%02d:%02d",1900+t.tm_year,t.tm_mon+1,t.tm_mday,t.tm_hour,t.tm_min,t.tm_sec);
+                return std::string(tstr,tstr+len);
+            }
+
+            std::string gmtTimeStringFromTimeStamp(int64_t timestamp){
+                struct tm t = {0};
+                gmtime_r((const time_t*)&timestamp,&t);
+                char tstr[50];
+                int len = sprintf(tstr,"%04d%02d%02d %02d:%02d:%02d",1900+t.tm_year,t.tm_mon+1,t.tm_mday,t.tm_hour,t.tm_min,t.tm_sec);
+                return std::string(tstr,tstr+len);
+            }
+
             std::string adTimeSelectCode(int64_t timestamp){
                 struct tm t = {0};
-                localtime_r((const time_t*)&timestamp,&t);
+                gmtime_r((const time_t*)&timestamp,&t);
                 char scode[10];
                 int len = sprintf(scode,"%d%02d",t.tm_wday==0?7:t.tm_wday,t.tm_hour);
                 return std::string(scode,scode+len);
